@@ -1,0 +1,46 @@
+{
+  "name": "ZapCart",
+  "short_name": "ZapCart",
+  "description": "Lightning fast Bitcoin payments powered by Breez SDK",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "orientation": "portrait-primary",
+  "categories": ["finance", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/ZapCart-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/ZapCart-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/ZapCart-icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/ZapCart-icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/ZapCart_favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
