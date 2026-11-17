@@ -23,7 +23,6 @@ interface CollapsingWalletHeaderProps {
 
 const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
   walletInfo,
-  scrollProgress,
   fiatRates,
   fiatCurrencies,
   onOpenMenu,
@@ -146,25 +145,12 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
 
   return (
     <div className="relative overflow-hidden transition-all duration-200">
-      {/* Glassmorphism background - extends into safe area */}
       <div
-        className="absolute inset-0 bg-white backdrop-blur-xl border-b border-spark-border"
+        className="absolute inset-0 bg-vendly-cream border-b border-vendly-border"
         style={{
           top: 'calc(-1 * env(safe-area-inset-top, 0px))',
         }}
       />
-
-      {/* Strong glow effect behind balance - extends into safe area */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[200px] pointer-events-none transition-opacity duration-300"
-        style={{
-          opacity: 1 - scrollProgress * 0.7,
-          marginTop: 'calc(-0.5 * env(safe-area-inset-top, 0px))',
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-radial from-spark-primary/30 via-spark-primary/15 to-transparent blur-3xl" />
-        <div className="absolute inset-4 bg-gradient-radial from-gray-400/20 to-transparent blur-2xl" />
-      </div>
 
       {/* Header content - padded below safe area */}
       <div
@@ -173,15 +159,17 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
       >
         {/* Top bar with menu and network */}
         <div className="flex items-center justify-between mb-4">
-          {/* Menu button */}
-          <button
-            onClick={onOpenMenu}
-            className="p-2 -ml-2 text-gray-700 hover:text-black transition-colors rounded-xl hover:bg-white/5"
-            aria-label="Open menu"
-            data-testid="menu-button"
-          >
-            <MenuIcon size="lg" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onOpenMenu}
+              className="p-2 -ml-2 text-vendly-ink hover:text-vendly-deep transition-colors rounded-xl hover:bg-vendly-tint"
+              aria-label="Open menu"
+              data-testid="menu-button"
+            >
+              <MenuIcon size="lg" />
+            </button>
+            <span className="font-display text-sm font-bold tracking-tight text-vendly-deep">Vendly</span>
+          </div>
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
@@ -190,7 +178,7 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
               <button
                 type="button"
                 onClick={onOpenGetRefund}
-                className="flex items-center gap-1 h-9 px-3 rounded-xl text-gray-700 border border-spark-warning/20 hover:border-spark-warning/40 hover:bg-spark-warning/5 transition-colors text-xs font-medium"
+                className="flex items-center gap-1 h-9 px-3 rounded-xl text-vendly-ink border border-vendly-border hover:border-vendly-green hover:bg-vendly-tint transition-colors text-xs font-medium"
               >
                 <AlertTriangleIcon size="xs" />
                 Refund
@@ -200,7 +188,7 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
             {onOpenBuyBitcoin && (
               <button
                 type="button"
-                className="flex items-center gap-1.5 h-9 px-3 rounded-xl text-gray-700 hover:text-black border border-white/10 hover:border-white/20 hover:bg-white/5 transition-colors text-sm font-medium"
+                className="flex items-center gap-1.5 h-9 px-3 rounded-xl text-vendly-ink border border-vendly-border hover:border-vendly-green hover:bg-vendly-tint transition-colors text-sm font-medium"
                 onClick={onOpenBuyBitcoin}
               >
                 <CurrencyIcon size="sm" />
@@ -215,19 +203,19 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
           {/* Label — fixed height with cross-fade to prevent layout shift */}
           <div className="relative h-4 mb-1 flex items-center justify-center">
             <span
-              className={`absolute text-gray-700 text-xs font-display font-medium tracking-widest uppercase transition-opacity duration-300 inline-flex items-center gap-1.5 ${
+              className={`absolute text-vendly-ink text-xs font-display font-medium tracking-widest uppercase transition-opacity duration-300 inline-flex items-center gap-1.5 ${
                 isSyncing ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-spark-primary animate-pulse" />
-              Syncing
+              <span className="w-1.5 h-1.5 rounded-full bg-vendly-green animate-pulse" />
+              Updating
             </span>
             <span
-              className={`absolute text-gray-600 text-xs font-display font-medium tracking-widest uppercase transition-opacity duration-300 ${
+              className={`absolute text-vendly-muted text-xs font-display font-medium tracking-widest uppercase transition-opacity duration-300 ${
                 isSyncing ? 'opacity-0' : 'opacity-100'
               }`}
             >
-              Balance<span className="text-gray-500 mx-1.5">·</span><span className="text-spark-text-muted/50">sats</span>
+              Available balance
             </span>
           </div>
 
@@ -239,7 +227,7 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
             <span className="balance-display">
               {formatWithThinSpaces(displayBalance)}
             </span>
-            {displayBalance > 0 && <span className="absolute right-full top-1/2 -translate-y-1/2 mr-0.5 text-3xl text-gray-700 opacity-70 font-mono">₿</span>}
+            {displayBalance > 0 && <span className="absolute right-full top-1/2 -translate-y-1/2 mr-0.5 text-3xl text-vendly-ink opacity-70 font-mono">₿</span>}
           </div>
 
           {/* Fiat value with accent marks - always reserve space to prevent layout shift */}
@@ -249,11 +237,11 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
             } ${fiatCurrencyInfo.length > 1 ? 'cursor-pointer' : ''}`}
             onClick={fiatCurrencyInfo.length > 1 ? handleFiatTap : undefined}
           >
-            <span className="w-6 h-0.5 bg-gray-700" style={{
+            <span className="w-6 h-0.5 bg-vendly-green" style={{
               maskImage: 'linear-gradient(to right, transparent, black)',
               WebkitMaskImage: 'linear-gradient(to right, transparent, black)'
             }} />
-            <span className="text-gray-700 text-sm font-mono">
+            <span className="text-vendly-ink text-sm font-mono">
               {currentFiat ? (
                 <>
                   {currentFiat.symbolPosition === 'before' ? currentFiat.symbol : ''}
@@ -265,7 +253,7 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
                 <span className="invisible">$0.00</span>
               )}
             </span>
-            <span className="w-6 h-0.5 bg-gray-700" style={{
+            <span className="w-6 h-0.5 bg-vendly-green" style={{
               maskImage: 'linear-gradient(to left, transparent, black)',
               WebkitMaskImage: 'linear-gradient(to left, transparent, black)'
             }} />

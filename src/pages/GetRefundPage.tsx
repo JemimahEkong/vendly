@@ -191,8 +191,8 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
   };
 
   return (
-  <SlideInPage title="Get Refund" onClose={onBack} slideFrom={animationDirection}>
-    <div className="p-4 bg-white">
+  <SlideInPage title="Refund" onClose={onBack} slideFrom={animationDirection}>
+    <div className="p-4 bg-vendly-cream">
       <div className="max-w-xl mx-auto w-full space-y-6">
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
@@ -208,11 +208,11 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
 
           {!isLoading && deposits.length === 0 && (
             <div className="py-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                <CheckIcon size="xl" className="text-black" />
+              <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center mx-auto mb-4">
+                <CheckIcon size="xl" className="text-vendly-ink" />
               </div>
-              <h3 className="font-display font-semibold text-black mb-2">All Clear!</h3>
-              <p className="text-gray-500 text-sm">No rejected deposits pending refund.</p>
+              <h3 className="font-display font-semibold text-vendly-ink mb-2">All Clear!</h3>
+              <p className="text-vendly-muted text-sm">No rejected deposits pending refund.</p>
             </div>
           )}
 
@@ -224,17 +224,17 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
                 const refundedTxId = getRefundTxId(dep);
                 const txKey = `deposit-tx-${idx}`;
                 const refundKey = `deposit-refund-${idx}`;
-                const borderClass = isRefunded ? 'border-gray-300' : 'border-gray-200';
+                const borderClass = isRefunded ? 'border-vendly-border' : 'border-vendly-border';
 
                 return (
                   <div
                     key={idx}
-                    className={`bg-white border ${borderClass} rounded-2xl p-5 space-y-4`}
+                    className={`bg-vendly-light border ${borderClass} rounded-2xl p-5 space-y-4`}
                   >
                     {/* Amount */}
                     <div className="flex items-center justify-between py-2">
-                      <span className="text-gray-700 text-sm">Amount</span>
-                      <span className="font-mono text-sm font-medium text-black">
+                      <span className="text-vendly-ink text-sm">Amount</span>
+                      <span className="font-mono text-sm font-medium text-vendly-ink">
                         <span className="inline-flex items-center">
                           <span className="text-[0.8em] opacity-70 mr-px">₿</span>
                           {formatWithSpaces(amount)}
@@ -278,7 +278,7 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
                       {isRefunded ? (
                         <button
                           disabled
-                          className="w-full px-4 py-3 bg-gray-100 text-black rounded-xl font-medium cursor-not-allowed"
+                          className="w-full px-4 py-3 bg-vendly-tint text-vendly-ink rounded-xl font-medium cursor-not-allowed"
                         >
                           <span className="animate-pulse-slow">Broadcasting</span>
                         </button>
@@ -319,7 +319,7 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
           {refundStep === 'address' && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-vendly-ink mb-2">
                   Destination
                 </label>
                 <FormInput
@@ -329,7 +329,7 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
                   onChange={(e) => setDestination(e.target.value)}
                   placeholder="bc1q..."
                 />
-                <p className="text-gray-500 text-xs mt-2">
+                <p className="text-vendly-muted text-xs mt-2">
                   Enter the Bitcoin address where you want to receive the refund.
                 </p>
               </div>
@@ -353,7 +353,7 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
           {refundStep === 'fee' && (
             <>
               <div>
-                <label className="block text-sm font-medium text-black mb-2">
+                <label className="block text-sm font-medium text-vendly-ink mb-2">
                   Select Fee Rate
                 </label>
 
@@ -362,8 +362,8 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
                     onClick={() => setSelectedFeeRate('slow')}
                     className={`relative p-3 rounded-lg border text-sm font-medium transition-colors ${
                       selectedFeeRate === 'slow'
-                        ? 'bg-black text-white border-black ring-2 ring-gray-300'
-                        : 'bg-white text-black border-gray-200 hover:border-gray-400'
+                        ? 'bg-vendly-deep text-vendly-light border-vendly-deep ring-2 ring-vendly-border'
+                        : 'bg-vendly-light text-vendly-ink border-vendly-border hover:border-vendly-green'
                     }`}
                   >
                     {selectedFeeRate === 'slow' && (
@@ -379,8 +379,8 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
                     onClick={() => setSelectedFeeRate('medium')}
                     className={`relative p-3 rounded-lg border text-sm font-medium transition-colors ${
                       selectedFeeRate === 'medium'
-                        ? 'bg-black text-white border-black ring-2 ring-gray-300'
-                        : 'bg-white text-black border-gray-200 hover:border-gray-400'
+                        ? 'bg-vendly-deep text-vendly-light border-vendly-deep ring-2 ring-vendly-border'
+                        : 'bg-vendly-light text-vendly-ink border-vendly-border hover:border-vendly-green'
                     }`}
                   >
                     {selectedFeeRate === 'medium' && (
@@ -396,8 +396,8 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
                     onClick={() => setSelectedFeeRate('fast')}
                     className={`relative p-3 rounded-lg border text-sm font-medium transition-colors ${
                       selectedFeeRate === 'fast'
-                        ? 'bg-black text-white border-black ring-2 ring-gray-300'
-                        : 'bg-white text-black border-gray-200 hover:border-gray-400'
+                        ? 'bg-vendly-deep text-vendly-light border-vendly-deep ring-2 ring-vendly-border'
+                        : 'bg-vendly-light text-vendly-ink border-vendly-border hover:border-vendly-green'
                     }`}
                   >
                     {selectedFeeRate === 'fast' && (
@@ -414,7 +414,7 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
               <div className="flex gap-3">
                 <PrimaryButton
                   onClick={() => setRefundStep('address')}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-black"
+                  className="flex-1 bg-vendly-tint hover:bg-vendly-border text-vendly-ink"
                   disabled={false}
                 >
                   Back
@@ -448,18 +448,18 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
               />
 
               {refundError && (
-                <div className="bg-gray-100 border border-gray-300 rounded-2xl p-4">
+                <div className="bg-vendly-tint border border-vendly-border rounded-2xl p-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center flex-shrink-0">
-                      <WarningIcon size="md" className="text-black" />
+                    <div className="w-10 h-10 rounded-xl bg-vendly-tint flex items-center justify-center flex-shrink-0">
+                      <WarningIcon size="md" className="text-vendly-ink" />
                     </div>
-                    <h3 className="font-display font-bold text-black">
+                    <h3 className="font-display font-bold text-vendly-ink">
                       Refund Failed
                     </h3>
                   </div>
 
                   <div className="pl-[52px]">
-                    <p className="text-gray-700 text-sm">{refundError}</p>
+                    <p className="text-vendly-ink text-sm">{refundError}</p>
                   </div>
                 </div>
               )}
@@ -496,29 +496,29 @@ const GetRefundPage: React.FC<GetRefundPageProps> = ({ onBack, animationDirectio
               <div className="text-center py-4">
                 {refundSuccess ? (
                   <>
-                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                      <CheckIcon size="xl" className="text-black" />
+                    <div className="w-16 h-16 rounded-full bg-vendly-tint flex items-center justify-center mx-auto mb-4">
+                      <CheckIcon size="xl" className="text-vendly-ink" />
                     </div>
 
-                    <h3 className="font-display font-semibold text-black text-lg mb-2">
+                    <h3 className="font-display font-semibold text-vendly-ink text-lg mb-2">
                       Refund Broadcast
                     </h3>
 
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-vendly-muted text-sm">
                       Your refund has been sent to the Bitcoin network.
                     </p>
                   </>
                 ) : (
                   <>
-                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                      <CloseIcon size="xl" className="text-black" />
+                    <div className="w-16 h-16 rounded-full bg-vendly-tint flex items-center justify-center mx-auto mb-4">
+                      <CloseIcon size="xl" className="text-vendly-ink" />
                     </div>
 
-                    <h3 className="font-display font-semibold text-black text-lg mb-2">
+                    <h3 className="font-display font-semibold text-vendly-ink text-lg mb-2">
                       Refund Failed
                     </h3>
 
-                    <p className="text-gray-700 text-sm">
+                    <p className="text-vendly-ink text-sm">
                       {refundError ||
                         'An error occurred while processing your refund.'}
                     </p>

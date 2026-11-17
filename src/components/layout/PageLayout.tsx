@@ -18,20 +18,20 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   showHeader = true,
 }) => {
   return (
-    <div className="min-h-dvh h-dvh w-full flex flex-col bg-white relative">
+    <div className="min-h-dvh h-dvh w-full flex flex-col bg-vendly-cream relative">
       {showHeader && (
         <header
-          className="relative z-10 flex-shrink-0 border-b border-gray-200 bg-white/80 backdrop-blur-sm"
+          className="relative z-10 flex-shrink-0 border-b border-vendly-border bg-vendly-cream/95"
           style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
         >
           <div className="relative px-4 py-4 flex items-center justify-center">
-            <h1 className="text-center font-display text-xl font-bold text-black">
-              {title || "ZapCart"}
+            <h1 className="text-center font-display text-xl font-bold text-vendly-ink">
+              {title || 'Vendly'}
             </h1>
             {onBack && (
               <button
                 onClick={onBack}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-black hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-vendly-ink hover:text-vendly-deep rounded-lg hover:bg-vendly-tint transition-colors"
                 aria-label="Go back"
               >
                 <BackIcon />
@@ -43,7 +43,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
 
       {/* Scrollable content area */}
       <main 
-        className="relative z-10 flex-1 w-full overflow-y-auto p-4 bg-white"
+        className="relative z-10 flex-1 w-full overflow-y-auto p-4 bg-vendly-cream"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {children}
@@ -52,7 +52,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
       {/* Fixed footer */}
       {footer && (
         <footer
-          className="relative z-10 flex-shrink-0 w-full border-t border-gray-200 bg-white/80 backdrop-blur-sm"
+          className="relative z-10 flex-shrink-0 w-full border-t border-vendly-border bg-vendly-light"
           style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
         >
           <div className="px-4 py-4">

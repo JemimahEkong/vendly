@@ -8,7 +8,7 @@ import { registerSW } from 'virtual:pwa-register';
 // Register service worker for offline support
 registerSW({
   onOfflineReady() {
-    console.log('ZapCart ready to work offline');
+    console.log('Vendly ready to work offline');
   },
 });
 
@@ -42,9 +42,9 @@ async function init() {
     });
     hideSplash();
     document.getElementById('root')!.innerHTML = `
-      <div style="color: #fff; padding: 20px; text-align: center; background: #0a0a0f; min-height: 100vh; display: flex; flex-direction: column; justify-content: center;">
-        <h2>Failed to load application</h2>
-        <p>There was an error starting ZapCart. Please refresh and try again.</p>
+      <div style="color: #243329; padding: 24px; text-align: center; background: #F7F0D8; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; font-family: system-ui, sans-serif;">
+        <h2 style="color: #173F2B;">Vendly could not start</h2>
+        <p>There was a problem loading the app. Please refresh and try again.</p>
       </div>
     `;
   }

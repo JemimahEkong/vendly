@@ -90,7 +90,7 @@ const QrScannerDialog: React.FC<QrScannerDialogProps> = ({ isOpen, onClose, onSc
     fullHeight
     maxWidth="full"
   >
-    <div className="h-full w-full bg-white flex flex-col">
+    <div className="h-full w-full bg-vendly-light flex flex-col">
       {/* Full screen video */}
       <div className="flex-1 relative">
         <video
@@ -104,14 +104,14 @@ const QrScannerDialog: React.FC<QrScannerDialogProps> = ({ isOpen, onClose, onSc
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-64 h-64 relative">
             {/* Corner brackets */}
-            <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-black rounded-tl-lg" />
-            <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-black rounded-tr-lg" />
-            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-black rounded-bl-lg" />
-            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-black rounded-br-lg" />
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-vendly-deep rounded-tl-lg" />
+            <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-vendly-deep rounded-tr-lg" />
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-vendly-deep rounded-bl-lg" />
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-vendly-deep rounded-br-lg" />
 
             {/* Scanning line animation */}
             {isScanning && (
-              <div className="absolute left-2 right-2 h-0.5 bg-black animate-scan-line" />
+              <div className="absolute left-2 right-2 h-0.5 bg-vendly-deep animate-scan-line" />
             )}
           </div>
         </div>
@@ -144,17 +144,17 @@ const QrScannerDialog: React.FC<QrScannerDialogProps> = ({ isOpen, onClose, onSc
 
         {/* Gallery error toast */}
         {galleryError && (
-          <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-white border border-gray-300 text-black text-sm px-4 py-2 rounded-lg backdrop-blur-sm z-30">
+          <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-vendly-light border border-vendly-border text-vendly-ink text-sm px-4 py-2 rounded-lg backdrop-blur-sm z-30">
             {galleryError}
           </div>
         )}
 
         {isInitializing && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-            <div className="text-center text-black p-4">
-              <div className="animate-spin rounded-full h-10 w-10 border-2 border-gray-300 border-t-black mx-auto mb-3"></div>
+          <div className="absolute inset-0 flex items-center justify-center bg-vendly-cream/85">
+            <div className="text-center text-vendly-ink p-4">
+              <div className="animate-spin rounded-full h-10 w-10 border-2 border-vendly-border border-t-vendly-deep mx-auto mb-3"></div>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-vendly-muted">
                 Initializing camera...
               </p>
             </div>
@@ -162,12 +162,12 @@ const QrScannerDialog: React.FC<QrScannerDialogProps> = ({ isOpen, onClose, onSc
         )}
 
         {!isScanning && !isInitializing && error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/90">
-            <div className="text-center text-black p-6 max-w-xs">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+          <div className="absolute inset-0 flex items-center justify-center bg-vendly-light/95">
+            <div className="text-center text-vendly-ink p-6 max-w-xs">
+              <div className="w-16 h-16 rounded-full bg-vendly-tint flex items-center justify-center mx-auto mb-4">
                 <AlertTriangleIcon
                   size="xl"
-                  className="text-black"
+                  className="text-vendly-ink"
                 />
               </div>
 
@@ -175,7 +175,7 @@ const QrScannerDialog: React.FC<QrScannerDialogProps> = ({ isOpen, onClose, onSc
                 Camera not available
               </p>
 
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-vendly-muted">
                 {error}
               </p>
             </div>
@@ -184,18 +184,18 @@ const QrScannerDialog: React.FC<QrScannerDialogProps> = ({ isOpen, onClose, onSc
       </div>
 
       {/* Bottom controls */}
-      <div className="bg-white border-t border-gray-200 backdrop-blur-sm">
+      <div className="bg-vendly-light border-t border-vendly-border backdrop-blur-sm">
         <div className="p-6">
-          <p className="text-gray-500 text-sm text-center mb-4">
+          <p className="text-vendly-muted text-sm text-center mb-4">
             Point camera at QR code
           </p>
 
           <button
             onClick={handleClose}
             className="
-              w-full py-3 border border-gray-300
-              text-black rounded-xl font-medium
-              hover:bg-gray-100 transition-colors
+              w-full py-3 border border-vendly-border
+              text-vendly-ink rounded-xl font-medium
+              hover:bg-vendly-tint transition-colors
             "
           >
             Cancel

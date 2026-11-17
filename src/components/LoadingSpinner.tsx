@@ -35,7 +35,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
             cy="20"
             r="17"
             fill="none"
-            stroke="rgba(212, 165, 116, 0.15)"
+            stroke="rgba(23, 63, 43, 0.15)"
             strokeWidth={config.outer}
           />
           <circle
@@ -43,7 +43,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
             cy="20"
             r="17"
             fill="none"
-            stroke="#d4a574"
+            stroke="#173F2B"
             strokeWidth={config.outer}
             strokeLinecap="round"
             strokeDasharray="80 27"
@@ -65,7 +65,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
             cy="20"
             r="17"
             fill="none"
-            stroke="rgba(212, 165, 116, 0.4)"
+            stroke="rgba(56, 107, 75, 0.35)"
             strokeWidth={config.inner}
             strokeLinecap="round"
             strokeDasharray="40 67"
@@ -79,12 +79,12 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
       {/* Text */}
       {text && (
-        <p className="mt-4 font-display font-medium text-spark-text-primary text-sm">
+        <p className="mt-4 font-display font-medium text-vendly-ink text-sm">
           {text}
         </p>
       )}
       {subtext && (
-        <p className="mt-1 text-spark-text-muted text-xs">
+        <p className="mt-1 text-vendly-muted text-xs">
           {subtext}
         </p>
       )}

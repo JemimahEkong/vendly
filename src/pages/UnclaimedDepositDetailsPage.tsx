@@ -101,7 +101,7 @@ const UnclaimedDepositDetailsPage: React.FC<UnclaimedDepositDetailsPageProps> = 
   return (
   <BottomSheetContainer isOpen={deposit != null} onClose={handleClose}>
     <BottomSheetCard>
-      <DialogHeader title="BTC Transfer" onClose={handleClose} />
+      <DialogHeader title="Bitcoin transfer" onClose={handleClose} />
       <div className="space-y-4 overflow-y-auto">
         {/* Transaction ID */}
         <PaymentInfoCard>
@@ -124,7 +124,7 @@ const UnclaimedDepositDetailsPage: React.FC<UnclaimedDepositDetailsPageProps> = 
               ]}
             />
 
-            <p className="text-gray-500 text-sm text-center">
+            <p className="text-vendly-muted text-sm text-center">
               Approve to claim this transfer, or reject to process a refund.
             </p>
           </>
@@ -139,7 +139,7 @@ const UnclaimedDepositDetailsPage: React.FC<UnclaimedDepositDetailsPageProps> = 
               ]}
             />
 
-            <p className="text-gray-500 text-sm text-center">
+            <p className="text-vendly-muted text-sm text-center">
               This transfer will be claimed automatically.
             </p>
           </>
@@ -147,16 +147,16 @@ const UnclaimedDepositDetailsPage: React.FC<UnclaimedDepositDetailsPageProps> = 
 
         {/* Error message for failed automatic claim (non-fee error) */}
         {claimError && (
-          <div className="bg-gray-100 border border-gray-300 rounded-2xl p-4">
+          <div className="bg-vendly-tint border border-vendly-border rounded-2xl p-4">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center flex-shrink-0">
-                <WarningIcon size="md" className="text-black" />
+              <div className="w-10 h-10 rounded-xl bg-vendly-tint flex items-center justify-center flex-shrink-0">
+                <WarningIcon size="md" className="text-vendly-ink" />
               </div>
-              <h3 className="font-display font-bold text-black">Claim Failed</h3>
+              <h3 className="font-display font-bold text-vendly-ink">Claim Failed</h3>
             </div>
             <div className="pl-[52px]">
-              <p className="text-gray-700 text-sm">{claimError}</p>
-              <p className="text-black text-sm mt-2">
+              <p className="text-vendly-ink text-sm">{claimError}</p>
+              <p className="text-vendly-ink text-sm mt-2">
                 You can reject to process a refund instead.
               </p>
             </div>

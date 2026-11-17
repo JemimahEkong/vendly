@@ -127,13 +127,13 @@ const FiatCurrenciesPage: React.FC<FiatCurrenciesPageProps> = ({ onBack }) => {
     .sort((a, b) => a.id.localeCompare(b.id));
 
   return (
-  <SlideInPage title="Fiat Currencies" closeStyle="back" onClose={onBack} slideFrom="right">
+  <SlideInPage title="Display currencies" closeStyle="back" onClose={onBack} slideFrom="right">
     {isLoading ? (
-      <div className="flex items-center justify-center py-12 bg-white">
+      <div className="flex items-center justify-center py-12 bg-vendly-cream">
         <LoadingSpinner />
       </div>
     ) : (
-      <div className="p-4 space-y-2 bg-white">
+      <div className="p-4 space-y-2 bg-vendly-cream">
         {/* Selected currencies - with drag handles */}
         {selectedCurrencyList.map((currency, index) => (
           <div
@@ -142,7 +142,7 @@ const FiatCurrenciesPage: React.FC<FiatCurrenciesPageProps> = ({ onBack }) => {
             onDragStart={() => handleDragStart(currency.id)}
             onDragOver={(e) => handleDragOver(e, currency.id)}
             onDragEnd={handleDragEnd}
-            className={`flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-xl transition-all ${
+            className={`flex items-center gap-3 p-3 bg-vendly-light border border-vendly-border rounded-xl transition-all ${
               draggedItem === currency.id ? 'opacity-50' : ''
             }`}
           >
@@ -155,16 +155,16 @@ const FiatCurrenciesPage: React.FC<FiatCurrenciesPageProps> = ({ onBack }) => {
             {/* Currency info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-display font-semibold text-black">
+                <span className="font-display font-semibold text-vendly-ink">
                   {currency.id}
                 </span>
                 {currency.info.symbol?.grapheme && (
-                  <span className="text-gray-500">
+                  <span className="text-vendly-muted">
                     ({currency.info.symbol.grapheme})
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-500 truncate">
+              <p className="text-sm text-vendly-muted truncate">
                 {currency.info.name}
               </p>
             </div>
@@ -174,7 +174,7 @@ const FiatCurrenciesPage: React.FC<FiatCurrenciesPageProps> = ({ onBack }) => {
               <button
                 onClick={() => handleMoveUp(currency.id)}
                 disabled={index === 0}
-                className="p-1 text-gray-500 hover:text-black disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-1 text-vendly-muted hover:text-vendly-ink disabled:opacity-30 disabled:cursor-not-allowed"
                 aria-label="Move up"
               >
                 <ChevronUpIcon />
@@ -182,7 +182,7 @@ const FiatCurrenciesPage: React.FC<FiatCurrenciesPageProps> = ({ onBack }) => {
               <button
                 onClick={() => handleMoveDown(currency.id)}
                 disabled={index === selectedCurrencyList.length - 1}
-                className="p-1 text-gray-500 hover:text-black disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-1 text-vendly-muted hover:text-vendly-ink disabled:opacity-30 disabled:cursor-not-allowed"
                 aria-label="Move down"
               >
                 <ChevronDownIcon />
@@ -190,7 +190,7 @@ const FiatCurrenciesPage: React.FC<FiatCurrenciesPageProps> = ({ onBack }) => {
             </div>
 
             {/* Drag handle */}
-            <div className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-700 p-1">
+            <div className="cursor-grab active:cursor-grabbing text-vendly-muted hover:text-vendly-ink p-1">
               <DragHandleIcon />
             </div>
           </div>
@@ -200,7 +200,7 @@ const FiatCurrenciesPage: React.FC<FiatCurrenciesPageProps> = ({ onBack }) => {
         {unselectedCurrencyList.map((currency) => (
           <div
             key={currency.id}
-            className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-xl"
+            className="flex items-center gap-3 p-3 bg-vendly-tint border border-vendly-border rounded-xl"
           >
             {/* Checkbox */}
             <Checkbox
@@ -211,16 +211,16 @@ const FiatCurrenciesPage: React.FC<FiatCurrenciesPageProps> = ({ onBack }) => {
             {/* Currency info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-display font-medium text-gray-700">
+                <span className="font-display font-medium text-vendly-ink">
                   {currency.id}
                 </span>
                 {currency.info.symbol?.grapheme && (
-                  <span className="text-gray-500">
+                  <span className="text-vendly-muted">
                     ({currency.info.symbol.grapheme})
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-500 truncate">
+              <p className="text-sm text-vendly-muted truncate">
                 {currency.info.name}
               </p>
             </div>

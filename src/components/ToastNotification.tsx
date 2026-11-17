@@ -58,39 +58,39 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({
     switch (type) {
       case 'success':
         return {
-          icon: <CheckIcon className="text-black" />,
-          bg: 'bg-white border border-gray-200',
-          progressBg: 'bg-gray-200',
-          textClass: 'text-black',
-          detailClass: 'text-gray-500',
+          icon: <CheckIcon className="text-vendly-ink" />,
+          bg: 'bg-vendly-light border border-vendly-border',
+          progressBg: 'bg-vendly-tint',
+          textClass: 'text-vendly-ink',
+          detailClass: 'text-vendly-muted',
         };
 
       case 'error':
         return {
-          icon: <CloseIcon className="text-black" />,
-          bg: 'bg-white border border-gray-200',
-          progressBg: 'bg-gray-200',
-          textClass: 'text-black',
-          detailClass: 'text-gray-500',
+          icon: <CloseIcon className="text-vendly-ink" />,
+          bg: 'bg-vendly-light border border-vendly-border',
+          progressBg: 'bg-vendly-tint',
+          textClass: 'text-vendly-ink',
+          detailClass: 'text-vendly-muted',
         };
 
       case 'warning':
         return {
-          icon: <ExclamationIcon className="text-black" />,
-          bg: 'bg-white border border-gray-200',
-          progressBg: 'bg-gray-200',
-          textClass: 'text-black',
-          detailClass: 'text-gray-500',
+          icon: <ExclamationIcon className="text-vendly-ink" />,
+          bg: 'bg-vendly-light border border-vendly-border',
+          progressBg: 'bg-vendly-tint',
+          textClass: 'text-vendly-ink',
+          detailClass: 'text-vendly-muted',
         };
 
       case 'info':
       default:
         return {
-          icon: <InfoCircleIcon className="text-black" />,
-          bg: 'bg-white border border-gray-200',
-          progressBg: 'bg-gray-200',
-          textClass: 'text-black',
-          detailClass: 'text-gray-500',
+          icon: <InfoCircleIcon className="text-vendly-ink" />,
+          bg: 'bg-vendly-light border border-vendly-border',
+          progressBg: 'bg-vendly-tint',
+          textClass: 'text-vendly-ink',
+          detailClass: 'text-vendly-muted',
         };
     }
   };
@@ -147,7 +147,7 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({
               }}
               className="
                 flex-shrink-0 px-3 py-1 text-xs font-semibold
-                text-black bg-gray-100 hover:bg-gray-200
+                text-vendly-ink bg-vendly-tint hover:bg-vendly-tint
                 rounded-full transition-colors
               "
             >
@@ -176,7 +176,7 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({
         {shouldAutoClose && (
           <div className={`h-1 ${progressBg}`}>
             <div
-              className="h-full bg-gray-500 transition-all duration-50 ease-linear"
+              className="h-full bg-vendly-muted transition-all duration-50 ease-linear"
               style={{ width: `${progress}%` }}
             />
           </div>

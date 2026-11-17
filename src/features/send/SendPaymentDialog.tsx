@@ -73,7 +73,7 @@ const SendPaymentDialog: React.FC<SendPaymentDialogProps> = ({ isOpen, onClose, 
   };
 
   const dialogTitle = send.currentStep === 'input'
-    ? 'Send'
+    ? 'Send money'
     : getPaymentMethodName(send.paymentInput);
 
   const lnurlPayDetails = getLnurlPayRequestDetails(send.paymentInput);
@@ -82,7 +82,7 @@ const SendPaymentDialog: React.FC<SendPaymentDialogProps> = ({ isOpen, onClose, 
   return (
   <BottomSheetContainer isOpen={isOpen} onClose={handleClose} showBackdrop>
     <BottomSheetCard>
-      <div className="relative overflow-hidden bg-white">
+      <div className="relative overflow-hidden bg-vendly-light">
         {/* Contacts sub-view — slides in from right */}
         <div
           className={`transition-all duration-200 ease-out ${

@@ -18,8 +18,8 @@ test.describe('App Loading', () => {
     await expect(page.getByTestId('restore-wallet-button')).toBeVisible();
 
     // Verify branding elements
-    await expect(page.getByText('ZapCart')).toBeVisible();
-    await expect(page.getByText('Powered by Breez SDK')).toBeVisible();
+    await expect(page.getByAltText('Vendly').first()).toBeVisible();
+    await expect(page.getByText('Secure payments, built on Breez')).toBeVisible();
   });
 
   test('create wallet button navigates to generate page', async ({ page }) => {

@@ -3,7 +3,7 @@ import { Payment } from '@breeztech/breez-sdk-spark';
 import { useContactsContext } from '../contexts/ContactsContext';
 import { getPaymentDescription } from '../utils/paymentDescription';
 import { formatWithCommas } from '../utils/formatNumber';
-import { ArrowDownIcon, ArrowUpIcon, LightningBoltIcon, WalletIcon } from './Icons';
+import { ArrowDownIcon, ArrowUpIcon, LightningBoltIcon } from './Icons';
 
 // Use centralized formatting utility
 const formatWithSpaces = formatWithCommas;
@@ -14,8 +14,6 @@ const ReceiveIcon = <ArrowDownIcon size="sm" />;
 const SendIcon = <ArrowUpIcon size="sm" />;
 
 const LightningIcon = <LightningBoltIcon size="xs" />;
-
-const EmptyStateIcon = <WalletIcon className="w-10 h-10 text-gray-500" />;
 
 // Hoisted helper functions (rendering-hoist-jsx optimization)
 const formatTimeAgo = (timestamp: number): string => {
@@ -43,12 +41,12 @@ const SkeletonTransactionRow: React.FC<{ index: number }> = ({ index }) => (
     className="flex items-center gap-3 px-3 py-3 rounded-xl animate-skeleton-item"
     style={{ animationDelay: `${index * 100}ms` }}
   >
-    <div className="w-10 h-10 rounded-xl bg-white animate-pulse flex-shrink-0" />
+    <div className="w-10 h-10 rounded-xl bg-vendly-tint animate-pulse flex-shrink-0" />
     <div className="flex-1 min-w-0 space-y-2">
-      <div className="h-4 w-32 rounded bg-white animate-pulse" />
-      <div className="h-3 w-20 rounded bg-white animate-pulse" />
+      <div className="h-4 w-32 rounded bg-vendly-tint animate-pulse" />
+      <div className="h-3 w-20 rounded bg-vendly-tint animate-pulse" />
     </div>
-    <div className="h-4 w-16 rounded bg-white animate-pulse flex-shrink-0" />
+    <div className="h-4 w-16 rounded bg-vendly-tint animate-pulse flex-shrink-0" />
   </li>
 );
 
@@ -82,8 +80,8 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
       return (
         <div className="px-4 py-3 flex-1 overflow-hidden" style={{ maskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)' }}>
           <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-sm font-semibold text-gray-700 tracking-wide uppercase">Payments</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-spark-border to-transparent" />
+            <h2 className="text-sm font-semibold text-vendly-ink tracking-wide uppercase">Transactions</h2>
+            <div className="flex-1 h-px bg-gradient-to-r from-vendly-border to-transparent" />
           </div>
           <ul className="space-y-2">
             {Array.from({ length: 20 }, (_, i) => (
@@ -94,13 +92,15 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
       );
     }
     return (
-      <div className="flex flex-col items-center justify-center py-20 px-6" data-testid="empty-state">
-        <div className="w-20 h-20 rounded-2xl bg-white border border-spark-border flex items-center justify-center mb-6">
-          {EmptyStateIcon}
-        </div>
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">No payments yet</h3>
-        <p className="text-gray-700 text-sm text-center max-w-xs">
-          Your payment history will appear here once you send or receive your first payment.
+      <div className="flex flex-col items-center justify-center py-12 px-6" data-testid="empty-state">
+        <img
+          src="/illustrations/business-activity.svg"
+          alt=""
+          className="w-full max-w-[280px] h-auto mb-5"
+        />
+        <h3 className="text-lg font-semibold text-vendly-ink mb-2">No transactions yet</h3>
+        <p className="text-vendly-muted text-sm text-center max-w-xs">
+          Payments you send or receive will appear here so you always have a clear record.
         </p>
       </div>
     );
@@ -122,7 +122,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
         {/* Transaction type icon */}
         <div className={`
           w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
-          ${isReceive ? 'bg-spark-success/15 text-spark-success' : 'bg-spark-electric/15 text-spark-electric'}
+          ${isReceive ? 'bg-vendly-deep/15 text-vendly-deep' : 'bg-vendly-green/15 text-vendly-green'}
           ${isPending ? 'animate-pulse' : ''}
         `}>
           {getTransactionIcon(tx)}
@@ -131,20 +131,20 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
         {/* Transaction details */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <p className="text-[15px] font-medium text-gray-700 truncate">
+            <p className="text-[15px] font-medium text-vendly-ink truncate">
               {getPaymentDescription(tx, findContactByAddress)}
             </p>
-            <span className="text-gray-500 flex-shrink-0">{getMethodIcon(tx)}</span>
+            <span className="text-vendly-muted flex-shrink-0">{getMethodIcon(tx)}</span>
             {isPending && (
-              <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-spark-warning animate-pulse" />
+              <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-vendly-muted animate-pulse" />
             )}
             {isFailed && (
-              <span className="flex-shrink-0 px-1.5 py-0.5 rounded bg-spark-error/15 text-spark-error text-[10px] font-medium uppercase">
+              <span className="flex-shrink-0 px-1.5 py-0.5 rounded bg-vendly-ink/15 text-vendly-ink text-[10px] font-medium uppercase">
                 Failed
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+          <div className="flex items-center gap-1 text-xs text-vendly-muted mt-0.5">
             <span>{formatTimeAgo(tx.timestamp)}</span>
             {tx.fees > 0 && !isFailed && (
               <>
@@ -159,9 +159,9 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
         <span
           className={`
             font-mono font-semibold text-[15px] flex-shrink-0 inline-flex items-center
-            ${isFailed ? 'text-gray-700 line-through' : ''}
-            ${!isFailed && isReceive ? 'text-spark-success' : ''}
-            ${!isFailed && !isReceive ? 'text-spark-electric' : ''}
+            ${isFailed ? 'text-vendly-ink line-through' : ''}
+            ${!isFailed && isReceive ? 'text-vendly-deep' : ''}
+            ${!isFailed && !isReceive ? 'text-vendly-green' : ''}
           `}
           data-testid="transaction-amount"
         >
@@ -177,10 +177,10 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
       {pendingApproval.length > 0 && (
         <>
           <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-sm font-semibold text-gray-700 tracking-wide uppercase">
-              Pending Approval
+            <h2 className="text-sm font-semibold text-vendly-ink tracking-wide uppercase">
+              Needs attention
             </h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-spark-border to-transparent" />
+            <div className="flex-1 h-px bg-gradient-to-r from-vendly-border to-transparent" />
           </div>
           <ul className="space-y-2 mb-6">
             {pendingApproval.map((tx, index) => renderTransactionItem(tx, index))}
@@ -192,10 +192,10 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
       {regularPayments.length > 0 && (
         <>
           <div className="flex items-center gap-2 mb-3">
-            <h2 className="text-sm font-semibold text-gray-700 tracking-wide uppercase">
-              Payments
+            <h2 className="text-sm font-semibold text-vendly-ink tracking-wide uppercase">
+              Transactions
             </h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-spark-border to-transparent" />
+            <div className="flex-1 h-px bg-gradient-to-r from-vendly-border to-transparent" />
           </div>
           <ul className="space-y-2">
             {regularPayments.map((tx, index) => renderTransactionItem(tx, index))}

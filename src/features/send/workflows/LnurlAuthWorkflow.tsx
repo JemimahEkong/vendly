@@ -53,29 +53,29 @@ const LnurlAuthWorkflow: React.FC<LnurlAuthWorkflowProps> = ({ parsed, onBack, o
   <div className="space-y-5">
     {/* Domain info */}
     <div className="text-center">
-      <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-2xl flex items-center justify-center">
-        <KeyIcon size="xl" className="text-black" />
+      <div className="w-16 h-16 mx-auto mb-4 bg-vendly-tint rounded-2xl flex items-center justify-center">
+        <KeyIcon size="xl" className="text-vendly-ink" />
       </div>
 
-      <p className="text-black font-medium text-lg">{parsed.domain}</p>
+      <p className="text-vendly-ink font-medium text-lg">{parsed.domain}</p>
 
-      <p className="text-gray-500 text-sm mt-1">
+      <p className="text-vendly-muted text-sm mt-1">
         wants you to {getActionText().toLowerCase()}
       </p>
     </div>
 
     {/* Action description */}
-    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+    <div className="bg-vendly-tint border border-vendly-border rounded-xl p-4">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-          <ShieldCheckIcon className="text-black" />
+        <div className="w-10 h-10 bg-vendly-tint rounded-lg flex items-center justify-center flex-shrink-0">
+          <ShieldCheckIcon className="text-vendly-ink" />
         </div>
 
         <div>
-          <p className="text-black font-medium">{getActionText()}</p>
+          <p className="text-vendly-ink font-medium">{getActionText()}</p>
 
-          <p className="text-gray-500 text-sm">
-            ZapCart will sign a message to prove your identity without sharing any personal information.
+          <p className="text-vendly-muted text-sm">
+            Vendly will sign a message to prove your identity without sharing any personal information.
           </p>
         </div>
       </div>

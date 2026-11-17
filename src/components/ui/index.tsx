@@ -55,7 +55,7 @@ export const DialogContainer: React.FC<{
   children: ReactNode;
   className?: string;
 }> = ({ children, className = "" }) => (
-  <div className={`fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-5 ${className}`}>
+  <div className={`fixed inset-0 bg-vendly-cream/85 backdrop-blur-sm flex items-center justify-center z-5 ${className}`}>
     {children}
   </div>
 );
@@ -99,13 +99,13 @@ export const DialogHeader: React.FC<{
 }> = ({ title, onClose, icon }) => (
   <div className="flex justify-center items-center mb-5 relative px-8">
   <div className="flex items-center gap-2 min-w-0 max-w-full">
-    {icon && <span className="text-black flex-shrink-0">{icon}</span>}
-    <h2 className="font-display text-lg font-bold text-black truncate">{title}</h2>
+    {icon && <span className="text-vendly-ink flex-shrink-0">{icon}</span>}
+    <h2 className="font-display text-lg font-bold text-vendly-ink truncate">{title}</h2>
     {icon && <span className="w-5 h-5 flex-shrink-0" aria-hidden="true" />}
   </div>
   <button
     onClick={onClose}
-    className="absolute right-0 top-1/2 -translate-y-1/2 p-2 -mr-2 text-gray-500 hover:text-black transition-colors rounded-lg hover:bg-gray-100"
+    className="absolute right-0 top-1/2 -translate-y-1/2 p-2 -mr-2 text-vendly-muted hover:text-vendly-ink transition-colors rounded-lg hover:bg-vendly-tint"
   >
     <CloseIcon />
   </button>
@@ -121,7 +121,7 @@ export const PaymentInfoCard: React.FC<{
   children: ReactNode;
   className?: string;
 }> = ({ children, className = "" }) => (
-  <div className={`bg-white border border-gray-300 rounded-2xl p-5 space-y-4 ${className}`}>
+  <div className={`bg-vendly-light border border-vendly-border rounded-2xl p-5 space-y-4 ${className}`}>
   {children}
 </div>
 );
@@ -134,7 +134,7 @@ export const PaymentInfoRow: React.FC<{
   iconBgColor?: string;
   valueColor?: string;
   className?: string;
-}> = ({ label, value, isBold = false, icon, iconBgColor, valueColor = 'text-spark-text-primary', className = '' }) => (
+}> = ({ label, value, isBold = false, icon, iconBgColor, valueColor = 'text-vendly-ink', className = '' }) => (
   <div className={`flex items-center justify-between py-2 ${className}`}>
   <div className="flex items-center gap-3">
     {icon && (
@@ -142,9 +142,9 @@ export const PaymentInfoRow: React.FC<{
         {icon}
       </div>
     )}
-    <span className="text-gray-700 text-sm">{label}</span>
+    <span className="text-vendly-ink text-sm">{label}</span>
   </div>
-  <span className={`font-mono text-sm ${isBold ? 'font-bold' : 'font-medium'} ${valueColor || 'text-black'}`}>
+  <span className={`font-mono text-sm ${isBold ? 'font-bold' : 'font-medium'} ${valueColor || 'text-vendly-ink'}`}>
     {value}
   </span>
 </div>
@@ -160,16 +160,16 @@ export const CollapsibleCodeField: React.FC<{
 }> = ({ label, value, isVisible, onToggle, href }) => (
   <div className="py-2">
   <div className="flex justify-between items-center">
-    <span className="text-gray-700 text-sm">{label}</span>
+    <span className="text-vendly-ink text-sm">{label}</span>
     <button
       onClick={onToggle}
-      className="text-black hover:text-gray-700 focus:outline-none focus:text-black active:text-black flex items-center transition-colors p-1"
+      className="text-vendly-ink hover:text-vendly-ink focus:outline-none focus:text-vendly-ink active:text-vendly-ink flex items-center transition-colors p-1"
     >
       <ChevronDownIcon size="md" className={`transition-transform ${isVisible ? 'rotate-180' : ''}`} />
     </button>
   </div>
   {isVisible && (
-    <div className="bg-gray-100 border border-gray-300 rounded-xl p-3 mt-2 overflow-x-auto">
+    <div className="bg-vendly-tint border border-vendly-border rounded-xl p-3 mt-2 overflow-x-auto">
       {href ? (
         <a
           href={href}
@@ -177,11 +177,11 @@ export const CollapsibleCodeField: React.FC<{
           rel="noopener noreferrer"
           className="font-mono text-xs break-all flex items-center gap-1 group"
         >
-          <span className="text-gray-700">{value}</span>
-          <ExternalLinkIcon className="flex-shrink-0 text-black opacity-70 group-hover:opacity-100 transition-opacity" />
+          <span className="text-vendly-ink">{value}</span>
+          <ExternalLinkIcon className="flex-shrink-0 text-vendly-ink opacity-70 group-hover:opacity-100 transition-opacity" />
         </a>
       ) : (
-        <code className="text-gray-700 font-mono text-xs break-all">
+        <code className="text-vendly-ink font-mono text-xs break-all">
           {value}
         </code>
       )}
@@ -207,7 +207,7 @@ export const CopyableText: React.FC<{
   textToShare?: string;
   shareLabel?: string;
   'data-testid'?: string;
-}> = ({ text, truncate = false, showShare = false, onCopied, onShareError, label = 'Address', additionalActions, textColor = 'text-gray-500', textToCopy, textToShare, shareLabel, 'data-testid': testId }) => {
+}> = ({ text, truncate = false, showShare = false, onCopied, onShareError, label = 'Address', additionalActions, textColor = 'text-vendly-muted', textToCopy, textToShare, shareLabel, 'data-testid': testId }) => {
   const [copied, setCopied] = React.useState(false);
   const [canShare, setCanShare] = React.useState(false);
 
@@ -269,8 +269,8 @@ export const CopyableText: React.FC<{
           className={`
             flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all
             ${copied
-  ? 'bg-gray-200 text-black'
-  : 'bg-black text-white hover:bg-gray-700'
+  ? 'bg-vendly-tint text-vendly-ink'
+  : 'bg-vendly-deep text-vendly-light hover:bg-vendly-green'
 }
 
           `}
@@ -284,7 +284,7 @@ export const CopyableText: React.FC<{
         {showShare && canShare && (
           <button
             onClick={handleShare}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-500 rounded-xl font-medium text-sm hover:text-black hover:border-gray-400 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 border border-vendly-border text-vendly-muted rounded-xl font-medium text-sm hover:text-vendly-ink hover:border-vendly-green transition-colors"
             title={`Share ${label}`}
           >
             <ShareIcon />
@@ -308,10 +308,10 @@ export const Alert: React.FC<{
   className?: string;
 }> = ({ type, children, className = "" }) => {
  const styles = {
-  info: 'bg-white border-gray-300 text-gray-700',
-  warning: 'bg-white border-gray-300 text-gray-700',
-  success: 'bg-white border-gray-300 text-gray-700',
-  error: 'bg-white border-gray-300 text-gray-700',
+  info: 'bg-vendly-tint border-vendly-border text-vendly-ink',
+  warning: 'bg-vendly-cream border-vendly-border text-vendly-ink',
+  success: 'bg-vendly-tint border-vendly-green/40 text-vendly-ink',
+  error: 'bg-vendly-cream border-vendly-ink/30 text-vendly-ink',
 };
 
 
@@ -376,18 +376,18 @@ export const ErrorMessageBox: React.FC<{
   }
 
   return (
-    <div className={`bg-white border border-gray-300 rounded-2xl p-4 ${className}`}>
+    <div className={`bg-vendly-light border border-vendly-border rounded-2xl p-4 ${className}`}>
   <div className="flex items-center gap-3 mb-2">
-    <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-      <AlertTriangleIcon className="text-black" />
+    <div className="w-10 h-10 rounded-xl bg-vendly-tint flex items-center justify-center flex-shrink-0">
+      <AlertTriangleIcon className="text-vendly-ink" />
     </div>
-    <h3 className="font-display font-bold text-black">{title}</h3>
+    <h3 className="font-display font-bold text-vendly-ink">{title}</h3>
   </div>
   <div className="pl-[52px]">
-    <p className="text-gray-700 text-sm">{mainMessage}</p>
+    <p className="text-vendly-ink text-sm">{mainMessage}</p>
     {stackTrace && (
-      <div className="mt-3 bg-gray-100 border border-gray-300 rounded-xl p-3 max-h-32 overflow-auto">
-        <code className="text-xs text-gray-500 font-mono whitespace-pre-wrap break-all">
+      <div className="mt-3 bg-vendly-tint border border-vendly-border rounded-xl p-3 max-h-32 overflow-auto">
+        <code className="text-xs text-vendly-muted font-mono whitespace-pre-wrap break-all">
           {stackTrace}
         </code>
       </div>
@@ -427,7 +427,7 @@ export const TabList: React.FC<{
   children: ReactNode;
   className?: string;
 }> = ({ children, className = "" }) => (
-  <div className={`flex bg-gray-100 rounded-xl ${className}`}>
+  <div className={`flex bg-vendly-tint rounded-xl ${className}`}>
   {children}
 </div>
 );
@@ -445,8 +445,8 @@ export const Tab: React.FC<{
   className={`
     flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-display font-semibold transition-all duration-200
     ${isActive
-      ? 'bg-black text-white'
-      : 'text-gray-500 hover:text-black hover:bg-gray-200'
+      ? 'bg-vendly-deep text-vendly-light'
+      : 'text-vendly-muted hover:text-vendly-ink hover:bg-vendly-tint'
     }
     ${className}
   `}
@@ -484,24 +484,24 @@ export const ConfirmDialog: React.FC<{
     if (!isOpen) return null;
 
     const confirmButtonStyles = {
-  danger: 'bg-black hover:bg-gray-700 text-white',
-  warning: 'bg-black hover:bg-gray-700 text-white',
-  default: 'bg-black hover:bg-gray-700 text-white',
+  danger: 'bg-vendly-deep hover:bg-vendly-green text-vendly-light',
+  warning: 'bg-vendly-deep hover:bg-vendly-green text-vendly-light',
+  default: 'bg-vendly-deep hover:bg-vendly-green text-vendly-light',
 };
     const content = (
-      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+      <div className="absolute inset-0 bg-vendly-cream/85 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
         <DialogCard maxWidth="sm">
           <div className="text-center">
-            <h3 className="font-display text-lg font-bold text-black mb-3">
+            <h3 className="font-display text-lg font-bold text-vendly-ink mb-3">
               {title}
             </h3>
-            <p className="text-sm text-gray-700 whitespace-pre-line mb-6">
+            <p className="text-sm text-vendly-muted whitespace-pre-line mb-6">
               {message}
             </p>
             <div className="flex gap-3">
               <button
                 onClick={onCancel}
-               className="flex-1 py-3 font-display font-semibold text-gray-500 border border-gray-300 rounded-xl hover:text-black hover:border-gray-400 transition-colors"
+               className="flex-1 py-3 font-display font-semibold text-vendly-muted border border-vendly-border rounded-xl hover:text-vendly-ink hover:border-vendly-green transition-colors"
                 data-testid="confirm-dialog-cancel"
               >
                 {cancelLabel}
@@ -536,14 +536,14 @@ export const Checkbox: React.FC<{
   onClick={onChange}
   className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
     checked
-      ? 'bg-black border-black'
-      : 'bg-transparent border-gray-400 hover:border-gray-700'
+      ? 'bg-vendly-deep border-vendly-deep'
+      : 'bg-transparent border-vendly-green hover:border-vendly-deep'
   } ${className}`}
   role="checkbox"
   aria-checked={checked}
 >
   {checked && (
-    <CheckIcon size="sm" className="text-white" />
+    <CheckIcon size="sm" className="text-vendly-light" />
   )}
 </button>
 );
@@ -564,12 +564,12 @@ export const Switch: React.FC<{
   aria-checked={checked}
   disabled={disabled}
   onClick={onChange}
-  className={`relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-    checked ? 'bg-black' : 'bg-gray-300'
+  className={`relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-vendly-deep focus-visible:ring-offset-2 focus-visible:ring-offset-vendly-cream ${
+    checked ? 'bg-vendly-deep' : 'bg-vendly-border'
   } ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
 >
   <span
-    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-vendly-light shadow-lg ring-0 transition duration-200 ease-in-out ${
       checked ? 'translate-x-6' : 'translate-x-1'
     } mt-1`}
   />

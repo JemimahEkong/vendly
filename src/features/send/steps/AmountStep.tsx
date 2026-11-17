@@ -37,17 +37,17 @@ const AmountStep: React.FC<AmountStepProps> = ({
   <div className="space-y-5">
     {/* Destination */}
     <div>
-      <label className="block text-sm font-medium text-black mb-2">
+      <label className="block text-sm font-medium text-vendly-ink mb-2">
         Destination
       </label>
-      <div className="w-full p-4 bg-white border border-gray-200 rounded-xl text-gray-700 font-mono text-sm break-all">
+      <div className="w-full p-4 bg-vendly-light border border-vendly-border rounded-xl text-vendly-ink font-mono text-sm break-all">
         {paymentInput}
       </div>
     </div>
 
     {/* Amount input */}
     <div>
-      <label className="block text-sm font-medium text-black mb-2">
+      <label className="block text-sm font-medium text-vendly-ink mb-2">
         Amount (sats)
       </label>
       <input
@@ -55,7 +55,7 @@ const AmountStep: React.FC<AmountStepProps> = ({
         value={localAmount}
         onChange={(e) => { setLocalAmount(e.target.value); setFeesIncluded(false); }}
         placeholder="Enter amount in satoshis"
-        className="w-full p-4 bg-white border border-gray-200 rounded-xl text-black placeholder-gray-500 focus:border-black focus:ring-2 focus:ring-gray-200 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="w-full p-4 bg-vendly-light border border-vendly-border rounded-xl text-vendly-ink placeholder-vendly-muted focus:border-vendly-deep focus:ring-2 focus:ring-vendly-border transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         disabled={isLoading}
         min={1}
         data-testid="amount-input"
@@ -69,8 +69,8 @@ const AmountStep: React.FC<AmountStepProps> = ({
             onClick={() => { setLocalAmount(String(quickAmount)); setFeesIncluded(false); }}
             className={`flex-1 py-2 rounded-lg text-sm font-mono font-medium transition-all ${
               amountNum === quickAmount && !isSendAll
-                ? 'bg-black text-white'
-                : 'bg-white border border-gray-200 text-gray-700 hover:text-black hover:border-gray-300'
+                ? 'bg-vendly-deep text-vendly-light'
+                : 'bg-vendly-light border border-vendly-border text-vendly-ink hover:text-vendly-ink hover:border-vendly-border'
             }`}
           >
             <span className="inline-flex items-center"><span className="text-[0.8em] opacity-70 mr-px">₿</span>{quickAmount.toLocaleString('en-US').replace(/,/g, '\u2009')}</span>
@@ -81,8 +81,8 @@ const AmountStep: React.FC<AmountStepProps> = ({
             onClick={() => { setLocalAmount(String(balanceSats)); setFeesIncluded(true); }}
             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
               isSendAll
-                ? 'bg-black text-white'
-                : 'bg-white border border-gray-200 text-gray-700 hover:text-black hover:border-gray-300'
+                ? 'bg-vendly-deep text-vendly-light'
+                : 'bg-vendly-light border border-vendly-border text-vendly-ink hover:text-vendly-ink hover:border-vendly-border'
             }`}
           >
             Send All

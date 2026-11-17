@@ -36,16 +36,16 @@ export const FeeBreakdownCard: React.FC<FeeBreakdownCardProps> = ({
   className = '',
 }) => {
  return (
-  <div className={`bg-white border border-gray-300 rounded-2xl p-4 space-y-3 ${className}`}>
+  <div className={`bg-vendly-light border border-vendly-border rounded-2xl p-4 space-y-3 ${className}`}>
     {items.map((item, index) => (
       <React.Fragment key={item.label}>
-        {index > 0 && <div className="border-t border-gray-200" />}
+        {index > 0 && <div className="border-t border-vendly-border" />}
         <div className="flex justify-between items-center">
-          <span className={`text-sm ${item.highlight ? 'text-black font-semibold' : 'text-gray-700'}`}>
+          <span className={`text-sm ${item.highlight ? 'text-vendly-ink font-semibold' : 'text-vendly-ink'}`}>
             {item.label}
           </span>
-          <span className={`font-mono text-sm ${item.highlight ? 'font-bold text-black' : 'text-black'}`}>
-            {Number(item.value) === 0 ? '0' : <span className="inline-flex items-center"><span className="text-[0.8em] opacity-70 mr-px text-gray-500">₿</span>{formatWithThinSpaces(item.value)}</span>}
+          <span className={`font-mono text-sm ${item.highlight ? 'font-bold text-vendly-ink' : 'text-vendly-ink'}`}>
+            {Number(item.value) === 0 ? '0' : <span className="inline-flex items-center"><span className="text-[0.8em] opacity-70 mr-px text-vendly-muted">₿</span>{formatWithThinSpaces(item.value)}</span>}
           </span>
         </div>
       </React.Fragment>

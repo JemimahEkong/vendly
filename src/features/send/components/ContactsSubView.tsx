@@ -114,14 +114,14 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
       <div className="flex items-center gap-3 mb-4">
         <button
           onClick={onBack}
-          className="p-1.5 text-gray-500 hover:text-black rounded-lg hover:bg-gray-100 transition-colors"
+          className="p-1.5 text-vendly-muted hover:text-vendly-ink rounded-lg hover:bg-vendly-tint transition-colors"
         >
           <BackIcon />
         </button>
-        <h2 className="font-display text-lg font-bold text-black flex-1">Contacts</h2>
+        <h2 className="font-display text-lg font-bold text-vendly-ink flex-1">Contacts</h2>
         <button
           onClick={handleStartAdd}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-vendly-deep text-vendly-light text-sm font-medium rounded-xl hover:bg-vendly-green transition-colors"
           aria-label="Add contact"
         >
           <PlusIcon size="sm" />
@@ -131,31 +131,31 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
 
       {/* Search */}
       <div className="relative mb-3">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-vendly-muted pointer-events-none">
           <SearchIcon />
         </div>
         <input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search contacts..."
-          className="w-full bg-white border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm text-black placeholder:text-gray-500 focus:border-black focus:ring-0 transition-all"
+          className="w-full bg-vendly-light border border-vendly-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-vendly-ink placeholder:text-vendly-muted focus:border-vendly-deep focus:ring-0 transition-all"
         />
       </div>
 
       {/* Contact list */}
       {isLoading || (!hasSynced && contacts.length === 0) ? (
         <div className="flex items-center justify-center py-12">
-          <div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-vendly-deep border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredContacts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 px-6">
-          <div className="w-14 h-14 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center mb-3">
-            <ContactsIcon className="w-7 h-7 text-gray-500" />
+          <div className="w-14 h-14 rounded-2xl bg-vendly-tint border border-vendly-border flex items-center justify-center mb-3">
+            <ContactsIcon className="w-7 h-7 text-vendly-muted" />
           </div>
-          <h3 className="text-base font-semibold text-black mb-1">
+          <h3 className="text-base font-semibold text-vendly-ink mb-1">
             {searchQuery ? 'No matches' : 'No contacts yet'}
           </h3>
-          <p className="text-gray-500 text-sm text-center max-w-xs">
+          <p className="text-vendly-muted text-sm text-center max-w-xs">
             {searchQuery ? 'Try a different search term.' : 'Add contacts to quickly send payments.'}
           </p>
         </div>
@@ -164,11 +164,11 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
           {filteredContacts.map((contact) => (
             <div
               key={contact.id}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 transition-colors group"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-vendly-tint transition-colors group"
             >
               {/* Avatar */}
-              <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                <span className="text-black font-display font-bold text-sm">
+              <div className="w-9 h-9 rounded-full bg-vendly-tint flex items-center justify-center flex-shrink-0">
+                <span className="text-vendly-ink font-display font-bold text-sm">
                   {contact.name.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -178,10 +178,10 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
                 className="flex-1 min-w-0 text-left"
                 onClick={() => onSelect(contact.paymentIdentifier)}
               >
-                <p className="text-[15px] font-medium text-black truncate">
+                <p className="text-[15px] font-medium text-vendly-ink truncate">
                   {contact.name}
                 </p>
-                <p className="text-xs text-gray-500 truncate">
+                <p className="text-xs text-vendly-muted truncate">
                   {contact.paymentIdentifier}
                 </p>
               </button>
@@ -190,14 +190,14 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
               <div className="flex items-center gap-0.5 flex-shrink-0 md:opacity-50 md:group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => handleStartEdit(contact)}
-                  className="p-1.5 text-gray-500 hover:text-black rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-1.5 text-vendly-muted hover:text-vendly-ink rounded-lg hover:bg-vendly-tint transition-colors"
                   aria-label={`Edit ${contact.name}`}
                 >
                   <EditPencilIcon />
                 </button>
                 <button
                   onClick={() => setDeletingContact(contact)}
-                  className="p-1.5 text-gray-500 hover:text-black rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-1.5 text-vendly-muted hover:text-vendly-ink rounded-lg hover:bg-vendly-tint transition-colors"
                   aria-label={`Delete ${contact.name}`}
                 >
                   <TrashIcon />
@@ -221,11 +221,11 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={resetForm}
-          className="p-1.5 text-gray-500 hover:text-black rounded-lg hover:bg-gray-100 transition-colors"
+          className="p-1.5 text-vendly-muted hover:text-vendly-ink rounded-lg hover:bg-vendly-tint transition-colors"
         >
           <BackIcon />
         </button>
-        <h2 className="font-display text-lg font-bold text-black">
+        <h2 className="font-display text-lg font-bold text-vendly-ink">
           {editingContact ? 'Edit Contact' : 'New Contact'}
         </h2>
       </div>
@@ -233,7 +233,7 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
       {/* Form */}
       <div className="space-y-4">
         <div className="space-y-1.5">
-          <label htmlFor="subview-contact-name" className="text-sm text-gray-700 font-medium">
+          <label htmlFor="subview-contact-name" className="text-sm text-vendly-ink font-medium">
             Name
           </label>
           <input
@@ -243,12 +243,12 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
             onChange={(e) => setFormName(e.target.value)}
             placeholder="Contact name"
             disabled={isSaving}
-            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-black placeholder:text-gray-500 focus:border-black focus:ring-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-vendly-light border border-vendly-border rounded-xl px-4 py-3 text-vendly-ink placeholder:text-vendly-muted focus:border-vendly-deep focus:ring-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="subview-contact-address" className="text-sm text-gray-700 font-medium">
+          <label htmlFor="subview-contact-address" className="text-sm text-vendly-ink font-medium">
             Lightning Address
           </label>
           <FormInput
@@ -268,7 +268,7 @@ const ContactsSubView: React.FC<ContactsSubViewProps> = ({ onSelect, onBack }) =
         <div className="flex gap-3 pt-2">
           <button
             onClick={resetForm}
-            className="flex-1 py-3 text-sm font-medium border border-gray-200 text-gray-700 rounded-xl hover:text-black hover:border-gray-300 transition-colors"
+            className="flex-1 py-3 text-sm font-medium border border-vendly-border text-vendly-ink rounded-xl hover:text-vendly-ink hover:border-vendly-border transition-colors"
           >
             Cancel
           </button>

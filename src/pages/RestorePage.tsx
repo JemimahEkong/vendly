@@ -45,30 +45,30 @@ const RestorePage: React.FC<RestorePageProps> = ({
         className="w-full"
         data-testid="restore-confirm-button"
       >
-        {isLoading ? 'Restoring...' : 'Restore Wallet'}
+        {isLoading ? 'Restoring...' : 'Restore account'}
       </PrimaryButton>
     </div>
   );
 
  return (
-  <PageLayout footer={footer} onBack={onBack} title="Restore from Backup" onClearError={onClearError}>
-    <div className="max-w-xl mx-auto w-full space-y-4 bg-white">
+  <PageLayout footer={footer} onBack={onBack} title="Restore account" onClearError={onClearError}>
+    <div className="max-w-xl mx-auto w-full space-y-4 bg-transparent">
       {/* Icon */}
       <div className="flex justify-center mb-6">
-        <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center">
-          <UploadIcon size="xl" className="text-black" />
+        <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
+          <UploadIcon size="xl" className="text-vendly-ink" />
         </div>
       </div>
 
-      <p className="text-gray-700 text-center mb-6">
-        Enter your 12 or 24-word recovery phrase to restore your wallet. Words should be separated by spaces.
+      <p className="text-vendly-ink text-center mb-6">
+        Enter the 12 or 24-word recovery phrase for your business account. Separate each word with a space.
       </p>
 
       <div className="relative">
         <textarea
           value={mnemonic}
           onChange={(e) => setMnemonic(e.target.value)}
-          className="w-full h-36 px-4 py-3 text-black bg-white border border-gray-200 rounded-xl focus:border-gray-400 focus:ring-2 focus:ring-gray-200 resize-none font-mono text-sm"
+          className="w-full h-36 px-4 py-3 text-vendly-ink bg-vendly-light border border-vendly-border rounded-xl focus:border-vendly-green focus:ring-2 focus:ring-vendly-border resize-none font-mono text-sm"
           placeholder="word1 word2 word3 ..."
           data-testid="mnemonic-input"
         />

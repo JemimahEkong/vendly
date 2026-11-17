@@ -24,7 +24,7 @@ export interface LightningAddressDisplayProps {
 const EditButton: React.FC<{ onClick: () => void }> = ({ onClick }) => (
   <button
     onClick={onClick}
-    className="flex items-center gap-2 px-4 border border-spark-border text-gray-500 rounded-xl font-medium text-sm hover:text-spark-text-primary hover:border-spark-border-light transition-colors"
+    className="flex items-center gap-2 px-4 border border-vendly-border text-vendly-muted rounded-xl font-medium text-sm hover:text-vendly-ink hover:border-vendly-green transition-colors"
     title="Edit Lightning Address"
   >
     <EditIcon />
@@ -73,17 +73,17 @@ const EditingForm: React.FC<EditingFormProps> = ({
     <div className="pt-2 space-y-5">
       {/* Header with icon */}
       <div className="flex flex-col items-center gap-3">
-        <div className="w-14 h-14 rounded-2xl bg-spark-primary/20 flex items-center justify-center">
-          <LightningBoltIcon className="w-7 h-7 text-spark-primary" />
+        <div className="w-14 h-14 rounded-2xl bg-vendly-deep/20 flex items-center justify-center">
+          <LightningBoltIcon className="w-7 h-7 text-vendly-deep" />
         </div>
-        <h3 className="font-display text-lg font-semibold text-spark-text-primary">
+        <h3 className="font-display text-lg font-semibold text-vendly-ink">
           {address ? 'Edit Address' : 'Create Address'}
         </h3>
       </div>
 
       {/* Input with suffix */}
       <div className="space-y-4">
-        <div className="flex items-center bg-spark-dark border border-spark-border rounded-xl overflow-hidden focus-within:border-spark-primary transition-all">
+        <div className="flex items-center bg-vendly-light border border-vendly-border rounded-xl overflow-hidden focus-within:border-vendly-deep transition-all">
           <textarea
             ref={inputRef}
             value={editValue}
@@ -92,9 +92,9 @@ const EditingForm: React.FC<EditingFormProps> = ({
             placeholder="satoshi"
             disabled={isLoading}
             rows={1}
-            className="flex-1 min-w-0 bg-transparent px-4 py-3 text-spark-text-primary text-lg font-mono placeholder-spark-text-muted focus:outline-none resize-none"
+            className="flex-1 min-w-0 bg-transparent px-4 py-3 text-vendly-ink text-lg font-mono placeholder-vendly-muted focus:outline-none resize-none"
           />
-          <span className="flex-shrink-0 px-4 py-3 text-spark-text-muted font-medium text-sm">
+          <span className="flex-shrink-0 px-4 py-3 text-vendly-muted font-medium text-sm">
             @breez.tips
           </span>
         </div>
@@ -144,8 +144,8 @@ const LightningAddressDisplay: React.FC<LightningAddressDisplayProps> = ({
           className="w-full text-left"
           dataTestId="lightning-address-unsupported"
         >
-          <h3 className="font-display text-lg font-semibold text-spark-text-primary mb-2">Lightning Address</h3>
-          <p className="text-spark-text-secondary text-sm">
+          <h3 className="font-display text-lg font-semibold text-vendly-ink mb-2">Lightning Address</h3>
+          <p className="text-vendly-muted text-sm">
             {supportMessage ?? 'Lightning addresses are not available in this environment.'}
           </p>
         </SimpleAlert>
@@ -177,8 +177,8 @@ const LightningAddressDisplay: React.FC<LightningAddressDisplayProps> = ({
     return (
       <div className="pt-4 space-y-6 flex flex-col items-center">
         <div className="text-center">
-          <h3 className="font-display text-lg font-semibold text-spark-text-primary mb-2">Lightning Address</h3>
-          <p className="text-spark-text-secondary text-sm mb-4">
+          <h3 className="font-display text-lg font-semibold text-vendly-ink mb-2">Lightning Address</h3>
+          <p className="text-vendly-muted text-sm mb-4">
             Create a Lightning Address to receive payments easily
           </p>
           <PrimaryButton onClick={onEdit}>Create Lightning Address</PrimaryButton>
@@ -221,7 +221,7 @@ const LightningAddressDisplay: React.FC<LightningAddressDisplayProps> = ({
           truncate
           showShare
           label="Lightning Address"
-          textColor="text-spark-primary"
+          textColor="text-vendly-deep"
           onCopied={() => showToast('success', 'Copied!')}
           onShareError={() => showToast('error', 'Failed to share')}
           additionalActions={<EditButton onClick={onEdit} />}

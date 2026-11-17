@@ -42,14 +42,7 @@ const PaymentReceivedCelebration: React.FC<PaymentReceivedCelebrationProps> = ({
       onClick={handleDismiss}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-white/90 backdrop-blur-md" />
-
-      {/* Radiating glow rings */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="absolute w-64 h-64 rounded-full bg-gray-500/10 animate-ping" style={{ animationDuration: '2s' }} />
-        <div className="absolute w-48 h-48 rounded-full bg-gray-500/15 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.3s' }} />
-        <div className="absolute w-32 h-32 rounded-full bg-gray-500/20 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.6s' }} />
-      </div>
+      <div className="absolute inset-0 bg-vendly-cream/95" />
 
       {/* Main content */}
       <div
@@ -57,22 +50,27 @@ const PaymentReceivedCelebration: React.FC<PaymentReceivedCelebrationProps> = ({
           isVisible ? 'scale-100 translate-y-0' : 'scale-50 translate-y-20'
         }`}
       >
-        <h2 className="text-2xl font-bold text-black mb-6">
-          Payment Received
+        <img
+          src="/illustrations/digital-payment.svg"
+          alt=""
+          className="w-full max-w-[250px] h-auto mb-4"
+        />
+
+        <h2 className="text-2xl font-bold text-vendly-ink mb-5">
+          Payment received
         </h2>
 
         <div className="relative">
-          <div className="absolute inset-0 blur-xl bg-gray-500/40 rounded-2xl" />
-          <div className="relative pl-14 pr-10 py-5 rounded-2xl bg-white border border-gray-300 text-center">
-            <span className="relative text-5xl font-mono font-bold text-black">
-              <span className="absolute right-full top-1/2 -translate-y-1/2 mr-0.5 text-3xl text-gray-700 opacity-70">₿</span>
+          <div className="relative pl-14 pr-10 py-5 rounded-2xl bg-vendly-light border border-vendly-border text-center">
+            <span className="relative text-5xl font-mono font-bold text-vendly-ink">
+              <span className="absolute right-full top-1/2 -translate-y-1/2 mr-0.5 text-3xl text-vendly-ink opacity-70">₿</span>
               {formatAmount(amount)}
             </span>
           </div>
         </div>
 
-        <p className="mt-10 text-gray-500 text-sm">
-          Tap anywhere to dismiss
+        <p className="mt-8 text-vendly-muted text-sm">
+          Tap anywhere to continue
         </p>
       </div>
     </div>,

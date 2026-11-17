@@ -1,436 +1,105 @@
-# ZapCart
+# Vendly
 
-ZapCart is a Lightning-powered merchant POS system designed for small businesses and everyday traders in Nigeria.
+Vendly is a merchant-first point-of-sale and business management app for everyday Nigerian traders.
 
-It enables instant Bitcoin payments, simple checkout flows, and lightweight business tracking in a way that fits naturally into how informal traders already operate.
+It brings sales, inventory and payment records into one lightweight mobile experience, with a butter-cream and deep-green identity designed to feel calm, practical and local.
 
-Built from a real problem we experienced firsthand through our mother’s local store, ZapCart exists to help traders move away from stressful manual bookkeeping and gain better visibility into their daily business operations.
+## What Vendly does
 
----
+- **Point of sale** — add products to a cart, scan barcodes and take payment.
+- **Inventory** — register products with prices, stock levels, barcodes and images.
+- **Sales records** — review daily and all-time sales, with item-level detail.
+- **Payments** — send and receive via the Breez SDK, with passkey or recovery-phrase access.
+- **Installable app** — installable PWA with offline caching and a mobile-first shell.
 
-## The Problem
+Vendly is built on the existing Breez Spark integration. It does not introduce a separate payment backend or custody layer.
 
-Across many informal markets, small business owners still rely on manual methods to run their operations:
+## Brand
 
-* Paper notebooks for sales tracking
-* Mental calculations during checkout
-* Disconnected or inconsistent records
-* Limited visibility into profit or loss
+The interface uses a fixed palette:
 
-This often leads to:
+| Purpose | Colour |
+| --- | --- |
+| Primary deep green | `#173F2B` |
+| Butter cream | `#F7F0D8` |
+| Supporting green | `#386B4B` |
+| Light cream surfaces | `#FFFDF5` |
+| Primary text | `#243329` |
+| Muted text | `#5C6B60` |
+| Borders | `#DFE3D2` |
+| Subtle green tint | `#EEF1E4` |
 
-* Frequent calculation errors
-* Difficulty tracking daily business performance
-* Lost or unrecorded transactions
-* Stressful end-of-day reconciliation
-* Limited financial insight for growth decisions
+Brand assets live in `public/assets`, app icons in `public/icons`, and the six merchant illustrations in `public/illustrations`.
 
-Most existing tools are either too complex or built for formal accounting systems rather than everyday traders.
+## Tech stack
 
-ZapCart exists to close that gap.
+- React 18 and TypeScript
+- Vite 5
+- Tailwind CSS 3
+- Zustand with persistence
+- Breez SDK Spark
+- `vite-plugin-pwa`
+- Vitest and Playwright
 
----
+## Getting started
 
-## What ZapCart Does
+### Requirements
 
-ZapCart combines:
+- Node.js 18 or newer
+- npm (the repository includes `package-lock.json`)
 
-* Instant Bitcoin Lightning payments
-* Simple point-of-sale checkout flows
-* Lightweight sales tracking
-* Mobile-first merchant experience
-* Offline support
-* Embedded wallet functionality
-* Inventory management
-
-All in one system designed to remain fast, minimal, and easy to use.
-
----
-
-## Features
-
-### Lightning Payments (Breez SDK)
-
-ZapCart uses Breez SDK to power seamless Lightning transactions.
-
-#### Features
-
-* Instant Bitcoin Lightning checkout
-* QR-based payment flow
-* Invoice generation and settlement
-* Real-time payment confirmations
-* Passkey authentication
-* Contacts management
-* Easy transfer of funds
-* Fiat conversion support
-* Transaction history tracking
-* Non-custodial Lightning infrastructure
-
----
-
-### Merchant POS System
-
-Designed for speed and simplicity during checkout.
-
-#### Features
-
-* Quick item addition to cart
-* Barcode and QR scanning support
-* Cart-based checkout flow
-* Fast transaction completion
-* Optimized for low-friction retail environments
-
----
-
-### Sales Tracking & Records
-
-Simple tools for tracking business performance.
-
-#### Features
-
-* Daily sales logging
-* Lightweight transaction history
-* Revenue visibility
-* End-of-day sales summaries
-
----
-
-### Inventory Management
-
-Inventory tracking built for merchants.
-
-#### Features
-
-* Easy stock uploads
-* Product inventory management
-* Product grid display
-* Convenient stock tracking
-
----
-
-### Mobile-First Design
-
-Built primarily for smartphones and low-tech adoption environments.
-
-#### Features
-
-* Large touch-friendly UI
-* Minimal checkout steps
-* Light mode for outdoor visibility
-* Responsive mobile experience
-
----
-
-### Secure Wallet Integration
-
-Security built directly into the experience.
-
-#### Features
-
-* Passkey login
-* Secure key handling
-* Safe Lightning transaction lifecycle management
-
----
-
-## Tech Stack
-
-| Technology            | Purpose                      |
-| --------------------- | ---------------------------- |
-| TypeScript            | Type-safe development        |
-| React + Vite          | Frontend framework           |
-| Tailwind CSS          | Styling                      |
-| Breez SDK             | Lightning payments           |
-| Zustand               | State management             |
-| React Hook Form + Zod | Form handling and validation |
-| Node.js               | Backend/API routes           |
-
----
-
-## Architecture
-
-### Frontend
-
-* TypeScript-based architecture
-* Mobile-first UI system
-* Component-driven structure
-* Optimized checkout experience
-
-### Payments Layer
-
-* Breez SDK integration
-* Lightning invoice generation
-* Settlement tracking
-* Real-time payment updates
-
-### State Management
-
-* Zustand-powered stores
-* Persistent-friendly architecture
-* Cart and merchant state management
-
-### Backend
-
-* Node.js API routes
-* Transaction validation
-* Payment session handling
-* Sales logging
-
----
-
-## Structure Overview
-<img width="1536" height="1024" alt="ChatGPT Image May 22, 2026, 04_12_20 PM" src="https://github.com/user-attachments/assets/ec8cae68-fa24-4fb3-8021-4fc979612ce8" />
-
----
-
-## Project Structure
+### Install and run
 
 ```bash
-src/
-├── components/
-│   ├── layout/
-│   ├── ui/
-│   ├── AlertCard.tsx
-│   ├── BreezLogo.tsx
-│   ├── CollapsingWalletHeader.tsx
-│   ├── EmbeddedCart.tsx
-│   ├── FeeBreakdownCard.tsx
-│   ├── Icons.tsx
-│   ├── InstallPrompt.tsx
-│   ├── LoadingSpinner.tsx
-│   ├── OnboardingStepper.tsx
-│   ├── PaymentDetailsDialog.tsx
-│   ├── PaymentReceivedCelebration.tsx
-│   ├── ProductGridModal.tsx
-│   ├── QrScannerDialog.tsx
-│   ├── Scanner.tsx
-│   ├── SideMenu.tsx
-│   ├── StagingGate.tsx
-│   ├── ToastNotification.tsx
-│   └── TransactionList.tsx
-├── constants/
-│   └── faucet.ts
-├── contexts/
-│   ├── ContactsContext.tsx
-│   ├── ToastContext.tsx
-│   └── WalletContext.tsx
-├── features/
-│   ├── receive/
-│   └── send/
-├── hooks/
-│   ├── buildConnectConfig.ts
-│   ├── index.ts
-│   ├── useAnimatedNumber.ts
-│   ├── useBreezSdk.ts
-│   ├── useContacts.ts
-│   ├── useIOSViewportFix.ts
-│   ├── useLatest.ts
-│   ├── usePlatform.ts
-│   ├── useQrScanner.ts
-│   └── useSecretTap.ts
-├── pages/
-│   ├── BackupPage.tsx
-│   ├── FiatCurrenciesPage.tsx
-│   ├── GeneratePage.tsx
-│   ├── GetRefundPage.tsx
-│   ├── HomePage.tsx
-│   ├── InventoryPage.tsx
-│   ├── PasskeyPage.tsx
-│   ├── POSPage.tsx
-│   ├── RestorePage.tsx
-│   ├── SalesPage.tsx
-│   ├── SettingsPage.tsx
-│   ├── UnclaimedDepositDetailsPage.tsx
-│   └── WalletPage.tsx
-├── services/
-│   ├── depositState.ts
-│   ├── logExport.ts
-│   ├── logger.test.ts
-│   ├── logger.ts
-│   ├── logStorage.ts
-│   ├── passkeyPrfProvider.ts
-│   ├── passkeyService.ts
-│   └── settings.ts
-├── store/
-│   ├── useCartStore.ts
-│   ├── useProductStore.ts
-│   └── useSalesStore.ts
-├── test/
-│   ├── mocks/
-│   ├── utils/
-│   ├── payment-scenario.spec.ts
-│   └── setup.ts
-├── types/
-│   └── domain.ts
-├── utils/
-│   ├── depositHelpers.test.ts
-│   ├── depositHelpers.ts
-│   ├── formatCurrency.ts
-│   ├── formatError.ts
-│   ├── formatNumber.ts
-│   ├── paymentDescription.ts
-│   └── randomName.ts
-├── App.tsx
-├── index.css
-├── main.tsx
-└── vite-env.d.ts
-```
-
----
-
-## Lightning Payments Flow
-
-ZapCart uses Breez SDK to handle Lightning transactions.
-
-### Flow Overview
-
-1. Merchant creates a checkout session
-2. Invoice is generated through Breez SDK
-3. Customer scans QR code or pays through wallet/contact
-4. Payment is broadcast over the Lightning Network
-5. Settlement is confirmed
-6. Transaction is recorded automatically
-
-### Benefits
-
-* Instant settlement
-* Low transaction fees
-* No traditional banking delays
-* Real-time confirmations
-
----
-
-## Installation
-
-### Prerequisites
-
-* Node.js 18+
-* npm or pnpm
-* Breez SDK access
-
----
-
-### Setup
-
-```bash
-git clone https://github.com/your-org/zapcart.git
-
-cd zapcart
-
-npm install
-```
-
----
-
-### Environment Variables
-
-Create a `.env.local` file:
-
-```env
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Breez SDK
-BREEZ_API_KEY=your_breez_api_key
-```
-
----
-
-### Run Development Server
-
-```bash
+npm ci
 npm run dev
 ```
 
-Open:
+Vite prints the local development URL (normally `http://localhost:5173`).
+
+### Production build
 
 ```bash
-http://localhost:3000
+npm run build
+npm run preview
 ```
 
-When logging in through passkey, if you encounter "Failed to save label to Nostr", close tab and try again.
-
----
-
-## Usage
-
-### For Merchants
-
-* Add products to cart
-* Generate Lightning invoice
-* Customer pays via QR scan or wallet
-* Receive instant confirmation
-* Transaction automatically saved
-
----
-
-### For Customers
-
-* Scan checkout QR code
-* Pay with Lightning wallet
-* Receive instant payment confirmation
-
----
-
-## Development Scripts
+### Checks
 
 ```bash
-npm run dev       # Start development server
-npm run build     # Build production app
-npm run start     # Start production server
-npm run lint      # Run lint checks
+npm run lint
+npm test
+npm run test:e2e
 ```
 
----
+The Playwright suite may require the wallet/faucet environment described in `e2e/` and `example.env`.
 
-## Future Improvements
+## Project structure
 
-ZapCart is actively evolving toward:
+```text
+public/
+├── assets/          # Vendly logo suite and retained product images
+├── icons/           # PWA icons and favicons
+└── illustrations/   # Six custom merchant illustrations
 
-* Advanced inventory management
-* Merchant analytics dashboard
-* Receipt generation
-* AI-powered sales insights
-* Expanded payment options
+src/
+├── components/      # Shared UI, layout, navigation and payment surfaces
+├── contexts/        # Wallet, contacts and toast providers
+├── features/        # Send and receive payment flows
+├── hooks/           # SDK, viewport and UI hooks
+├── pages/           # Home, POS, inventory, sales, wallet, auth and settings
+├── services/        # SDK-side and device services
+├── store/           # Persistent product, cart and sales stores
+├── test/            # Test setup and payment scenario tests
+└── utils/           # Formatting and deposit helpers
+```
 
----
+## Payments and attribution
 
-## Contributing
+Payment functionality is powered by the [Breez SDK](https://sdk-doc-spark.breez.technology/). Breez integration and attribution are retained. Payment behaviour, wallet logic and local store schemas are unchanged by the visual rebrand.
 
-We welcome contributions from developers, designers, and researchers interested in improving financial tools for small businesses.
+## Licence
 
-### How to Contribute
+Vendly is released under the MIT License. See `LICENSE`.
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
----
-
-## License
-
-MIT License
-
----
-
-## Acknowledgments
-
-- [TypeScript](https://www.typescriptlang.org/) for the React framework
-- [Tailwind CSS](https://tailwindcss.com/) for styling
-- [Breez](https://sdk-doc-spark.breez.technology/) for Lightning payments
-
----
-
-## Support
-
-- **Documentation**: [Github README](https://github.com/gloria2807/ZapCart)
-- **Issues**: [GitHub Issues](https://github.com/gloria2807/ZapCart/issues)
-- **Contribution Guidelines**: [Github Contribution Doc](https://github.com/gloria2807/ZapCart?tab=contributing-ov-file)
-
----
-
-## Links
-
-- **Website**: [zapcartpos.vercel.app](zapcartpos.vercel.app)
-- **Demo**: [Vimeo](https://vimeo.com/1194957098?share=copy&fl=sv&fe=ci)
-- **Documentation**: [Github README](https://github.com/gloria2807/ZapCart)
+The original ZapCart notice and the Breez SDK licence are preserved in `THIRD_PARTY_NOTICES`. The Breez notice also remains in `src/LICENSE`.

@@ -53,16 +53,19 @@ const POSPage: React.FC<POSPageProps> = ({ onBack }) => {
   });
 
   return (
-  <div className="h-[100dvh] flex flex-col bg-slate-50 overflow-hidden">
+  <div className="h-[100dvh] flex flex-col bg-vendly-cream overflow-hidden">
 
     {/* HEADER (fixed) */}
-    <div className="shrink-0 sticky top-0 z-20 flex items-center justify-between px-4 py-4 border-b border-slate-200 bg-white">
-      <button onClick={onBack} className="text-black font-medium">
+    <div
+      className="shrink-0 sticky top-0 z-20 flex items-center justify-between px-4 py-4 border-b border-vendly-border bg-vendly-cream/95"
+      style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top, 0px))' }}
+    >
+      <button onClick={onBack} className="text-vendly-deep font-semibold text-sm">
         Back
       </button>
 
-      <h1 className="text-lg font-bold text-slate-900">
-        POS
+      <h1 className="text-lg font-bold text-vendly-ink">
+        New sale
       </h1>
 
       <div className="w-12" />
@@ -76,7 +79,7 @@ const POSPage: React.FC<POSPageProps> = ({ onBack }) => {
         <Scanner />
 
         {/* Cart */}
-        <div className="rounded-2xl bg-white shadow">
+        <div className="rounded-2xl bg-vendly-light border border-vendly-border overflow-hidden">
           <EmbeddedCart
             onCheckout={handleCheckout}
             onOpenProducts={() => setIsProductsOpen(true)}

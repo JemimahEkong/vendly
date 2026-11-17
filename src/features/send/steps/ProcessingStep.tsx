@@ -18,7 +18,7 @@ const ProcessingStep: React.FC<ProcessingStepProps> = ({ operationType = 'paymen
     if (isAuth) {
       return (
         <svg
-          className="w-10 h-10 text-spark-electric"
+          className="w-10 h-10 text-vendly-green"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -30,7 +30,7 @@ const ProcessingStep: React.FC<ProcessingStepProps> = ({ operationType = 'paymen
     }
     return (
       <svg
-        className="w-10 h-10 text-spark-electric"
+        className="w-10 h-10 text-vendly-green"
         viewBox="0 0 24 24"
         fill="currentColor"
       >
@@ -45,8 +45,8 @@ const ProcessingStep: React.FC<ProcessingStepProps> = ({ operationType = 'paymen
     <div className="relative mb-8">
       {/* Pulsing glow rings */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="absolute w-28 h-28 rounded-full bg-gray-200 animate-ping" style={{ animationDuration: '2s' }} />
-        <div className="absolute w-24 h-24 rounded-full bg-gray-300 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
+        <div className="absolute w-28 h-28 rounded-full bg-vendly-tint animate-ping" style={{ animationDuration: '2s' }} />
+        <div className="absolute w-24 h-24 rounded-full bg-vendly-border animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
       </div>
 
       {/* Logo container with spinning ring */}
@@ -76,7 +76,7 @@ const ProcessingStep: React.FC<ProcessingStepProps> = ({ operationType = 'paymen
         {/* Icon */}
         {isAuth ? renderIcon() : (
           <img
-            src="/assets/ZapCart_Logo.png"
+            src="/assets/vendly-mark.svg"
             alt="Processing"
             className="w-14 h-14 object-contain animate-pulse drop-shadow-[0_0_15px_rgba(0,0,0,0.15)]"
             style={{ animationDuration: '2s' }}
@@ -86,10 +86,10 @@ const ProcessingStep: React.FC<ProcessingStepProps> = ({ operationType = 'paymen
     </div>
 
     {/* Text */}
-    <h3 className="font-display text-xl font-semibold text-black mb-2">
+    <h3 className="font-display text-xl font-semibold text-vendly-ink mb-2">
       {getTitle()}
     </h3>
-    <p className="text-gray-700 text-sm text-center max-w-xs">
+    <p className="text-vendly-ink text-sm text-center max-w-xs">
       {getDescription()}
     </p>
 
@@ -98,7 +98,7 @@ const ProcessingStep: React.FC<ProcessingStepProps> = ({ operationType = 'paymen
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className="w-2 h-2 rounded-full bg-black"
+          className="w-2 h-2 rounded-full bg-vendly-deep"
           style={{
             animation: 'bounce 1s ease-in-out infinite',
             animationDelay: `${i * 0.15}s`

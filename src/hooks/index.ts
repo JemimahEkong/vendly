@@ -1,4 +1,4 @@
-// Custom hooks for the ZapCart app
+// Custom hooks for the Vendly app
 
 export { useAnimatedNumber } from './useAnimatedNumber';
 

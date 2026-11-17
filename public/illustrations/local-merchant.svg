@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="title desc">
+  <title id="title">A local merchant at her stall</title>
+  <desc id="desc">A confident Nigerian woman in a headwrap stands behind a market stall with fresh produce.</desc>
+  <rect width="400" height="300" rx="26" fill="#FFFDF5"/>
+  <circle cx="205" cy="132" r="101" fill="#EEF1E4"/>
+  <path d="M70 116h260v22H70z" fill="#173F2B"/>
+  <path d="M82 116c0-15 12-27 27-27h182c15 0 27 12 27 27" fill="#386B4B"/>
+  <path d="M95 116c0-37 32-63 76-63s77 26 77 63" fill="none" stroke="#F7F0D8" stroke-width="4" stroke-dasharray="12 9" opacity=".65"/>
+  <path d="M100 116h27l-9-29H91zM154 116h27l-5-29h-27zM209 116h27l1-29h-27zM264 116h27l6-29h-27z" fill="#F7F0D8" opacity=".92"/>
+  <path d="M124 116h152v104H124z" fill="#FFFDF5" stroke="#173F2B" stroke-width="4"/>
+  <path d="M124 116h152v26H124z" fill="#386B4B"/>
+  <path d="M181 76c0-17 13-30 30-30s30 13 30 30v9h-60z" fill="#243329"/>
+  <circle cx="211" cy="91" r="27" fill="#F7F0D8" stroke="#173F2B" stroke-width="3.5"/>
+  <path d="M184 81c2-23 18-39 40-34 14 3 24 14 27 30-18-7-34-12-51 6z" fill="#173F2B"/>
+  <path d="M207 106c3 4 8 4 11 0" fill="none" stroke="#243329" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="201" cy="92" r="2.4" fill="#243329"/><circle cx="221" cy="92" r="2.4" fill="#243329"/>
+  <path d="M183 119c19-9 39-9 58 0l9 76h-76z" fill="#386B4B"/>
+  <path d="M197 132c11 8 22 8 33 0" fill="none" stroke="#F7F0D8" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M153 196h96l-8 49h-80z" fill="#F7F0D8" stroke="#173F2B" stroke-width="4"/>
+  <path d="M171 208h57M168 221h63M165 234h69" stroke="#DFE3D2" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="119" cy="238" rx="41" ry="17" fill="#DFE3D2"/>
+  <circle cx="105" cy="230" r="12" fill="#173F2B"/><circle cx="122" cy="225" r="13" fill="#386B4B"/><circle cx="136" cy="232" r="10" fill="#173F2B"/>
+  <path d="M286 201h35l-5 40h-25z" fill="#EEF1E4" stroke="#173F2B" stroke-width="4"/>
+  <path d="M292 201v-13c0-7 5-12 11-12s11 5 11 12v13" fill="none" stroke="#173F2B" stroke-width="4"/>
+  <path d="M292 218h22" stroke="#386B4B" stroke-width="4" stroke-linecap="round"/>
+  <path d="M56 260h288" stroke="#173F2B" stroke-width="4" stroke-linecap="round" opacity=".35"/>
+</svg>

@@ -70,17 +70,17 @@ const SaveContactDialog: React.FC<SaveContactDialogProps> = ({ isOpen, lightning
     <BottomSheetCard>
       {saved ? (
         <div className="flex flex-col items-center justify-center py-8 gap-3">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-            <CheckIcon className="text-black w-6 h-6" />
+          <div className="w-12 h-12 rounded-full bg-vendly-tint flex items-center justify-center">
+            <CheckIcon className="text-vendly-ink w-6 h-6" />
           </div>
-          <p className="font-display font-semibold text-black">Contact saved</p>
+          <p className="font-display font-semibold text-vendly-ink">Contact saved</p>
         </div>
       ) : (
         <>
           <DialogHeader title="Save Contact" onClose={onClose} icon={<ContactsIcon />} />
 
           <div className="space-y-4">
-            <p className="text-sm text-gray-500 text-center font-mono truncate">{lightningAddress}</p>
+            <p className="text-sm text-vendly-muted text-center font-mono truncate">{lightningAddress}</p>
 
             <input
               ref={nameInputRef}
@@ -90,14 +90,14 @@ const SaveContactDialog: React.FC<SaveContactDialogProps> = ({ isOpen, lightning
               onKeyDown={(e) => { if (e.key === 'Enter' && name.trim()) handleSave(); }}
               placeholder="Contact name"
               disabled={isSaving}
-              className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-black placeholder:text-gray-500 focus:border-black focus:ring-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-vendly-light border border-vendly-border rounded-xl px-4 py-3 text-vendly-ink placeholder:text-vendly-muted focus:border-vendly-deep focus:ring-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             />
 
             <FormError error={error} />
             <div className="flex gap-3">
               <button
                 onClick={onClose}
-                className="flex-1 py-3 font-display font-semibold text-gray-500 border border-gray-200 rounded-xl hover:text-black hover:border-gray-300 transition-colors"
+                className="flex-1 py-3 font-display font-semibold text-vendly-muted border border-vendly-border rounded-xl hover:text-vendly-ink hover:border-vendly-border transition-colors"
               >
                 Cancel
               </button>

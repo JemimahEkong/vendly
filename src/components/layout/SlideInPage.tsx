@@ -49,7 +49,7 @@ const SlideInPage: React.FC<SlideInPageProps> = ({
   const { from, to } = slideTransforms[slideFrom];
 
   return (
-    <div className="min-h-dvh h-dvh w-full flex flex-col bg-white relative">
+    <div className="min-h-dvh h-dvh w-full flex flex-col bg-vendly-cream relative">
       <Transition show={isOpen} appear as="div" className="absolute inset-0">
         <Transition.Child
           as="div"
@@ -59,22 +59,22 @@ const SlideInPage: React.FC<SlideInPageProps> = ({
           leave="transform transition ease-in duration-200"
           leaveFrom={to}
           leaveTo={from}
-          className="absolute inset-0 flex flex-col bg-white"
+          className="absolute inset-0 flex flex-col bg-vendly-cream"
         >
           {/* Header with safe area top padding */}
           <header
-            className="flex-shrink-0 border-b border-gray-200"
+            className="flex-shrink-0 border-b border-vendly-border bg-vendly-cream/95"
             style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
           >
             <div className="relative px-4 py-4 flex items-center justify-center">
-              <h1 className="text-center font-display text-lg font-semibold text-black">
+              <h1 className="text-center font-display text-lg font-semibold text-vendly-ink">
                 {title}
               </h1>
 
               {closeStyle === 'back' ? (
                 <button
                   onClick={handleClose}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-black rounded-lg hover:bg-gray-100 transition-colors"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-vendly-muted hover:text-vendly-deep rounded-lg hover:bg-vendly-tint transition-colors"
                   aria-label="Go back"
                 >
                   <BackIcon size="md" />
@@ -82,7 +82,7 @@ const SlideInPage: React.FC<SlideInPageProps> = ({
               ) : (
                 <button
                   onClick={handleClose}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-black rounded-lg hover:bg-gray-100 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-vendly-muted hover:text-vendly-deep rounded-lg hover:bg-vendly-tint transition-colors"
                   aria-label="Close"
                 >
                   <CloseIcon size="md" />
@@ -93,7 +93,7 @@ const SlideInPage: React.FC<SlideInPageProps> = ({
 
           {/* Scrollable content */}
           <div 
-            className="flex-1 overflow-y-auto min-h-0 bg-white"
+            className="flex-1 overflow-y-auto min-h-0 bg-vendly-cream"
             style={{ WebkitOverflowScrolling: 'touch' }}
           >
             {children}
@@ -102,7 +102,7 @@ const SlideInPage: React.FC<SlideInPageProps> = ({
           {/* Optional footer with safe area bottom padding */}
           {footer && (
             <footer
-              className="flex-shrink-0 border-t border-gray-200 bg-white"
+              className="flex-shrink-0 border-t border-vendly-border bg-vendly-light"
               style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
             >
               <div className="p-4">

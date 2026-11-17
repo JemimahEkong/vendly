@@ -23,9 +23,9 @@ const ConfirmStep: React.FC<ConfirmStepProps> = ({ amountSats, feesSat, feesIncl
   <div className="space-y-6">
     {/* Total amount display */}
     <div className="text-center py-4">
-      <p className="text-gray-500 text-sm mb-2">You're sending</p>
+      <p className="text-vendly-muted text-sm mb-2">You're sending</p>
       <div className="flex items-baseline justify-center gap-2">
-        <span className="text-4xl font-mono font-bold text-black">
+        <span className="text-4xl font-mono font-bold text-vendly-ink">
           <span className="inline-flex items-center"><span className="text-[0.8em] opacity-70 mr-px">₿</span>{formatWithThinSpaces(total)}</span>
         </span>
       </div>

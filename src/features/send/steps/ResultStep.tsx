@@ -55,19 +55,19 @@ const ResultStep: React.FC<ResultStepProps> = ({ result, error, onClose, operati
   <div className="flex flex-col items-center justify-center py-4" data-testid="payment-failure">
     <div className="relative mb-6">
       {/* Error glow */}
-      <div className="absolute inset-0 w-20 h-20 rounded-full blur-xl bg-gray-200" />
+      <div className="absolute inset-0 w-20 h-20 rounded-full blur-xl bg-vendly-tint" />
 
       {/* Error icon */}
-      <div className="relative w-20 h-20 rounded-full flex items-center justify-center bg-gray-100 border-2 border-black">
-        <CloseIcon className="w-10 h-10 text-black" />
+      <div className="relative w-20 h-20 rounded-full flex items-center justify-center bg-vendly-tint border-2 border-vendly-deep">
+        <CloseIcon className="w-10 h-10 text-vendly-ink" />
       </div>
     </div>
 
-    <h3 className="font-display text-2xl font-bold mb-2 text-black">
+    <h3 className="font-display text-2xl font-bold mb-2 text-vendly-ink">
       {getTitle()}
     </h3>
 
-    <p className="text-gray-700 text-center max-w-xs mb-8">
+    <p className="text-vendly-ink text-center max-w-xs mb-8">
       {error || getDefaultErrorMessage()}
     </p>
 
@@ -84,25 +84,25 @@ const ResultStep: React.FC<ResultStepProps> = ({ result, error, onClose, operati
     {/* Result icon */}
     <div className="relative mb-6">
       {/* Glow effect */}
-      <div className="absolute -inset-3 rounded-full bg-gray-200 blur-xl" />
+      <div className="absolute -inset-3 rounded-full bg-vendly-tint blur-xl" />
 
       {/* Logo with sparkles */}
       <div className="relative w-20 h-20 flex items-center justify-center">
         <img
-          src="/assets/ZapCart_Logo.png"
-          alt="ZapCart"
+          src="/assets/vendly-mark.svg"
+          alt="Vendly"
           className="w-16 h-16 object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.15)]"
         />
       </div>
     </div>
 
     {/* Title */}
-    <h3 className="font-display text-2xl font-bold mb-2 text-black">
+    <h3 className="font-display text-2xl font-bold mb-2 text-vendly-ink">
       {getTitle()}
     </h3>
 
     {/* Description */}
-    <p className="text-gray-700 text-center max-w-xs mb-8">
+    <p className="text-vendly-ink text-center max-w-xs mb-8">
       {getSuccessDescription()}
     </p>
 

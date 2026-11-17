@@ -58,7 +58,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
     }] : []),
     {
       icon: <POSIcon />,
-      label: 'POS',
+      label: 'New sale',
       onClick: () => { onOpenPOS(); onClose(); }
     },
     {
@@ -83,7 +83,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
     },
     {
       icon: <LogoutIcon />,
-      label: 'Logout',
+      label: 'Log out',
       onClick: () => { setShowLogoutConfirm(true); }
     }
   ];
@@ -107,7 +107,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
         leaveTo="opacity-0"
         className="fixed inset-0"
       >
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+        <div className="fixed inset-0 bg-vendly-deep/55 backdrop-blur-sm" onClick={onClose} />
       </Transition.Child>
 
       {/* Panel */}
@@ -124,24 +124,15 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
             leave="transition transform ease-in duration-200"
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
-            className="w-72 h-full bg-white/90 border-r border-spark-border shadow-glass-lg px-6 flex flex-col"
+            className="w-72 h-full bg-vendly-light/95 border-r border-vendly-border shadow-glass-lg px-6 flex flex-col"
             style={{ paddingTop: 'env(safe-area-inset-top, 0px)', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-8 pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-16 h-16 flex items-center justify-center relative">
-                  <img
-                    src="/assets/ZapCart_Logo.png"
-                    alt="ZapCart"
-                    className="w-full h-full invert-0 brightness-0  object-contain"
-                  />
-                </div>
-                <h2 className="font-display text-xl font-bold text-black">ZapCart</h2>
-              </div>
+              <img src="/assets/vendly-logo.svg" alt="Vendly" className="h-9 w-auto" />
               <button
                 onClick={onClose}
-                className="p-2 -mr-2 text-gray-500 hover:text-spark-text-primary rounded-lg hover:bg-white/5 transition-colors"
+                className="p-2 -mr-2 text-vendly-muted hover:text-vendly-ink rounded-lg hover:bg-vendly-tint/60 transition-colors"
                 aria-label="Close"
               >
                 <CloseIcon />
@@ -155,8 +146,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
                   key={index}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     ('highlight' in item && item.highlight)
-                      ? 'text-spark-warning hover:text-spark-warning hover:bg-spark-warning/10'
-                      : 'text-gray-700 hover:text-gray-900 hover:bg-white/5'
+                      ? 'text-vendly-muted hover:text-vendly-muted hover:bg-vendly-muted/10'
+                      : 'text-vendly-ink hover:text-vendly-ink hover:bg-vendly-tint/60'
                   }`}
                   onClick={item.onClick}
                 >
@@ -167,9 +158,9 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
             </nav>
 
             {/* Footer */}
-            <div className="pt-6 pb-6 border-t border-spark-border">
-              <p className="text-xs text-gray-500 text-center">
-                Powered by Breez SDK
+            <div className="pt-6 pb-6 border-t border-vendly-border">
+              <p className="text-xs text-vendly-muted text-center">
+                Vendly · Payments by Breez
               </p>
             </div>
 
@@ -183,7 +174,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
                 leave="transition-opacity ease-in duration-100"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
-                className="fixed inset-0 bg-black/70"
+                className="fixed inset-0 bg-vendly-deep/60"
                 onClick={() => setShowLogoutConfirm(false)}
               />
               <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -195,36 +186,36 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
                   leave="transition transform ease-in duration-150"
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
-                  className="w-full max-w-sm bg-white border border-spark-border rounded-2xl p-6 shadow-glass-lg"
+                  className="w-full max-w-sm bg-vendly-light border border-vendly-border rounded-2xl p-6 shadow-glass-lg"
                 >
                   {/* Warning Icon */}
                   <div className="flex justify-center mb-4">
-                    <div className="w-14 h-14 rounded-full bg-amber-50 flex items-center justify-center">
-                      <AlertTriangleIcon className="w-7 h-7 text-spark-warning" />
+                    <div className="w-14 h-14 rounded-full bg-vendly-tint flex items-center justify-center">
+                      <AlertTriangleIcon className="w-7 h-7 text-vendly-muted" />
                     </div>
                   </div>
 
-                  <h3 className="font-display text-lg font-semibold text-black text-center mb-2">
-                    Logout Warning
+                  <h3 className="font-display text-lg font-semibold text-vendly-ink text-center mb-2">
+                    Log out of Vendly?
                   </h3>
-                  <p className="text-gray-700 text-sm text-center mb-6">
+                  <p className="text-vendly-muted text-sm text-center mb-6">
                     {isPasskey
-                      ? "You'll need to authenticate with the same passkey to access your funds again."
-                      : "Make sure you've saved your recovery phrase before logging out. You'll need it to access your funds again."}
+                      ? "You'll need to authenticate with the same passkey to open your business account again."
+                      : "Make sure you've saved your recovery phrase. You'll need it to access your account again."}
                   </p>
 
                   <div className="flex gap-3">
                     <button
                       onClick={() => setShowLogoutConfirm(false)}
-                      className="flex-1 px-4 py-3 border border-spark-border text-black rounded-xl font-medium hover:text-spark-text-primary hover:border-spark-border-light transition-colors"
+                      className="flex-1 px-4 py-3 border border-vendly-border text-vendly-ink rounded-xl font-medium hover:text-vendly-ink hover:border-vendly-green transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleConfirmLogout}
-                      className="flex-1 px-4 py-3 bg-spark-error text-white rounded-xl font-medium hover:bg-spark-error/90 transition-colors"
+                      className="flex-1 px-4 py-3 bg-vendly-ink text-vendly-light rounded-xl font-medium hover:bg-vendly-ink/90 transition-colors"
                     >
-                      Logout
+                      Log out
                     </button>
                   </div>
                 </Transition.Child>

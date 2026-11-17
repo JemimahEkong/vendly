@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56" role="img" aria-labelledby="title desc">
+  <title id="title">Vendly</title>
+  <desc id="desc">Vendly logo: a cream V with a rising stroke inside a deep green rounded square, beside the Vendly wordmark.</desc>
+  <rect x="4" y="4" width="48" height="48" rx="13" fill="#173F2B"/>
+  <path d="M15 17.5 26.2 39.4c1.1 2.1 4.1 2.1 5.2 0L35 32.2l8.4-15.6" fill="none" stroke="#F7F0D8" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M36.5 13h9.5v9.5" fill="none" stroke="#F7F0D8" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="none" stroke="#173F2B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M72 15 81.5 40 91 15"/>
+    <path d="M104 15h16M104 27.5h13M104 40h16M104 15v25"/>
+    <path d="M132 40V15l17 25V15"/>
+    <path d="M160 15v25h8.5c8 0 12-4.8 12-12.5S176.5 15 168.5 15H160"/>
+    <path d="M192 15v25h16"/>
+    <path d="m216 15 9 12 9-12M225 27v13"/>
+  </g>
+</svg>

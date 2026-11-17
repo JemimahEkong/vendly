@@ -117,17 +117,17 @@ const LnurlWorkflow: React.FC<LnurlWorkflowProps> = ({ parsed, balanceSats, onBa
   <div className="space-y-5">
     {/* Description */}
     <div className="text-center">
-      <p className="text-black font-medium">{description}</p>
+      <p className="text-vendly-ink font-medium">{description}</p>
     </div>
 
     {/* Amount input */}
     <div>
       <div className="flex items-center justify-between mb-2">
-        <label className="block text-sm font-medium text-black">
+        <label className="block text-sm font-medium text-vendly-ink">
           Amount (sats)
         </label>
 
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-vendly-muted">
           {minSats.toLocaleString('en-US').replace(/,/g, ' ')} – {maxSats.toLocaleString('en-US').replace(/,/g, ' ')}
         </span>
       </div>
@@ -137,7 +137,7 @@ const LnurlWorkflow: React.FC<LnurlWorkflowProps> = ({ parsed, balanceSats, onBa
         value={amount}
         onChange={(e) => { setAmount(e.target.value); setFeesIncluded(false); }}
         placeholder={`Between ${minSats.toLocaleString('en-US').replace(/,/g, ' ')} and ${maxSats.toLocaleString('en-US').replace(/,/g, ' ')} sats`}
-        className="w-full p-4 bg-white border border-gray-200 rounded-xl text-black placeholder:text-gray-500 focus:border-black focus:ring-2 focus:ring-gray-200 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="w-full p-4 bg-vendly-light border border-vendly-border rounded-xl text-vendly-ink placeholder:text-vendly-muted focus:border-vendly-deep focus:ring-2 focus:ring-vendly-border transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         disabled={isLoading}
         min={minSats}
         max={maxSats}
@@ -153,8 +153,8 @@ const LnurlWorkflow: React.FC<LnurlWorkflowProps> = ({ parsed, balanceSats, onBa
               onClick={() => { setAmount(String(quickAmount)); setFeesIncluded(false); }}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
                 amountNum === quickAmount && !isSendAll
-                  ? 'bg-black text-white'
-                  : 'bg-white border border-gray-200 text-gray-500 hover:text-black hover:border-gray-500'
+                  ? 'bg-vendly-deep text-vendly-light'
+                  : 'bg-vendly-light border border-vendly-border text-vendly-muted hover:text-vendly-ink hover:border-vendly-muted'
               }`}
             >
               <span className="inline-flex items-center">
@@ -169,8 +169,8 @@ const LnurlWorkflow: React.FC<LnurlWorkflowProps> = ({ parsed, balanceSats, onBa
             onClick={() => { setAmount(String(sendAllAmount)); setFeesIncluded(true); }}
             className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
               isSendAll
-                ? 'bg-black text-white'
-                : 'bg-white border border-gray-200 text-gray-500 hover:text-black hover:border-gray-500'
+                ? 'bg-vendly-deep text-vendly-light'
+                : 'bg-vendly-light border border-vendly-border text-vendly-muted hover:text-vendly-ink hover:border-vendly-muted'
             }`}
           >
             Send All
@@ -183,11 +183,11 @@ const LnurlWorkflow: React.FC<LnurlWorkflowProps> = ({ parsed, balanceSats, onBa
     {commentAllowed && (
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-medium text-black">
+          <label className="block text-sm font-medium text-vendly-ink">
             Comment (optional)
           </label>
 
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-vendly-muted">
             {comment.length}/{commentMaxLen}
           </span>
         </div>
@@ -196,7 +196,7 @@ const LnurlWorkflow: React.FC<LnurlWorkflowProps> = ({ parsed, balanceSats, onBa
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="Add a message..."
-          className="w-full p-4 bg-white border border-gray-200 rounded-xl text-black placeholder:text-gray-500 focus:border-black focus:ring-2 focus:ring-gray-200 resize-none transition-all"
+          className="w-full p-4 bg-vendly-light border border-vendly-border rounded-xl text-vendly-ink placeholder:text-vendly-muted focus:border-vendly-deep focus:ring-2 focus:ring-vendly-border resize-none transition-all"
           rows={3}
           maxLength={commentMaxLen}
           disabled={isLoading}

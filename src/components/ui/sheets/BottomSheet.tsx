@@ -281,7 +281,7 @@ export const BottomSheetContainer: React.FC<BottomSheetContainerProps> = ({
           leave="transition-opacity ease-in duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
-          className="absolute inset-0 bg-black/60 pointer-events-auto z-0"
+          className="absolute inset-0 bg-vendly-deep/55 pointer-events-auto z-0"
           onClick={onClose}
         />
       )}
@@ -347,7 +347,7 @@ export const BottomSheetCard = forwardRef<HTMLDivElement, BottomSheetCardProps>(
             if (typeof ref === 'function') ref(el);
             else if (ref) ref.current = el;
           }}
-          className={`relative bottom-sheet-card bg-spark-surface border-spark-border shadow-glass-lg overflow-hidden w-full ${_expanded ? 'h-full flex flex-col' : 'max-h-[85dvh] flex flex-col'} ${_isFullScreen ? 'rounded-none' : 'bottom-sheet-card-bordered'} ${className}`}
+          className={`relative bottom-sheet-card bg-vendly-light border-vendly-border shadow-glass-lg overflow-hidden w-full ${_expanded ? 'h-full flex flex-col' : 'max-h-[85dvh] flex flex-col'} ${_isFullScreen ? 'rounded-none' : 'bottom-sheet-card-bordered'} ${className}`}
         >
           {/* Handle hit area: large touch target, small visual indicator */}
           <div

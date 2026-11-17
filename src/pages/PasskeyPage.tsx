@@ -283,23 +283,23 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
   const renderReview = () => (
     <>
       <div className="flex justify-center mb-4">
-        <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center">
-          <PasskeyIcon size="xl" className="text-black" />
+        <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
+          <PasskeyIcon size="xl" className="text-vendly-deep" />
         </div>
       </div>
 
       <div className="text-center mb-4">
-        <h2 className="text-xl font-display font-bold text-black mb-2">
+        <h2 className="text-xl font-display font-bold text-vendly-ink mb-2">
           Create your passkey
         </h2>
-        <p className="text-gray-700">
-          A passkey will be created on your device to secure your funds.
+        <p className="text-vendly-ink">
+          Create a passkey on this device to protect your business account.
         </p>
       </div>
 
-      <AlertCard variant="warning" title="Your passkey is how you access your funds">
-        <p className="text-gray-700 text-sm">
-          Deleting your passkey from your device, browser, or password manager may make your funds permanently inaccessible.
+      <AlertCard variant="warning" title="Your passkey protects your account">
+        <p className="text-vendly-ink text-sm">
+          If you remove this passkey from your device, browser or password manager, you may lose access to your account.
         </p>
       </AlertCard>
 
@@ -317,17 +317,17 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
     return (
       <>
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center">
-            <NostrKeyIcon size="xl" className="text-black" />
+          <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
+            <NostrKeyIcon size="xl" className="text-vendly-deep" />
           </div>
         </div>
 
         <div className="text-center mb-4">
-          <h2 className="text-xl font-display font-bold text-black mb-2">
+          <h2 className="text-xl font-display font-bold text-vendly-ink mb-2">
             Select a label
           </h2>
-          <p className="text-gray-700 text-sm">
-            Select an existing label or create a new one to connect with.
+          <p className="text-vendly-ink text-sm">
+            Choose a label for this business account, or create a new one.
           </p>
         </div>
 
@@ -343,18 +343,18 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
               className={`
                 w-full p-4 rounded-2xl border text-left transition-all
                 ${selectedLabel === label && !showManualInput
-                  ? 'bg-white/90 border-white'
-                  : 'bg-white border-gray-100 hover:border-spark-border-light'
+                  ? 'bg-vendly-tint border-vendly-deep'
+                  : 'bg-vendly-light border-vendly-border hover:border-vendly-green'
                 }
               `}
             >
               <div className="flex items-center justify-between">
-                <span className="font-display font-medium text-black">
+                <span className="font-display font-medium text-vendly-ink">
                   {label}
                 </span>
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${selectedLabel === label && !showManualInput ? 'bg-spark-primary' : 'bg-transparent'}`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${selectedLabel === label && !showManualInput ? 'bg-vendly-deep' : 'bg-transparent'}`}>
                   {selectedLabel === label && !showManualInput && (
-                    <CheckIcon size="sm" className="text-black" />
+                    <CheckIcon size="sm" className="text-vendly-light" />
                   )}
                 </div>
               </div>
@@ -366,21 +366,21 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
             <button
               type="button"
               onClick={() => setShowManualInput(true)}
-              className="w-full p-4 rounded-2xl border bg-white border-gray-100 hover:border-spark-border-light text-left transition-all"
+              className="w-full p-4 rounded-2xl border bg-vendly-light border-vendly-border hover:border-vendly-green text-left transition-all"
             >
-              <span className="text-sm font-medium text-white">
+              <span className="text-sm font-medium text-vendly-ink">
                 Create a new label...
               </span>
             </button>
           ) : (
-            <div className="w-full p-4 rounded-2xl border transition-all bg-white/90 border-spark-primary">
+            <div className="w-full p-4 rounded-2xl border transition-all bg-vendly-light border-vendly-deep">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-vendly-ink">
                   Create a new label
                 </span>
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${trimmedManual && !isDuplicate ? 'bg-spark-primary' : 'bg-transparent'}`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${trimmedManual && !isDuplicate ? 'bg-vendly-deep' : 'bg-transparent'}`}>
                   {trimmedManual && !isDuplicate && (
-                    <CheckIcon size="sm" className="text-black" />
+                    <CheckIcon size="sm" className="text-vendly-light" />
                   )}
                 </div>
               </div>
@@ -395,11 +395,11 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
                 }}
                 placeholder="Label name"
                 maxLength={24}
-                className="w-full bg-white border border-spark-border rounded-xl px-3 py-2 text-black placeholder:text-spark-text-muted focus:outline-none focus:ring-2 focus:ring-spark-primary/50 focus:border-spark-primary text-sm"
+                className="w-full bg-vendly-light border border-vendly-border rounded-xl px-3 py-2 text-vendly-ink placeholder:text-vendly-muted focus:outline-none focus:ring-2 focus:ring-vendly-deep/50 focus:border-vendly-deep text-sm"
                 autoFocus
               />
               {isDuplicate && (
-                <p className="text-red-400 text-xs mt-1">
+                <p className="text-vendly-ink text-xs mt-1">
                   A label with this name already exists
                 </p>
               )}
@@ -411,7 +411,7 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
   };
 
   const renderSpinner = (text?: string) => (
-    <div className="flex flex-col items-center justify-center py-16 text-black">
+    <div className="flex flex-col items-center justify-center py-16 text-vendly-ink">
       <LoadingSpinner text={text} />
     </div>
   );
@@ -432,9 +432,9 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
       case 'auth-pick': return renderAuthPick();
       case 'connecting':
         if (error) return null;
-        return renderSpinner('Starting ZapCart...');
+        return renderSpinner('Starting Vendly...');
       case 'initializing':
-        return renderSpinner('Starting ZapCart...');
+        return renderSpinner('Starting Vendly...');
     }
   })();
 
@@ -515,7 +515,7 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
   // ============================================
 
   return (
-    <PageLayout onBack={onBack} footer={footer} title="Get Started">
+    <PageLayout onBack={onBack} footer={footer} title="Create account">
       <div className="max-w-xl mx-auto w-full flex flex-col min-h-full">
         {isNewUser && (
           <StepperBar stepCount={3} activeIndex={newUserStepIndex(phase)} />
@@ -524,7 +524,7 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
           {content}
           {error && (
             <AlertCard variant="error" title={error}>
-              <p className="text-gray-700 text-sm">
+              <p className="text-vendly-ink text-sm">
                 {phase === 'new-storing' || phase === 'connecting'
                   ? 'Please check your internet connection and try again.'
                   : 'Please ensure your device supports passkeys and is the correct device.'}

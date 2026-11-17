@@ -20,7 +20,7 @@ const BitcoinAddressDisplay: React.FC<Props> = ({ address, isLoading }) => {
   }
 
   return (
-  <div className="flex flex-col items-center gap-6 bg-white">
+  <div className="flex flex-col items-center gap-6 bg-vendly-light">
     <QRCodeContainer value={address} />
 
     <div className="w-full flex flex-col items-center gap-4">

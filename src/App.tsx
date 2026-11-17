@@ -45,7 +45,7 @@ const OfflineBadge: React.FC = () => {
 
   return (
     <div
-      className="fixed right-3 z-[200] flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-600 text-[11px] font-semibold shadow-sm pointer-events-none"
+      className="fixed right-3 z-[200] flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-vendly-light border border-vendly-border text-vendly-ink text-[11px] font-semibold shadow-sm pointer-events-none"
       style={{ top: 'calc(0.75rem + env(safe-area-inset-top, 0px))' }}
     >
       <WifiOff size={11} />
@@ -101,7 +101,7 @@ const AppContent: React.FC = () => {
   const renderCurrentScreen = () => {
     if (sdk.isLoading && currentScreen !== 'restore' && currentScreen !== 'passkey') {
       return (
-        <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-vendly-cream z-50 flex items-center justify-center">
           <LoadingSpinner />
         </div>
       );

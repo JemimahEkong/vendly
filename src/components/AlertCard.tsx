@@ -24,32 +24,32 @@ const variantStyles: Record<AlertVariant, {
   title: string;
 }> = {
   info: {
-    container: 'bg-spark-electric/10 border-spark-electric/30',
-    iconBg: 'bg-spark-electric/20',
-    title: 'text-spark-electric',
+    container: 'bg-vendly-tint border-vendly-border',
+    iconBg: 'bg-vendly-light',
+    title: 'text-vendly-ink',
   },
   warning: {
-    container: 'bg-spark-warning/10 border-spark-warning/30',
-    iconBg: 'bg-spark-warning/20',
-    title: 'text-spark-warning',
+    container: 'bg-vendly-cream border-vendly-border',
+    iconBg: 'bg-vendly-light',
+    title: 'text-vendly-ink',
   },
   success: {
-    container: 'bg-spark-success/10 border-spark-success/30',
-    iconBg: 'bg-spark-success/20',
-    title: 'text-spark-success',
+    container: 'bg-vendly-tint border-vendly-green/40',
+    iconBg: 'bg-vendly-light',
+    title: 'text-vendly-deep',
   },
   error: {
-    container: 'bg-spark-error/10 border-spark-error/30',
-    iconBg: 'bg-spark-error/20',
-    title: 'text-spark-error',
+    container: 'bg-vendly-cream border-vendly-ink/30',
+    iconBg: 'bg-vendly-light',
+    title: 'text-vendly-ink',
   },
 };
 
 const defaultIcons: Record<AlertVariant, ReactNode> = {
-  info: <InfoIcon size="md" className="text-spark-electric" />,
-  warning: <WarningIcon size="md" className="text-spark-warning" />,
-  success: <CheckCircleIcon size="md" className="text-spark-success" />,
-  error: <ErrorIcon size="md" className="text-spark-error" />,
+  info: <InfoIcon size="md" className="text-vendly-green" />,
+  warning: <WarningIcon size="md" className="text-vendly-deep" />,
+  success: <CheckCircleIcon size="md" className="text-vendly-deep" />,
+  error: <ErrorIcon size="md" className="text-vendly-ink" />,
 };
 
 export interface AlertCardProps {
@@ -109,17 +109,17 @@ export const SimpleAlert: React.FC<SimpleAlertProps> = ({
   dataTestId,
 }) => {
   const iconColors: Record<AlertVariant, string> = {
-    info: 'text-spark-electric',
-    warning: 'text-spark-warning',
-    success: 'text-spark-success',
-    error: 'text-spark-error',
+    info: 'text-vendly-green',
+    warning: 'text-vendly-muted',
+    success: 'text-vendly-deep',
+    error: 'text-vendly-ink',
   };
 
   const bgStyles: Record<AlertVariant, string> = {
-    info: 'bg-spark-electric/10 border-spark-electric/30 text-spark-electric-light',
-    warning: 'bg-spark-warning/10 border-spark-warning/30 text-spark-warning',
-    success: 'bg-spark-success/10 border-spark-success/30 text-spark-success',
-    error: 'bg-spark-error/10 border-spark-error/30 text-spark-error',
+    info: 'bg-vendly-tint border-vendly-border text-vendly-ink',
+    warning: 'bg-vendly-cream border-vendly-border text-vendly-ink',
+    success: 'bg-vendly-tint border-vendly-green/40 text-vendly-deep',
+    error: 'bg-vendly-cream border-vendly-ink/30 text-vendly-ink',
   };
 
   const icons: Record<AlertVariant, ReactNode> = {

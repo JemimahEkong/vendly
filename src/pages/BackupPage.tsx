@@ -67,19 +67,19 @@ const BackupPage: React.FC<BackupPageProps> = ({ onBack }) => {
   const words = mnemonic ? mnemonic.split(' ') : [];
 
   return (
-  <SlideInPage title="Backup" onClose={onBack} slideFrom="left">
-    <div className="p-4 bg-white">
+  <SlideInPage title="Account backup" onClose={onBack} slideFrom="left">
+    <div className="p-4 bg-vendly-cream">
       <div className="max-w-xl mx-auto w-full space-y-6">
         {/* Passkey info card */}
         {isPasskey && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div className="bg-vendly-light border border-vendly-border rounded-2xl p-6">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-                <FingerprintIcon size="md" className="text-black" />
+              <div className="w-10 h-10 rounded-xl bg-vendly-tint flex items-center justify-center flex-shrink-0">
+                <FingerprintIcon size="md" className="text-vendly-ink" />
               </div>
               <div>
-                <h4 className="font-medium text-black mb-1">Passkey Protected</h4>
-                <p className="text-gray-500 text-sm">
+                <h4 className="font-medium text-vendly-ink mb-1">Passkey Protected</h4>
+                <p className="text-vendly-muted text-sm">
                   Your recovery phrase is derived from your passkey. To restore on another device, use your passkey or the recovery phrase below.
                 </p>
               </div>
@@ -92,19 +92,19 @@ const BackupPage: React.FC<BackupPageProps> = ({ onBack }) => {
           <button
             onClick={handleRevealPasskey}
             disabled={isLoading}
-            className="w-full bg-white border border-gray-200 rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-gray-400 transition-colors disabled:opacity-50"
+            className="w-full bg-vendly-light border border-vendly-border rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-vendly-green transition-colors disabled:opacity-50"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
               {isLoading ? (
-                <SpinnerIcon size="xl" className="text-black" />
+                <SpinnerIcon size="xl" className="text-vendly-ink" />
               ) : (
-                <EyeIcon size="xl" className="text-black" />
+                <EyeIcon size="xl" className="text-vendly-ink" />
               )}
             </div>
-            <span className="font-display font-semibold text-black">
+            <span className="font-display font-semibold text-vendly-ink">
               {isLoading ? 'Authenticating...' : 'Tap to reveal phrase'}
             </span>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-vendly-muted">
               {isLoading ? 'Complete passkey authentication' : 'Requires passkey authentication'}
             </span>
           </button>
@@ -114,32 +114,32 @@ const BackupPage: React.FC<BackupPageProps> = ({ onBack }) => {
         {!isPasskey && !isRevealed && mnemonic && (
           <button
             onClick={() => setIsRevealed(true)}
-            className="w-full bg-white border border-gray-200 rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-gray-400 transition-colors"
+            className="w-full bg-vendly-light border border-vendly-border rounded-2xl p-8 flex flex-col items-center gap-4 hover:border-vendly-green transition-colors"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center">
-              <EyeIcon size="xl" className="text-black" />
+            <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
+              <EyeIcon size="xl" className="text-vendly-ink" />
             </div>
-            <span className="font-display font-semibold text-black">Tap to reveal phrase</span>
-            <span className="text-sm text-gray-500">Make sure no one is watching</span>
+            <span className="font-display font-semibold text-vendly-ink">Tap to reveal phrase</span>
+            <span className="text-sm text-vendly-muted">Make sure no one is watching</span>
           </button>
         )}
 
         {/* Error message (passkey only) */}
         {error && (
-          <div className="bg-gray-100 border border-gray-300 rounded-xl p-4 text-center">
-            <p className="text-black text-sm">{error}</p>
+          <div className="bg-vendly-tint border border-vendly-border rounded-xl p-4 text-center">
+            <p className="text-vendly-ink text-sm">{error}</p>
           </div>
         )}
 
         {/* Mnemonic word grid (shared) */}
         {isRevealed && mnemonic && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-4">
+          <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-700">Recovery Phrase</span>
+              <span className="text-sm font-medium text-vendly-ink">Recovery Phrase</span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleHide}
-                  className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-black border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium text-vendly-muted hover:text-vendly-ink border border-vendly-border rounded-lg hover:bg-vendly-tint transition-colors"
                 >
                   Hide
                 </button>
@@ -148,8 +148,8 @@ const BackupPage: React.FC<BackupPageProps> = ({ onBack }) => {
                   className={`
                     px-3 py-1.5 text-sm font-medium rounded-lg transition-all
                     ${copied
-                      ? 'bg-gray-100 text-black border border-gray-300'
-                      : 'bg-black text-white hover:bg-gray-800'
+                      ? 'bg-vendly-tint text-vendly-ink border border-vendly-border'
+                      : 'bg-vendly-deep text-vendly-light hover:bg-vendly-deep'
                     }
                   `}
                 >
@@ -162,12 +162,12 @@ const BackupPage: React.FC<BackupPageProps> = ({ onBack }) => {
               {words.map((word, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2"
+                  className="flex items-center gap-2 bg-vendly-tint rounded-lg px-3 py-2"
                 >
-                  <span className="text-gray-500 text-xs font-mono w-5 text-right">
+                  <span className="text-vendly-muted text-xs font-mono w-5 text-right">
                     {index + 1}.
                   </span>
-                  <span className="text-black font-mono text-sm font-medium">
+                  <span className="text-vendly-ink font-mono text-sm font-medium">
                     {word}
                   </span>
                 </div>
@@ -178,13 +178,13 @@ const BackupPage: React.FC<BackupPageProps> = ({ onBack }) => {
 
         {/* No backup found (mnemonic mode only) */}
         {!isPasskey && !mnemonic && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-8 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <WarningIcon size="xl" className="text-black" />
+          <div className="bg-vendly-light border border-vendly-border rounded-2xl p-8 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center mx-auto mb-4">
+              <WarningIcon size="xl" className="text-vendly-ink" />
             </div>
-            <h3 className="font-display font-semibold text-black mb-2">No Backup Found</h3>
-            <p className="text-gray-500 text-sm">
-              Could not find a recovery phrase for this wallet.
+            <h3 className="font-display font-semibold text-vendly-ink mb-2">No backup found</h3>
+            <p className="text-vendly-muted text-sm">
+              We could not find a recovery phrase for this account.
             </p>
           </div>
         )}

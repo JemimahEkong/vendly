@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Vendly</title>
+  <rect width="64" height="64" rx="14" fill="#173F2B"/>
+  <path d="M15 20 28.4 43.5c1.4 2.5 5.4 2.5 6.8 0l4.6-8.4L50 20" fill="none" stroke="#F7F0D8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M42 14h9v9" fill="none" stroke="#F7F0D8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

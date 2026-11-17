@@ -42,9 +42,9 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({ paymentData, feeSats, tit
   return (
     <div className="pt-8 space-y-6 flex flex-col items-center">
       <div className="text-center">
-        <h3 className="text-lg font-medium text-[rgb(var(--text-white))] mb-2">{title}</h3>
+        <h3 className="text-lg font-medium text-vendly-ink mb-2">{title}</h3>
         {description && (
-          <p className="text-[rgb(var(--text-white))] opacity-75 text-sm">{description}</p>
+          <p className="text-vendly-ink opacity-75 text-sm">{description}</p>
         )}
       </div>
 
@@ -55,7 +55,7 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({ paymentData, feeSats, tit
           text={paymentData}
           truncate
           showShare
-          label="Lightning Invoice"
+          label="Payment request"
           onCopied={() => showToast('success', 'Copied!')}
           onShareError={() => showToast('error', 'Failed to share')}
           data-testid="lightning-invoice-text"
@@ -72,7 +72,7 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({ paymentData, feeSats, tit
 };
 
 const OfflineBanner: React.FC = () => (
-  <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 border-b border-amber-100 text-amber-700 text-xs font-medium">
+  <div className="flex items-center gap-2 px-4 py-2 bg-vendly-tint border-b border-vendly-border text-vendly-ink text-xs font-medium">
     <WifiOff size={13} className="shrink-0" />
     <span>You're offline — saved addresses are shown from cache. Invoice generation requires a connection.</span>
   </div>
@@ -129,18 +129,18 @@ const ReceivePaymentDialog: React.FC<ReceivePaymentDialogProps> = ({ isOpen, onC
 
   const getQRTitle = () => {
     switch (receive.activeTab) {
-      case 'lightning': return 'Lightning Invoice';
-      case 'spark': return 'Spark Address';
-      case 'bitcoin': return 'Bitcoin Address';
+      case 'lightning': return 'Payment request';
+      case 'spark': return 'Spark address';
+      case 'bitcoin': return 'Bitcoin address';
       default: return 'Payment Request';
     }
   };
 
   const getQRDescription = () => {
     switch (receive.activeTab) {
-      case 'lightning': return 'Scan to pay this Lightning invoice';
+      case 'lightning': return 'Scan or share this request to get paid';
       case 'spark': return 'Use this address to receive payments';
-      case 'bitcoin': return 'Send Bitcoin to this address for automatic Lightning conversion';
+      case 'bitcoin': return 'Send Bitcoin to this address for automatic conversion';
       default: return '';
     }
   };
@@ -150,7 +150,7 @@ const ReceivePaymentDialog: React.FC<ReceivePaymentDialogProps> = ({ isOpen, onC
       <BottomSheetContainer isOpen={isOpen} onClose={onClose} showBackdrop>
         <BottomSheetCard>
           <DialogHeader
-            title="Receive"
+            title="Get paid"
             onClose={onClose}
             icon={<ArrowDownIcon />}
           />
@@ -162,7 +162,7 @@ const ReceivePaymentDialog: React.FC<ReceivePaymentDialogProps> = ({ isOpen, onC
             <TabList>
               <Tab isActive={receive.activeTab === 'lightning'} onClick={() => handleTabChange('lightning')} data-testid="lightning-tab">
                 <LightningBoltIcon size="sm" />
-                Lightning
+                Instant
               </Tab>
               <Tab isActive={receive.activeTab === 'bitcoin'} onClick={() => handleTabChange('bitcoin')} data-testid="bitcoin-tab">
                 <span className="font-bold text-sm">₿</span>
@@ -172,13 +172,13 @@ const ReceivePaymentDialog: React.FC<ReceivePaymentDialogProps> = ({ isOpen, onC
 
             <StepContainer>
               {receive.currentStep === 'loading_limits' && (
-                <div className="flex flex-col items-center justify-center h-40 bg-white">
+                <div className="flex flex-col items-center justify-center h-40 bg-vendly-light">
                   <LoadingSpinner />
                 </div>
               )}
 
               {receive.currentStep === 'input' && (
-                <div className="pt-6 bg-white">
+                <div className="pt-6 bg-vendly-light">
                   {receive.activeTab === 'lightning' && (
                     <LightningAddressDisplay
                       address={lightningAddress}
@@ -207,7 +207,7 @@ const ReceivePaymentDialog: React.FC<ReceivePaymentDialogProps> = ({ isOpen, onC
               )}
 
               {receive.currentStep === 'loading' && (
-                <div className="flex flex-col items-center justify-center h-40 bg-white" data-testid="invoice-generation-loading">
+                <div className="flex flex-col items-center justify-center h-40 bg-vendly-light" data-testid="invoice-generation-loading">
                   <LoadingSpinner text={`Generating ${getQRTitle().toLowerCase()}...`} />
                 </div>
               )}

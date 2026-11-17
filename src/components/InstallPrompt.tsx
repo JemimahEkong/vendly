@@ -85,33 +85,32 @@ const InstallPrompt: React.FC<InstallPromptProps> = ({ onClose }) => {
     leaveTo="translate-y-full opacity-0"
     className="fixed bottom-4 left-4 right-4 z-40 max-w-md mx-auto"
   >
-    <div className="bg-white border border-gray-300 rounded-2xl p-4 shadow-lg">
+    <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4 shadow-glass-lg">
       <div className="flex items-start gap-3">
-        {/* Download icon */}
-        <div className="flex-shrink-0 w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-          <DownloadIcon className="text-black" />
+        <div className="flex-shrink-0 w-10 h-10 bg-vendly-deep rounded-xl flex items-center justify-center">
+          <DownloadIcon className="text-vendly-light" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="font-display font-semibold text-black text-sm">
-            Install ZapCart
+          <h3 className="font-display font-semibold text-vendly-ink text-sm">
+            Install Vendly
           </h3>
-          <p className="text-xs text-gray-500 mt-1">
-            Add to your home screen for quick access and a better experience.
+          <p className="text-xs text-vendly-muted mt-1">
+            Keep your business tools one tap away on your home screen.
           </p>
 
           <div className="flex gap-2 mt-3">
             <button
               onClick={handleInstall}
               disabled={isInstalling}
-              className="flex-1 px-3 py-2 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-700 transition-colors disabled:opacity-50"
+              className="flex-1 px-3 py-2 bg-vendly-deep text-vendly-light text-sm font-semibold rounded-xl hover:bg-vendly-green transition-colors disabled:opacity-50"
             >
               {isInstalling ? 'Installing...' : 'Install'}
             </button>
             <button
               onClick={handleDismiss}
               disabled={isInstalling}
-              className="px-3 py-2 text-gray-500 text-sm font-medium hover:text-gray-700 transition-colors"
+              className="px-3 py-2 text-vendly-muted text-sm font-medium hover:text-vendly-ink transition-colors"
             >
               Not now
             </button>
@@ -121,7 +120,7 @@ const InstallPrompt: React.FC<InstallPromptProps> = ({ onClose }) => {
         {/* Close button */}
         <button
           onClick={handleDismiss}
-          className="flex-shrink-0 p-1 text-gray-500 hover:text-gray-700 transition-colors"
+          className="flex-shrink-0 p-1 text-vendly-muted hover:text-vendly-ink transition-colors"
         >
           <CloseIcon size="sm" />
         </button>

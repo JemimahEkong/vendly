@@ -79,49 +79,57 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="h-[100dvh] bg-slate-50 flex flex-col overflow-hidden">
+    <div className="h-[100dvh] bg-vendly-cream flex flex-col overflow-hidden">
 
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-white">
-        <button onClick={onBack} className="text-black font-medium">Back</button>
-        <h1 className="text-lg font-bold text-black">Sales</h1>
+      <div
+        className="flex items-center justify-between px-4 py-4 border-b border-vendly-border bg-vendly-cream/95"
+        style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top, 0px))' }}
+      >
+        <button onClick={onBack} className="text-vendly-deep font-semibold text-sm">Back</button>
+        <h1 className="text-lg font-bold text-vendly-ink">Sales</h1>
         <div className="w-12" />
       </div>
 
       {/* Summary cards */}
       <div className="p-4 grid grid-cols-2 gap-3">
-        <div className="bg-white rounded-2xl p-4 border shadow-sm">
+        <div className="bg-vendly-light rounded-2xl p-4 border border-vendly-border">
           <div className="flex items-center gap-2 mb-2">
-            <TrendingUp size={16} className="text-gray-400" />
-            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Today</p>
+            <TrendingUp size={16} className="text-vendly-muted" />
+            <p className="text-xs text-vendly-muted font-medium uppercase tracking-wide">Today</p>
           </div>
-          <p className="text-xl font-bold text-black">{formatSats(todaySats)}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{formatCurrencyFromSats(todaySats)}</p>
+          <p className="text-xl font-bold text-vendly-ink">{formatCurrencyFromSats(todaySats)}</p>
+          <p className="text-xs text-vendly-muted mt-0.5">{formatSats(todaySats)}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-4 border shadow-sm">
+        <div className="bg-vendly-light rounded-2xl p-4 border border-vendly-border">
           <div className="flex items-center gap-2 mb-2">
-            <ShoppingBag size={16} className="text-gray-400" />
-            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">All Time</p>
+            <ShoppingBag size={16} className="text-vendly-muted" />
+            <p className="text-xs text-vendly-muted font-medium uppercase tracking-wide">All time</p>
           </div>
-          <p className="text-xl font-bold text-black">{formatSats(allTimeSats)}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{sales.length} sale{sales.length !== 1 ? 's' : ''}</p>
+          <p className="text-xl font-bold text-vendly-ink">{formatCurrencyFromSats(allTimeSats)}</p>
+          <p className="text-xs text-vendly-muted mt-0.5">{sales.length} sale{sales.length !== 1 ? "s" : ""}</p>
         </div>
       </div>
 
       {/* Sales list grouped by day */}
       <div className="flex-1 overflow-y-auto px-4 pb-8 space-y-4">
         {sales.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-            <ShoppingBag size={40} className="mb-3 opacity-30" />
-            <p className="text-sm">No sales yet</p>
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <img
+              src="/illustrations/business-growth.svg"
+              alt=""
+              className="w-full max-w-[290px] h-auto mb-4"
+            />
+            <h2 className="font-display font-semibold text-vendly-ink mb-1">No sales yet</h2>
+            <p className="text-sm text-vendly-muted max-w-xs">Complete your first sale in Vendly and your daily revenue will appear here.</p>
           </div>
         ) : (
           dayGroups.map((group) => {
             const isDayExpanded = expandedDays.has(group.dateKey);
 
             return (
-              <div key={group.dateKey} className="bg-white rounded-2xl border shadow-sm overflow-hidden">
+              <div key={group.dateKey} className="bg-vendly-light rounded-2xl border border-vendly-border overflow-hidden">
 
                 {/* Day header — tap to expand/collapse */}
                 <button
@@ -129,43 +137,43 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
                   className="w-full flex items-center justify-between p-4 text-left"
                 >
                   <div>
-                    <p className="font-bold text-black">{group.label}</p>
+                    <p className="font-bold text-vendly-ink">{group.label}</p>
                     <div className="flex items-center gap-3 mt-0.5">
-                      <p className="text-sm text-gray-500">{group.sales.length} sale{group.sales.length !== 1 ? 's' : ''}</p>
-                      <span className="text-gray-300">·</span>
-                      <p className="text-sm text-gray-500">{group.itemsSold} item{group.itemsSold !== 1 ? 's' : ''}</p>
+                      <p className="text-sm text-vendly-muted">{group.sales.length} sale{group.sales.length !== 1 ? 's' : ''}</p>
+                      <span className="text-vendly-border">·</span>
+                      <p className="text-sm text-vendly-muted">{group.itemsSold} item{group.itemsSold !== 1 ? 's' : ''}</p>
                     </div>
                   </div>
 
                   <div className="text-right flex items-center gap-3">
                     <div>
-                      <p className="font-bold text-black">{formatSats(group.totalSats)}</p>
-                      <p className="text-xs text-gray-500">{formatCurrencyFromSats(group.totalSats)}</p>
+                      <p className="font-bold text-vendly-ink">{formatCurrencyFromSats(group.totalSats)}</p>
+                      <p className="text-xs text-vendly-muted">{formatSats(group.totalSats)}</p>
                     </div>
                     {isDayExpanded
-                      ? <ChevronUp size={16} className="text-gray-400 shrink-0" />
-                      : <ChevronDown size={16} className="text-gray-400 shrink-0" />
+                      ? <ChevronUp size={16} className="text-vendly-muted shrink-0" />
+                      : <ChevronDown size={16} className="text-vendly-muted shrink-0" />
                     }
                   </div>
                 </button>
 
                 {/* Daily P&L breakdown */}
                 {isDayExpanded && (
-                  <div className="border-t border-gray-100">
+                  <div className="border-t border-vendly-border">
 
                     {/* P&L summary row */}
-                    <div className="px-4 py-3 bg-slate-50 flex items-center justify-between text-xs text-gray-500">
+                    <div className="px-4 py-3 bg-vendly-cream flex items-center justify-between text-xs text-vendly-muted">
                       <span className="flex items-center gap-1">
                         <TrendingUp size={12} />
                         Revenue ({group.sales.length} transactions)
                       </span>
-                      <span className="font-semibold text-black">
+                      <span className="font-semibold text-vendly-ink">
                         {formatCurrencyFromSats(group.totalSats)} · {formatSats(group.totalSats)}
                       </span>
                     </div>
 
                     {/* Individual sales */}
-                    <div className="divide-y divide-gray-100">
+                    <div className="divide-y divide-vendly-border">
                       {group.sales.map((sale) => {
                         const isSaleExpanded = expandedSales.has(sale.id);
                         const saleTime = new Date(sale.createdAt).toLocaleTimeString(undefined, {
@@ -178,35 +186,35 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
                             {/* Sale row */}
                             <button
                               onClick={() => toggleSale(sale.id)}
-                              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors"
+                              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-vendly-cream transition-colors"
                             >
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-                                  <Package size={14} className="text-gray-500" />
+                                <div className="w-8 h-8 rounded-full bg-vendly-tint flex items-center justify-center shrink-0">
+                                  <Package size={14} className="text-vendly-muted" />
                                 </div>
                                 <div>
-                                  <p className="text-sm font-medium text-black">
+                                  <p className="text-sm font-medium text-vendly-ink">
                                     {sale.items.length} item{sale.items.length !== 1 ? 's' : ''}
                                   </p>
-                                  <p className="text-xs text-gray-400">{saleTime}</p>
+                                  <p className="text-xs text-vendly-muted">{saleTime}</p>
                                 </div>
                               </div>
 
                               <div className="flex items-center gap-2">
                                 <div className="text-right">
-                                  <p className="text-sm font-semibold text-black">{formatSats(sale.totalSats)}</p>
-                                  <p className="text-xs text-gray-500">{formatCurrencyFromSats(sale.totalSats)}</p>
+                                  <p className="text-sm font-semibold text-vendly-ink">{formatCurrencyFromSats(sale.totalSats)}</p>
+                                  <p className="text-xs text-vendly-muted">{formatSats(sale.totalSats)}</p>
                                 </div>
                                 {isSaleExpanded
-                                  ? <ChevronUp size={14} className="text-gray-400" />
-                                  : <ChevronDown size={14} className="text-gray-400" />
+                                  ? <ChevronUp size={14} className="text-vendly-muted" />
+                                  : <ChevronDown size={14} className="text-vendly-muted" />
                                 }
                               </div>
                             </button>
 
                             {/* Expanded sale items */}
                             {isSaleExpanded && (
-                              <div className="px-4 pb-3 space-y-2 bg-slate-50">
+                              <div className="px-4 pb-3 space-y-2 bg-vendly-cream">
                                 {sale.items.map((item) => (
                                   <div key={item.id} className="flex items-center gap-3">
                                     <img
@@ -215,10 +223,10 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
                                       className="w-10 h-10 rounded-lg object-cover shrink-0"
                                     />
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-sm font-medium text-black truncate">{item.name}</p>
-                                      <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                                      <p className="text-sm font-medium text-vendly-ink truncate">{item.name}</p>
+                                      <p className="text-xs text-vendly-muted">Qty: {item.quantity}</p>
                                     </div>
-                                    <p className="text-sm font-semibold text-black shrink-0">
+                                    <p className="text-sm font-semibold text-vendly-ink shrink-0">
                                       {formatCurrencyFromSats(item.pricesats * item.quantity)}
                                     </p>
                                   </div>

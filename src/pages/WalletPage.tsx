@@ -180,12 +180,6 @@ const WalletPage: React.FC<WalletPageProps> = ({
 
   return (
     <div className="flex flex-col h-[calc(100dvh)] relative overflow-hidden">
-      {/* Atmospheric background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-white blur-3xl" />
-        <div className="absolute bottom-1/4 right-0 w-[300px] h-[300px] bg-white blur-3xl" />
-      </div>
-
       {/* Fixed header */}
       <div className="sticky top-0 z-10">
         <CollapsingWalletHeader
@@ -264,7 +258,7 @@ const WalletPage: React.FC<WalletPageProps> = ({
           data-testid="send-button"
         >
           <ArrowUpIcon />
-          <span>Send</span>
+          <span>Send money</span>
         </button>
 
         {/* QR Scanner button - viewfinder style */}
@@ -288,7 +282,7 @@ const WalletPage: React.FC<WalletPageProps> = ({
           data-testid="receive-button"
         >
           <ArrowDownIcon />
-          <span>Receive</span>
+          <span>Get paid</span>
         </button>
       </div>
 

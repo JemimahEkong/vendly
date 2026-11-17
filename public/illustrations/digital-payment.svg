@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="title desc">
+  <title id="title">Digital payments</title>
+  <desc id="desc">A phone and payment terminal confirm a successful Naira payment.</desc>
+  <rect width="400" height="300" rx="26" fill="#FFFDF5"/>
+  <circle cx="198" cy="149" r="108" fill="#EEF1E4"/>
+  <rect x="138" y="43" width="126" height="211" rx="24" fill="#173F2B"/>
+  <rect x="151" y="63" width="100" height="162" rx="11" fill="#F7F0D8"/>
+  <circle cx="201" cy="52" r="4" fill="#F7F0D8" opacity=".7"/>
+  <path d="M176 92h50M176 104h38" stroke="#5C6B60" stroke-width="4" stroke-linecap="round" opacity=".5"/>
+  <circle cx="201" cy="145" r="29" fill="#386B4B"/>
+  <path d="m187 145 9 9 19-21" fill="none" stroke="#F7F0D8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="201" y="197" text-anchor="middle" fill="#173F2B" font-family="'Plus Jakarta Sans',sans-serif" font-size="23" font-weight="800">₦ 8,500</text>
+  <path d="M180 211h42" stroke="#DFE3D2" stroke-width="3" stroke-linecap="round"/>
+  <rect x="59" y="128" width="70" height="96" rx="13" fill="#F7F0D8" stroke="#173F2B" stroke-width="4"/>
+  <rect x="69" y="145" width="50" height="39" rx="5" fill="#EEF1E4"/>
+  <path d="M78 159h31M78 170h22" stroke="#386B4B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M78 197h31" stroke="#173F2B" stroke-width="4" stroke-linecap="round"/>
+  <path d="M264 150c19-7 33-21 39-41M269 173c24 0 45-10 58-28M269 199c18 5 35 2 50-10" fill="none" stroke="#386B4B" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 9"/>
+  <circle cx="310" cy="95" r="22" fill="#386B4B"/>
+  <path d="M301 95h18M310 86v18" stroke="#F7F0D8" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M309 237c-21 0-39-7-52-21" fill="none" stroke="#173F2B" stroke-width="4" stroke-linecap="round" opacity=".35"/>
+  <path d="M57 266h284" stroke="#173F2B" stroke-width="4" stroke-linecap="round" opacity=".3"/>
+</svg>

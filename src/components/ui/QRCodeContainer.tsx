@@ -13,10 +13,10 @@ export const QRCodeContainer: React.FC<{
   <div className={`relative ${className}`}>
     {/* Decorative corners */}
     <div className="absolute -inset-3 pointer-events-none">
-      <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-spark-primary/50 rounded-tl-lg" />
-      <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-spark-primary/50 rounded-tr-lg" />
-      <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-spark-primary/50 rounded-bl-lg" />
-      <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-spark-primary/50 rounded-br-lg" />
+      <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-vendly-deep/50 rounded-tl-lg" />
+      <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-vendly-deep/50 rounded-tr-lg" />
+      <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-vendly-deep/50 rounded-bl-lg" />
+      <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-vendly-deep/50 rounded-br-lg" />
     </div>
     <div className="qr-container">
       <QRCode value={value} size={size} />

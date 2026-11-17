@@ -17,16 +17,15 @@ export default defineConfig({
       registerType: 'autoUpdate',
 
       workbox: {
-   maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
-
-  globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
 
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'google-fonts-cache',
+              cacheName: 'vendly-google-fonts',
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365,
@@ -40,27 +39,42 @@ export default defineConfig({
       },
 
       manifest: {
-        name: 'Breez POS',
-        short_name: 'BreezPOS',
-        description: 'Bitcoin Lightning Point of Sale',
-        theme_color: '#000000',
-        background_color: '#ffffff',
+        name: 'Vendly',
+        short_name: 'Vendly',
+        id: '/',
+        description: 'Sales, inventory and payments for Nigerian merchants.',
+        theme_color: '#F7F0D8',
+        background_color: '#F7F0D8',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
+        categories: ['business', 'productivity', 'shopping'],
 
         icons: [
           {
-            src: '/icons/icon-192x192.png',
+            src: '/icons/vendly-icon-192.png',
             sizes: '192x192',
             type: 'image/png',
+            purpose: 'any',
           },
           {
-            src: '/icons/icon-512x512.png',
+            src: '/icons/vendly-icon-512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable',
+            purpose: 'any',
+          },
+          {
+            src: '/icons/vendly-icon-maskable-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+          {
+            src: '/icons/vendly-icon-maskable-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
           },
         ],
       },

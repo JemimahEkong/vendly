@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="title desc">
+  <title id="title">Business activity</title>
+  <desc id="desc">A merchant records sales in a ledger beside a phone and stocked boxes.</desc>
+  <rect width="400" height="300" rx="26" fill="#FFFDF5"/>
+  <circle cx="204" cy="147" r="107" fill="#EEF1E4"/>
+  <rect x="71" y="184" width="258" height="19" rx="5" fill="#386B4B"/>
+  <path d="M84 203h232v44H84z" fill="#173F2B"/>
+  <path d="M101 211h29M101 222h48" stroke="#F7F0D8" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+  <circle cx="174" cy="99" r="25" fill="#F7F0D8" stroke="#173F2B" stroke-width="3.5"/>
+  <path d="M150 89c2-19 15-31 33-27 14 3 22 13 23 27-16-8-32-9-56 0z" fill="#173F2B"/>
+  <path d="M164 98a3 3 0 1 0 0 .1M182 98a3 3 0 1 0 0 .1M169 110c4 3 8 3 12 0" fill="none" stroke="#243329" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M142 126c17-12 38-12 55 0l11 58h-76z" fill="#386B4B"/>
+  <path d="M155 127c7 8 18 10 29 4" fill="none" stroke="#F7F0D8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M123 157c-14 5-23 16-26 32l-4 20 18 4 8-24 13-17z" fill="#386B4B" stroke="#173F2B" stroke-width="3.5"/>
+  <path d="M218 154c15 11 23 24 24 40v13h-18l-8-26-13-12z" fill="#386B4B" stroke="#173F2B" stroke-width="3.5"/>
+  <rect x="145" y="177" width="86" height="55" rx="5" fill="#F7F0D8" stroke="#173F2B" stroke-width="4"/>
+  <path d="M158 190h54M158 201h61M158 212h45M158 223h50" stroke="#5C6B60" stroke-width="3" stroke-linecap="round"/>
+  <path d="M196 181c0-8 5-13 11-13" fill="none" stroke="#173F2B" stroke-width="3" stroke-linecap="round"/>
+  <rect x="240" y="151" width="31" height="53" rx="6" fill="#173F2B"/>
+  <rect x="245" y="160" width="21" height="30" rx="2" fill="#F7F0D8"/>
+  <path d="M250 169h11M250 177h7" stroke="#386B4B" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="255" cy="197" r="2.5" fill="#F7F0D8"/>
+  <rect x="291" y="153" width="43" height="34" rx="5" fill="#386B4B" stroke="#173F2B" stroke-width="3.5"/>
+  <path d="M300 153v-8h25v8M300 164h25" stroke="#173F2B" stroke-width="3" stroke-linecap="round"/>
+  <rect x="91" y="134" width="42" height="50" rx="5" fill="#F7F0D8" stroke="#173F2B" stroke-width="3.5"/>
+  <path d="M100 147h24M100 157h17M100 167h22" stroke="#386B4B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M59 260h282" stroke="#173F2B" stroke-width="4" stroke-linecap="round" opacity=".3"/>
+</svg>

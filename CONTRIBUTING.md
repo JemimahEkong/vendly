@@ -1,8 +1,8 @@
-# Contributing to ZapCart
+# Contributing to Vendly
 
-Thank you for your interest in contributing to ZapCart.
+Thank you for your interest in contributing to Vendly.
 
-ZapCart is built to simplify commerce for small businesses and everyday traders by combining Bitcoin Lightning payments with lightweight merchant tools. Every contribution helps improve accessibility, usability, and financial tools for merchants operating in low-tech environments.
+Vendly is built to simplify commerce for small businesses and everyday traders by combining Bitcoin Lightning payments with lightweight merchant tools. Every contribution helps improve accessibility, usability, and financial tools for merchants operating in low-tech environments.
 
 This document provides guidelines and information for contributors.
 
@@ -138,9 +138,9 @@ When your work is complete:
 ## Fork and Clone the Repository
 
 ```bash id="50b4ju"
-git clone https://github.com/your-org/zapcart.git
+git clone https://github.com/JemimahEkong/vendly.git
 
-cd zapcart
+cd vendly
 ```
 
 ---
@@ -148,7 +148,7 @@ cd zapcart
 ## Add Upstream Remote
 
 ```bash id="xqf9uh"
-git remote add upstream https://github.com/your-org/zapcart.git
+git remote add upstream https://github.com/JemimahEkong/vendly.git
 ```
 
 ---
@@ -278,7 +278,7 @@ export function Button({ label, onClick }: ButtonProps) {
 
 ## State Management
 
-ZapCart uses Zustand for state management.
+Vendly uses Zustand for state management.
 
 Guidelines:
 
@@ -514,12 +514,12 @@ If you need help:
 
 # License
 
-By contributing to ZapCart, you agree that your contributions will be licensed under the MIT License.
+By contributing to Vendly, you agree that your contributions will be licensed under the MIT License.
 
 ---
 
 # Thank You
 
-Thank you for contributing to ZapCart.
+Thank you for contributing to Vendly.
 
 Your contributions help build simpler, faster, and more accessible commerce tools for small businesses and everyday merchants.

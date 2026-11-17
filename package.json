@@ -1,7 +1,13 @@
 {
-  "name": "wasm-example-app",
+  "name": "vendly",
+  "description": "Vendly — merchant sales, inventory and payment tools for Nigerian businesses.",
   "private": true,
   "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JemimahEkong/vendly.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

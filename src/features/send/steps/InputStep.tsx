@@ -86,20 +86,20 @@ const InputStep: React.FC<InputStepProps> = ({ paymentInput, selectedContactAddr
     <div className="relative">
       {selectedContact ? (
         // Selected contact chip
-        <div className="w-full p-3 bg-white border border-gray-200 rounded-xl flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-            <span className="text-black font-display font-bold text-xs">
+        <div className="w-full p-3 bg-vendly-light border border-vendly-border rounded-xl flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-vendly-tint flex items-center justify-center flex-shrink-0">
+            <span className="text-vendly-ink font-display font-bold text-xs">
               {selectedContact.name.charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-black truncate">{selectedContact.name}</p>
-            <p className="text-xs text-gray-500 truncate font-mono">{selectedContact.paymentIdentifier}</p>
+            <p className="text-sm font-medium text-vendly-ink truncate">{selectedContact.name}</p>
+            <p className="text-xs text-vendly-muted truncate font-mono">{selectedContact.paymentIdentifier}</p>
           </div>
           <button
             onClick={handleClearContact}
             disabled={isLoading}
-            className="p-1 text-gray-500 hover:text-black rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
+            className="p-1 text-vendly-muted hover:text-vendly-ink rounded-lg hover:bg-vendly-tint transition-colors flex-shrink-0"
             aria-label="Clear contact"
           >
             <CloseIcon size="sm" />
@@ -114,7 +114,7 @@ const InputStep: React.FC<InputStepProps> = ({ paymentInput, selectedContactAddr
             onFocus={() => setIsInputFocused(true)}
             onBlur={() => setTimeout(() => setIsInputFocused(false), 100)}
             placeholder="lnbc... / bc1... / sp1... / user@domain.com / contact"
-            className={`w-full p-4 bg-white border border-gray-200 text-black placeholder-gray-500 focus:border-black focus:ring-0 resize-none font-mono text-sm transition-all ${
+            className={`w-full p-4 bg-vendly-light border border-vendly-border text-vendly-ink placeholder-vendly-muted focus:border-vendly-deep focus:ring-0 resize-none font-mono text-sm transition-all ${
               showDropdown ? 'rounded-t-xl rounded-b-none border-b-0' : 'rounded-xl'
             }`}
             rows={2}
@@ -143,7 +143,7 @@ const InputStep: React.FC<InputStepProps> = ({ paymentInput, selectedContactAddr
       <button
         onClick={handlePaste}
         disabled={isLoading}
-        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-700 hover:text-black hover:border-gray-300 transition-colors disabled:opacity-50"
+        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-vendly-light border border-vendly-border rounded-xl text-vendly-ink hover:text-vendly-ink hover:border-vendly-border transition-colors disabled:opacity-50"
       >
         <ClipboardIcon size="xs" />
         <span className="text-sm font-medium">Paste</span>
@@ -151,7 +151,7 @@ const InputStep: React.FC<InputStepProps> = ({ paymentInput, selectedContactAddr
       <button
         onClick={onScanQr}
         disabled={isLoading}
-        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-700 hover:text-black hover:border-gray-300 transition-colors disabled:opacity-50"
+        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-vendly-light border border-vendly-border rounded-xl text-vendly-ink hover:text-vendly-ink hover:border-vendly-border transition-colors disabled:opacity-50"
       >
         <QrCodeIcon size="xs" />
         <span className="text-sm font-medium">Scan</span>
@@ -159,7 +159,7 @@ const InputStep: React.FC<InputStepProps> = ({ paymentInput, selectedContactAddr
       <button
         onClick={onOpenContacts}
         disabled={isLoading}
-        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-700 hover:text-black hover:border-gray-300 transition-colors disabled:opacity-50"
+        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-vendly-light border border-vendly-border rounded-xl text-vendly-ink hover:text-vendly-ink hover:border-vendly-border transition-colors disabled:opacity-50"
       >
         <ContactsIcon size="xs" />
         <span className="text-sm font-medium">Contacts</span>

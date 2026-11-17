@@ -26,14 +26,14 @@ const StepperBar: React.FC<StepperBarProps> = ({ stepCount, activeIndex }) => (
     <div
       className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
         isCompleted
-          ? 'bg-black text-white'
+          ? 'bg-vendly-deep text-vendly-light'
           : isActive
-            ? 'bg-gray-100 border-2 border-black text-black'
-            : 'border-2 border-gray-300 text-gray-500'
+            ? 'bg-vendly-tint border-2 border-vendly-deep text-vendly-ink'
+            : 'border-2 border-vendly-border text-vendly-muted'
       }`}
     >
       {isCompleted ? (
-        <CheckIcon size="xs" className="text-white" />
+        <CheckIcon size="xs" className="text-vendly-light" />
       ) : (
         index + 1
       )}
@@ -43,7 +43,7 @@ const StepperBar: React.FC<StepperBarProps> = ({ stepCount, activeIndex }) => (
     {index < stepCount - 1 && (
       <div
         className={`flex-1 h-px mx-2 transition-colors duration-300 ${
-          index < activeIndex ? 'bg-black' : 'bg-gray-300'
+          index < activeIndex ? 'bg-vendly-deep' : 'bg-vendly-border'
         }`}
       />
     )}

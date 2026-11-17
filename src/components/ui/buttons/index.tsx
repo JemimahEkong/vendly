@@ -22,7 +22,7 @@ export const PrimaryButton: React.FC<ButtonProps> = ({
     type="button"
     onClick={onClick}
     disabled={disabled}
-    className={`button bg-black text-white hover:bg-gray-700 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+    className={`button bg-vendly-deep text-vendly-light hover:bg-vendly-green ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
     {...props}
   >
     {children}
@@ -40,7 +40,7 @@ export const SecondaryButton: React.FC<ButtonProps> = ({
     type="button"
     onClick={onClick}
     disabled={disabled}
-    className={`py-3 font-display font-semibold text-black border border-gray-300 rounded-xl hover:text-black hover:border-gray-400 transition-colors disabled:opacity-50 ${className}`}
+    className={`py-3 font-display font-semibold text-vendly-ink border border-vendly-border rounded-xl hover:text-vendly-ink hover:border-vendly-green transition-colors disabled:opacity-50 ${className}`}
     {...props}
   >
     {children}
@@ -62,7 +62,7 @@ export const FloatingIconButton: React.FC<FloatingIconButtonProps> = ({
   <button
     type="button"
     onClick={onClick}
-    className={`p-3 rounded-full bg-white hover:bg-gray-100 text-black backdrop-blur-sm transition-colors border border-gray-300 ${className}`}
+    className={`p-3 rounded-full bg-vendly-light hover:bg-vendly-tint text-vendly-ink backdrop-blur-sm transition-colors border border-vendly-border ${className}`}
     {...props}
   >
     {icon}
@@ -77,7 +77,7 @@ export const TextButton: React.FC<Omit<ButtonProps, 'disabled'>> = ({
 }) => (
   <button
     onClick={onClick}
-    className={`text-gray-500 text-xs hover:text-gray-700 transition-colors ${className}`}
+    className={`text-vendly-muted text-xs hover:text-vendly-ink transition-colors ${className}`}
     {...props}
   >
     {children}

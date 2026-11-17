@@ -18,7 +18,7 @@ export const FormLabel: React.FC<{
   htmlFor: string;
   children: ReactNode;
 }> = ({ htmlFor, children }) => (
-  <label htmlFor={htmlFor} className="block text-sm font-medium text-spark-text-secondary mb-1">
+  <label htmlFor={htmlFor} className="block text-sm font-medium text-vendly-muted mb-1">
     {children}
   </label>
 );
@@ -26,7 +26,7 @@ export const FormLabel: React.FC<{
 export const FormDescription: React.FC<{
   children: ReactNode;
 }> = ({ children }) => (
-  <p className="text-sm text-spark-text-muted">
+  <p className="text-sm text-vendly-muted">
     {children}
   </p>
 );
@@ -64,13 +64,13 @@ export const FormInput: React.FC<FormInputProps> = ({
     onKeyDown={onKeyDown}
    className={`
   w-full
-  bg-white
-  border border-spark-border
+  bg-vendly-light
+  border border-vendly-border
   rounded-xl
   px-4 py-3
-  text-gray-900
-  placeholder:text-gray-500
-  focus:border-spark-primary
+  text-vendly-ink
+  placeholder:text-vendly-muted
+  focus:border-vendly-deep
   focus:ring-0
   transition-all
   ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
@@ -102,7 +102,7 @@ export const FormTextarea: React.FC<FormTextareaProps> = ({
   <textarea
     value={value}
     onChange={onChange}
-    className={`w-full bg-white border border-spark-border rounded-xl px-4 py-3 text-spark-text-primary placeholder-spark-text-muted focus:border-spark-primary focus:ring-0 transition-all resize-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+    className={`w-full bg-vendly-light border border-vendly-border rounded-xl px-4 py-3 text-vendly-ink placeholder-vendly-muted focus:border-vendly-deep focus:ring-0 transition-all resize-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
     placeholder={placeholder}
     disabled={disabled}
     rows={rows}
@@ -114,7 +114,7 @@ export const FormError: React.FC<{
 }> = ({ error }) => {
   if (!error) return null;
   return (
-    <div className="flex items-center gap-2 text-spark-error text-sm mt-2">
+    <div className="flex items-center gap-2 text-vendly-ink text-sm mt-2">
       <ErrorIcon className="flex-shrink-0" />
       <span>{error}</span>
     </div>
@@ -124,7 +124,7 @@ export const FormError: React.FC<{
 export const FormHint: React.FC<{
   children: ReactNode;
 }> = ({ children }) => (
-  <p className="text-xs mt-1.5 text-spark-text-muted">
+  <p className="text-xs mt-1.5 text-vendly-muted">
     {children}
   </p>
 );

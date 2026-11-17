@@ -13,21 +13,21 @@ const SparkAddressDisplay: React.FC<Props> = ({ address, isLoading }) => {
 
   if (isLoading || !address) {
     return (
-      <div className="text-center py-8 bg-white">
+      <div className="text-center py-8 bg-vendly-light">
         <LoadingSpinner text="Generating Spark address..." />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 bg-white">
+    <div className="flex flex-col items-center gap-6 bg-vendly-light">
       <QRCodeContainer value={address} />
 
       <CopyableText
         text={address}
         showShare
         label="Spark Address"
-        textColor="text-black"
+        textColor="text-vendly-ink"
         onCopied={() => showToast('success', 'Copied!')}
         onShareError={() => showToast('error', 'Failed to share')}
         data-testid="spark-address-text"

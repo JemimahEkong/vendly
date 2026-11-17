@@ -37,14 +37,14 @@ const BitcoinWorkflow: React.FC<BitcoinWorkflowProps> = ({ method, amountSats, f
     {step === 'fee' && (
       <>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-black mb-2">Select Fee Rate</label>
+          <label className="block text-sm font-medium text-vendly-ink mb-2">Select Fee Rate</label>
           <div className="flex gap-2">
             <button
               onClick={() => setSelectedFeeRate('slow')}
               className={`relative flex-1 p-3 rounded-lg border text-sm font-medium transition-colors ${
                 selectedFeeRate === 'slow'
-                  ? 'bg-black text-white border-black ring-2 ring-gray-300'
-                  : 'bg-white text-black border-gray-200 hover:border-gray-500'
+                  ? 'bg-vendly-deep text-vendly-light border-vendly-deep ring-2 ring-vendly-border'
+                  : 'bg-vendly-light text-vendly-ink border-vendly-border hover:border-vendly-muted'
               }`}
             >
               {selectedFeeRate === 'slow' && (
@@ -58,8 +58,8 @@ const BitcoinWorkflow: React.FC<BitcoinWorkflowProps> = ({ method, amountSats, f
               onClick={() => setSelectedFeeRate('medium')}
               className={`relative flex-1 p-3 rounded-lg border text-sm font-medium transition-colors ${
                 selectedFeeRate === 'medium'
-                  ? 'bg-black text-white border-black ring-2 ring-gray-300'
-                  : 'bg-white text-black border-gray-200 hover:border-gray-500'
+                  ? 'bg-vendly-deep text-vendly-light border-vendly-deep ring-2 ring-vendly-border'
+                  : 'bg-vendly-light text-vendly-ink border-vendly-border hover:border-vendly-muted'
               }`}
             >
               {selectedFeeRate === 'medium' && (
@@ -73,8 +73,8 @@ const BitcoinWorkflow: React.FC<BitcoinWorkflowProps> = ({ method, amountSats, f
               onClick={() => setSelectedFeeRate('fast')}
               className={`relative flex-1 p-3 rounded-lg border text-sm font-medium transition-colors ${
                 selectedFeeRate === 'fast'
-                  ? 'bg-black text-white border-black ring-2 ring-gray-300'
-                  : 'bg-white text-black border-gray-200 hover:border-gray-500'
+                  ? 'bg-vendly-deep text-vendly-light border-vendly-deep ring-2 ring-vendly-border'
+                  : 'bg-vendly-light text-vendly-ink border-vendly-border hover:border-vendly-muted'
               }`}
             >
               {selectedFeeRate === 'fast' && (
@@ -89,7 +89,7 @@ const BitcoinWorkflow: React.FC<BitcoinWorkflowProps> = ({ method, amountSats, f
         <div className="flex gap-3">
           <PrimaryButton
             onClick={onBack}
-            className="flex-1 bg-gray-500 hover:bg-gray-700 text-white p-3 rounded-lg"
+            className="flex-1 bg-vendly-muted hover:bg-vendly-green text-vendly-light p-3 rounded-lg"
             disabled={false}
           >
             Back

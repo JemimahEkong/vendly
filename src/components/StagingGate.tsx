@@ -56,8 +56,8 @@ const StagingGate: React.FC<StagingGateProps> = ({ children }) => {
   // Still checking sessionStorage
 if (isChecking) {
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-gray-300 border-t-black rounded-full animate-spin" />
+    <div className="min-h-screen bg-vendly-light flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-vendly-border border-t-vendly-deep rounded-full animate-spin" />
     </div>
   );
 }
@@ -69,20 +69,20 @@ if (isAuthenticated) {
 
 // Show password prompt
 return (
-  <div className="min-h-screen bg-white">
+  <div className="min-h-screen bg-vendly-light">
     <DialogContainer>
       <DialogCard maxWidth="sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
-              <LockIcon size="xl" className="text-black" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-vendly-tint flex items-center justify-center">
+              <LockIcon size="xl" className="text-vendly-ink" />
             </div>
 
-            <h2 className="font-display text-xl font-bold text-black">
+            <h2 className="font-display text-xl font-bold text-vendly-ink">
               Staging Environment
             </h2>
 
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-vendly-muted mt-2">
               This is a development build. Enter the password to continue.
             </p>
           </div>

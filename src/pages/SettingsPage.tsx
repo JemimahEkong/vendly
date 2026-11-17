@@ -153,13 +153,13 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
 
   return (
   <SlideInPage title="Settings" onClose={onBack} slideFrom="left" footer={footer}>
-    <div className="p-4 bg-white">
+    <div className="p-4 bg-vendly-cream">
       <div className="max-w-xl mx-auto w-full space-y-4">
 
         {/* Dev Mode Network Selector */}
         {isDevMode && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-4">
-            <h3 className="font-display font-semibold text-black mb-3">Network</h3>
+          <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4">
+            <h3 className="font-display font-semibold text-vendly-ink mb-3">Network</h3>
 
             <div className="flex gap-2">
               {(['mainnet', 'regtest'] as Network[]).map((network) => (
@@ -168,8 +168,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
                   onClick={() => handleNetworkChange(network)}
                   className={`flex-1 py-2.5 px-3 rounded-xl text-sm font-medium transition-all ${
                     selectedNetwork === network
-                      ? 'bg-black text-white'
-                      : 'bg-gray-100 border border-gray-200 text-gray-700 hover:text-black hover:border-gray-400'
+                      ? 'bg-vendly-deep text-vendly-light'
+                      : 'bg-vendly-tint border border-vendly-border text-vendly-ink hover:text-vendly-ink hover:border-vendly-green'
                   }`}
                 >
                   {network === 'mainnet' ? 'Mainnet' : 'Regtest'}
@@ -177,7 +177,7 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
               ))}
             </div>
 
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-vendly-muted mt-2">
               Changing network will reload the app and reconnect.
             </p>
           </div>
@@ -185,8 +185,8 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
 
         {/* Dev Mode Fee Settings */}
         {isDevMode && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-4">
-            <h3 className="font-display font-semibold text-black mb-3">
+          <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4">
+            <h3 className="font-display font-semibold text-vendly-ink mb-3">
               Deposit Claim Fee
             </h3>
 
@@ -199,16 +199,16 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
                       e.currentTarget.value as 'fixed' | 'rate' | 'networkRecommended'
                     )
                   }
-                  className="min-w-[160px] bg-gray-100 border border-gray-200 rounded-xl px-3 py-3 text-black text-sm focus:border-gray-400 focus:ring-2 focus:ring-gray-200"
+                  className="min-w-[160px] bg-vendly-tint border border-vendly-border rounded-xl px-3 py-3 text-vendly-ink text-sm focus:border-vendly-green focus:ring-2 focus:ring-vendly-border"
                   aria-label="Max fee type"
                 >
-                  <option className="bg-white" value="fixed">
+                  <option className="bg-vendly-light" value="fixed">
                     Fixed (sats)
                   </option>
-                  <option className="bg-white" value="rate">
+                  <option className="bg-vendly-light" value="rate">
                     Rate (sat/vB)
                   </option>
-                  <option className="bg-white" value="networkRecommended">
+                  <option className="bg-vendly-light" value="networkRecommended">
                     Network + leeway
                   </option>
                 </select>
@@ -229,17 +229,17 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
         )}
 
         {/* Fiat Currencies */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-4">
-          <h3 className="font-display font-semibold text-black mb-3">Display</h3>
+        <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4">
+          <h3 className="font-display font-semibold text-vendly-ink mb-3">Preferences</h3>
 
           <button
-            className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium border border-gray-200 rounded-xl text-gray-700 hover:text-black hover:bg-gray-100 transition-colors"
+            className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium border border-vendly-border rounded-xl text-vendly-ink hover:text-vendly-ink hover:bg-vendly-tint transition-colors"
             type="button"
             onClick={onOpenFiatCurrencies}
           >
             <div className="flex items-center gap-3">
               <CurrencyIcon size="md" />
-              <span>Fiat Currencies</span>
+              <span>Display currencies</span>
             </div>
 
             <ChevronRightIcon size="md" />
@@ -247,13 +247,13 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
         </div>
 
         {/* SDK Logs */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-4">
-          <h3 className="font-display font-semibold text-black mb-3">
+        <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4">
+          <h3 className="font-display font-semibold text-vendly-ink mb-3">
             Diagnostics
           </h3>
 
           <button
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-gray-200 rounded-xl text-gray-700 hover:text-black hover:bg-gray-100 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-vendly-border rounded-xl text-vendly-ink hover:text-vendly-ink hover:bg-vendly-tint transition-colors disabled:opacity-50"
             type="button"
             onClick={handleShareLogs}
             disabled={isDownloadingLogs}
@@ -271,15 +271,15 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
         {/* Dev Mode Advanced Settings */}
         {isDevMode && (
           <>
-            <div className="bg-white border border-gray-200 rounded-2xl p-4">
-              <h3 className="font-display font-semibold text-black mb-3">
+            <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4">
+              <h3 className="font-display font-semibold text-vendly-ink mb-3">
                 Sync Settings
               </h3>
 
               <FormGroup>
                 <label
                   htmlFor="sync-interval"
-                  className="block text-sm text-gray-700 mb-1"
+                  className="block text-sm text-vendly-ink mb-1"
                 >
                   Sync interval (seconds)
                 </label>
@@ -295,15 +295,15 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
               </FormGroup>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl p-4">
-              <h3 className="font-display font-semibold text-black mb-3">
+            <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4">
+              <h3 className="font-display font-semibold text-vendly-ink mb-3">
                 LNURL
               </h3>
 
               <FormGroup>
                 <label
                   htmlFor="lnurl-domain"
-                  className="block text-sm text-gray-700 mb-1"
+                  className="block text-sm text-vendly-ink mb-1"
                 >
                   Custom domain
                 </label>
@@ -318,14 +318,14 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
               </FormGroup>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+            <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <span className="font-display font-medium text-black block">
+                  <span className="font-display font-medium text-vendly-ink block">
                     Prefer Spark
                   </span>
 
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-vendly-muted">
                     Use Spark address over Lightning invoice when available
                   </span>
                 </div>
@@ -340,9 +340,9 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
             </div>
 
             {/* Privacy Settings - Dev Mode only */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+            <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4">
               <div className="flex items-center gap-2 mb-3">
-                <h3 className="font-display font-semibold text-black">
+                <h3 className="font-display font-semibold text-vendly-ink">
                   Privacy
                 </h3>
 
@@ -353,11 +353,11 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
 
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <span className="font-display font-medium text-black block">
+                  <span className="font-display font-medium text-vendly-ink block">
                     Private Mode
                   </span>
 
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-vendly-muted">
                     Hide your address from public explorers (not suitable for zaps)
                   </span>
                 </div>
@@ -378,16 +378,16 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ onBack, config, onOpenFiatC
         <div className="text-center pt-4">
           <button
             onClick={devTap}
-            className="text-gray-500 text-xs hover:text-gray-700 transition-colors select-none"
+            className="text-vendly-muted text-xs hover:text-vendly-ink transition-colors select-none"
           >
-            ZapCart v1.0.0
+            Vendly v1.0.0
             {isDevMode && (
-              <span className="ml-1 text-black">(dev)</span>
+              <span className="ml-1 text-vendly-ink">(dev)</span>
             )}
           </button>
 
           {devTapCount > 0 && devTapCount < devTapThreshold && (
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-vendly-muted mt-1">
               {devTapThreshold - devTapCount} more taps to{' '}
               {isDevMode ? 'disable' : 'enable'} dev mode
             </p>

@@ -44,7 +44,7 @@ const AmountPanel: React.FC<AmountPanelProps> = ({
   <BottomSheetContainer isOpen={isOpen} onClose={onClose} showBackdrop>
     <BottomSheetCard>
       <DialogHeader
-        title="Create Invoice"
+        title="Create a payment request"
         onClose={onClose}
         icon={<LightningBoltIcon />}
       />
@@ -52,8 +52,8 @@ const AmountPanel: React.FC<AmountPanelProps> = ({
       {/* Amount Input */}
       <div className="space-y-4">
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2">Amount</label>
-          <div className="flex items-center bg-white border border-gray-300 rounded-xl overflow-hidden focus-within:border-black transition-all">
+          <label className="block text-vendly-ink text-sm font-medium mb-2">Amount</label>
+          <div className="flex items-center bg-vendly-light border border-vendly-border rounded-xl overflow-hidden focus-within:border-vendly-deep transition-all">
             <textarea
               inputMode="numeric"
               value={amount}
@@ -62,10 +62,10 @@ const AmountPanel: React.FC<AmountPanelProps> = ({
               placeholder="0"
               disabled={isLoading}
               rows={1}
-              className="flex-1 bg-transparent px-4 py-3 text-black text-lg font-mono placeholder-gray-500 focus:outline-none resize-none"
+              className="flex-1 bg-transparent px-4 py-3 text-vendly-ink text-lg font-mono placeholder-vendly-muted focus:outline-none resize-none"
               data-testid="invoice-amount-input"
             />
-            <span className="px-4 py-3 text-gray-500 font-medium text-sm">₿</span>
+            <span className="px-4 py-3 text-vendly-muted font-medium text-sm">₿</span>
           </div>
         </div>
 
@@ -80,19 +80,19 @@ const AmountPanel: React.FC<AmountPanelProps> = ({
               className={`
                 flex-1 py-2 rounded-lg text-sm font-mono font-medium transition-all
                 ${amount === quickAmount.toString()
-                  ? 'bg-black text-white'
-                  : 'bg-white border border-gray-300 text-gray-700 hover:text-black hover:border-gray-400'
+                  ? 'bg-vendly-deep text-vendly-light'
+                  : 'bg-vendly-light border border-vendly-border text-vendly-ink hover:text-vendly-ink hover:border-vendly-green'
                 }
               `}
             >
-              <span className="inline-flex items-center"><span className="text-[0.8em] opacity-70 mr-px text-gray-500">₿</span>{formatWithSpaces(quickAmount)}</span>
+              <span className="inline-flex items-center"><span className="text-[0.8em] opacity-70 mr-px text-vendly-muted">₿</span>{formatWithSpaces(quickAmount)}</span>
             </button>
           ))}
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2">Description (optional)</label>
+          <label className="block text-vendly-ink text-sm font-medium mb-2">Description (optional)</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value.replace(/\n/g, ''))}
@@ -100,7 +100,7 @@ const AmountPanel: React.FC<AmountPanelProps> = ({
             placeholder="What's this for?"
             disabled={isLoading}
             rows={1}
-            className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-black placeholder-gray-500 focus:border-black focus:outline-none transition-all resize-none"
+            className="w-full bg-vendly-light border border-vendly-border rounded-xl px-4 py-3 text-vendly-ink placeholder-vendly-muted focus:border-vendly-deep focus:outline-none transition-all resize-none"
           />
         </div>
 
@@ -114,7 +114,7 @@ const AmountPanel: React.FC<AmountPanelProps> = ({
           className="w-full"
           data-testid="generate-invoice-button"
         >
-          {isLoading ? <LoadingSpinner size="small" /> : 'Generate Invoice'}
+          {isLoading ? <LoadingSpinner size="small" /> : 'Create request'}
         </PrimaryButton>
       </div>
     </BottomSheetCard>

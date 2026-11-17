@@ -59,9 +59,9 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
 
   if (isLoading) {
     return (
-      <PageLayout onBack={onBack} footer={<div />} title="Get Started" onClearError={onClearError}>
+      <PageLayout onBack={onBack} footer={<div />} title="Create account" onClearError={onClearError}>
         <div className="flex items-center justify-center h-full">
-          <LoadingSpinner text="Setting up ZapCart..." />
+          <LoadingSpinner text="Setting up Vendly..." />
         </div>
       </PageLayout>
     );
@@ -70,7 +70,7 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
   const footer = (
     <div className="max-w-xl mx-auto">
       <PrimaryButton className="w-full" onClick={handleConfirmMnemonic}>
-        I've Saved My Phrase
+        I've saved my phrase
       </PrimaryButton>
     </div>
   );
@@ -78,31 +78,31 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
   const words = mnemonic.split(' ');
 
   return (
-  <PageLayout onBack={onBack} footer={footer} title="Get Started" onClearError={onClearError}>
-    <div className="max-w-xl mx-auto w-full space-y-4 bg-white">
+  <PageLayout onBack={onBack} footer={footer} title="Create account" onClearError={onClearError}>
+    <div className="max-w-xl mx-auto w-full space-y-4 bg-transparent">
       {/* Icon */}
       <div className="flex justify-center mb-4">
-        <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center">
-          <KeyIcon size="xl" className="text-black" />
+        <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
+          <KeyIcon size="xl" className="text-vendly-ink" />
         </div>
       </div>
 
-      <p className="text-gray-700 text-center mb-6">
-        Write down these words in order. This is your only backup to recover your funds.
+      <p className="text-vendly-ink text-center mb-6">
+        Write these words down in order. This is the only way to recover your business account if you lose access.
       </p>
 
       {/* Mnemonic grid */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-4">
+      <div className="bg-vendly-light border border-vendly-border rounded-2xl p-4 mb-4">
         <div className="grid grid-cols-3 gap-2">
           {words.map((word, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2"
+              className="flex items-center gap-2 bg-vendly-tint rounded-lg px-3 py-2"
             >
-              <span className="text-gray-500 text-xs font-mono w-5 text-right">
+              <span className="text-vendly-muted text-xs font-mono w-5 text-right">
                 {index + 1}.
               </span>
-              <span className="text-black font-mono text-sm font-medium">
+              <span className="text-vendly-ink font-mono text-sm font-medium">
                 {word}
               </span>
             </div>
@@ -118,8 +118,8 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
             flex items-center gap-2 px-4 py-2 rounded-lg transition-all
             ${
               isCopied
-                ? 'bg-gray-100 text-black border border-gray-300'
-                : 'text-black hover:bg-gray-100'
+                ? 'bg-vendly-tint text-vendly-ink border border-vendly-border'
+                : 'text-vendly-ink hover:bg-vendly-tint'
             }
           `}
         >
@@ -139,8 +139,8 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
 
       {/* Warning */}
       <AlertCard variant="warning" title="Keep it Secret">
-        <p className="text-gray-700 text-sm">
-          Never share your recovery phrase. Anyone with these words can access your funds.
+        <p className="text-vendly-ink text-sm">
+          Never share your recovery phrase. Anyone with these words can access your business account.
         </p>
       </AlertCard>
 
