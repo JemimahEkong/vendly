@@ -102,4 +102,4 @@ Payment functionality is powered by the [Breez SDK](https://sdk-doc-spark.breez.
 
 Vendly is released under the MIT License. See `LICENSE`.
 
-The original ZapCart notice and the Breez SDK licence are preserved in `THIRD_PARTY_NOTICES`. The Breez notice also remains in `src/LICENSE`.
+The original Breez SDK licence is preserved in `THIRD_PARTY_NOTICES`. The Breez notice also remains in `src/LICENSE`.
