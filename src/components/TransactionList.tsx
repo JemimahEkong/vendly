@@ -4,6 +4,7 @@ import { useContactsContext } from '../contexts/ContactsContext';
 import { getPaymentDescription } from '../utils/paymentDescription';
 import { formatWithCommas } from '../utils/formatNumber';
 import { ArrowDownIcon, ArrowUpIcon, LightningBoltIcon } from './Icons';
+import { assetPath } from '@/utils/assetPath';
 
 // Use centralized formatting utility
 const formatWithSpaces = formatWithCommas;
@@ -94,7 +95,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
     return (
       <div className="flex flex-col items-center justify-center py-12 px-6" data-testid="empty-state">
         <img
-          src="/illustrations/business-activity.svg"
+          src={assetPath('illustrations/business-activity.svg')}
           alt=""
           className="w-full max-w-[280px] h-auto mb-5"
         />
@@ -207,3 +208,4 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onPayme
 };
 
 export default TransactionList;
+

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import * as bip39 from 'bip39';
 import PageLayout from '../components/layout/PageLayout';
 import { PrimaryButton } from '../components/ui';
 import { SimpleAlert } from '../components/AlertCard';
 import { UploadIcon } from '../components/Icons';
+import { classifyAuthError, getErrorDiagnostic } from '@/services/authErrors';
 
 interface RestorePageProps {
   onConnect: (mnemonic: string) => Promise<void>;
@@ -21,7 +23,7 @@ const RestorePage: React.FC<RestorePageProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
-    const cleaned = mnemonic.trim().replace(/\s+/g, ' ');
+    const cleaned = mnemonic.trim().toLowerCase().replace(/\s+/g, ' ');
     const wordCount = cleaned.split(' ').length;
 
     if (wordCount !== 12 && wordCount !== 24) {
@@ -29,11 +31,28 @@ const RestorePage: React.FC<RestorePageProps> = ({
       return;
     }
 
+    // Validate against BIP-39 before touching the wallet. Breez Spark accepts
+    // standard 12- or 24-word BIP-39 phrases; the checksum and wordlist must be
+    // correct, not merely the word count.
+    if (!bip39.validateMnemonic(cleaned)) {
+      setError('Invalid recovery phrase. Check the spelling and word order, then try again.');
+      return;
+    }
+
     setError(null);
     try {
       await onConnect(cleaned);
     } catch (err) {
-      setError('Invalid recovery phrase. Please check your words and try again.');
+      const { message } = getErrorDiagnostic(err);
+      const looksLikeInvalidPhrase =
+        /invalid (mnemonic|seed|word|phrase)|checksum|entropy|unknown word/i.test(message) &&
+        !/api key|network|connection|timeout/i.test(message);
+
+      setError(
+        looksLikeInvalidPhrase
+          ? 'Invalid recovery phrase. Please check your words and try again.'
+          : classifyAuthError(err, 'sdk').message,
+      );
     }
   };
 

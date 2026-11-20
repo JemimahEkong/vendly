@@ -1,5 +1,6 @@
 import { Config, Network, defaultConfig } from '@breeztech/breez-sdk-spark';
 import { getSettings } from '../services/settings';
+import { requireBreezApiKey } from '../services/breezConfig';
 import { logger, LogCategory } from '../services/logger';
 import { formatError } from '../utils/formatError';
 
@@ -8,10 +9,7 @@ import { formatError } from '../utils/formatError';
  * Pure function — no side effects beyond reading env vars and localStorage.
  */
 export function buildConnectConfig(overrideNetwork?: Network): Config {
-  const breezApiKey = import.meta.env.VITE_BREEZ_API_KEY;
-  if (!breezApiKey) {
-    throw new Error('Breez API key not found. Create a .env file with VITE_BREEZ_API_KEY=your_key');
-  }
+  const breezApiKey = requireBreezApiKey();
 
   const urlParams = new URLSearchParams(window.location.search);
   const network = (overrideNetwork ?? (urlParams.get('network') ?? 'mainnet')) as Network;

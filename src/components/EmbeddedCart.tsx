@@ -1,20 +1,26 @@
 import { useCartStore } from '../store/useCartStore';
-import { formatCurrencyFromSats, formatSats } from '../utils/formatCurrency';
+import { useProductStore } from '../store/useProductStore';
+import { formatSats, formatNgnAmount } from '../utils/formatCurrency';
 import { Minus, Plus, ShoppingCart, Trash2, Grid } from 'lucide-react';
+import { assetPath } from '@/utils/assetPath';
+import ProductImage from './ProductImage';
 
 interface CartProps {
   onCheckout: () => void;
   onOpenProducts: () => void;
+  totalNgn: string;        // Naira total string (₦X.XX)
+  totalNgnKobo: number;    // Naira total in kobo (integer)
 }
 
-export default function EmbeddedCart({ onCheckout, onOpenProducts }: CartProps) {
+export default function EmbeddedCart({ onCheckout, onOpenProducts, totalNgn, totalNgnKobo }: CartProps) {
   const { items, total, updateQuantity, clearCart } = useCartStore();
+  const { products } = useProductStore();
 
   if (items.length === 0) {
     return (
       <div className="h-full flex flex-col items-center justify-center text-vendly-muted p-6 bg-vendly-light">
         <img
-          src="/illustrations/sales-management.svg"
+          src={assetPath('illustrations/sales-management.svg')}
           alt=""
           className="w-full max-w-[240px] h-auto mb-2"
         />
@@ -73,57 +79,68 @@ export default function EmbeddedCart({ onCheckout, onOpenProducts }: CartProps) 
 
       {/* ITEMS */}
       <div className="overflow-y-auto p-4 space-y-3 flex-1 bg-vendly-light">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center gap-3 bg-vendly-light border border-vendly-border p-3 rounded-2xl"
-          >
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-12 h-12 rounded-xl object-cover"
-            />
+        {items.map((item) => {
+          const product = products.find((p) => p.id === item.id);
+          const stock = product?.stock;
+          const unitPrice = item.priceNgn ?? product?.priceNgn ?? 0;
+          const atLimit = stock != null && item.quantity >= stock;
 
-            <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium text-vendly-ink truncate">
-                {item.name}
-              </h4>
+          return (
+            <div
+              key={item.id}
+              className="flex items-center gap-3 bg-vendly-light border border-vendly-border p-3 rounded-2xl"
+            >
+              <ProductImage
+                src={item.image}
+                alt={item.name}
+                className="w-12 h-12 rounded-xl object-cover shrink-0"
+              />
 
-              <p className="text-sm font-semibold text-vendly-ink mt-0.5">
-                {formatCurrencyFromSats(item.pricesats)}
-              </p>
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm font-medium text-vendly-ink truncate">
+                  {item.name}
+                </h4>
 
-              <p className="text-[11px] text-vendly-muted mt-0.5">
-                {formatSats(item.pricesats)}
-              </p>
+                <p className="text-sm font-semibold text-vendly-ink mt-0.5">
+                  {formatNgnAmount(unitPrice * item.quantity)}
+                </p>
+
+                <p className="text-[11px] text-vendly-muted mt-0.5">
+                  {formatNgnAmount(unitPrice)} each
+                  {item.pricesats > 0 ? ` · ${formatSats(item.pricesats)}` : ''}
+                </p>
+              </div>
+
+              {/* QUANTITY */}
+              <div className="flex items-center gap-2 bg-vendly-light rounded-full border border-vendly-border p-1">
+                <button
+                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                  aria-label={`Decrease ${item.name} quantity`}
+                  className="w-7 h-7 flex items-center justify-center rounded-full text-vendly-ink hover:bg-vendly-tint transition-colors"
+                >
+                  {item.quantity === 1 ? (
+                    <Trash2 size={14} className="text-vendly-muted" />
+                  ) : (
+                    <Minus size={14} />
+                  )}
+                </button>
+
+                <span className="text-sm font-semibold w-6 text-center text-vendly-ink">
+                  {item.quantity}
+                </span>
+
+                <button
+                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  disabled={atLimit}
+                  aria-label={`Increase ${item.name} quantity`}
+                  className="w-7 h-7 flex items-center justify-center rounded-full text-vendly-ink hover:bg-vendly-tint transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
             </div>
-
-            {/* QUANTITY */}
-            <div className="flex items-center gap-2 bg-vendly-light rounded-full border border-vendly-border p-1">
-              <button
-                onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                className="w-7 h-7 flex items-center justify-center rounded-full text-vendly-ink hover:bg-vendly-tint transition-colors"
-              >
-                {item.quantity === 1 ? (
-                  <Trash2 size={14} className="text-vendly-muted" />
-                ) : (
-                  <Minus size={14} />
-                )}
-              </button>
-
-              <span className="text-sm font-semibold w-6 text-center text-vendly-ink">
-                {item.quantity}
-              </span>
-
-              <button
-                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                className="w-7 h-7 flex items-center justify-center rounded-full text-vendly-ink hover:bg-vendly-tint transition-colors"
-              >
-                <Plus size={14} />
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* FOOTER */}
@@ -135,11 +152,12 @@ export default function EmbeddedCart({ onCheckout, onOpenProducts }: CartProps) 
 
           <div className="text-right">
             <p className="text-2xl font-bold text-vendly-ink">
-              {formatCurrencyFromSats(total)}
+              {totalNgn}
             </p>
 
             <p className="text-sm text-vendly-muted">
-              {formatSats(total)}
+              {total > 0 ? formatSats(total) : '— sats'}
+              {totalNgnKobo > 0 ? ` · ${formatNgnAmount(totalNgnKobo)}` : ''}
             </p>
           </div>
         </div>

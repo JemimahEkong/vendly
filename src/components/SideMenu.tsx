@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Transition } from '@headlessui/react';
 import { isPasskeyMode } from '@/services/passkeyService';
+import BrandLogo from './BrandLogo';
 import { RefundIcon, BackupIcon, SettingsIcon, POSIcon, SalesIcon, InventoryIcon, LogoutIcon, CloseIcon, AlertTriangleIcon } from './Icons';
 
 interface SideMenuProps {
@@ -129,7 +130,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ isOpen, onClose, onLogout, onOpenSe
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-8 pt-6">
-              <img src="/assets/vendly-logo.svg" alt="Vendly" className="h-9 w-auto" />
+              <BrandLogo className="h-9 w-auto" />
               <button
                 onClick={onClose}
                 className="p-2 -mr-2 text-vendly-muted hover:text-vendly-ink rounded-lg hover:bg-vendly-tint/60 transition-colors"

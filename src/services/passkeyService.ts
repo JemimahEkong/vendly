@@ -6,31 +6,72 @@
  *
  * Creates a fresh Passkey instance per operation so that no stale
  * PRF session or cached state can survive between wizard steps.
+ * Every operation that touches WebAuthn must be called from a user gesture.
  */
 
 import { Passkey, Wallet, NostrRelayConfig } from '@breeztech/breez-sdk-spark';
-import { passkeyPrfProvider } from './passkeyPrfProvider';
+import {
+  detectPrfCapability,
+  passkeyPrfProvider,
+  type PrfCapability,
+} from './passkeyPrfProvider';
 import { logger, LogCategory } from './logger';
+import { getBreezApiKey } from './breezConfig';
 
 // Storage key — presence signals passkey mode
 const PASSKEY_LABEL_KEY = 'passkeyLabel';
 
-/**
- * Create a fresh Passkey instance.
- * No caching — each call gets a clean instance with no stale state.
- */
+// Relay operations are metadata-only; bound them so the UI cannot hang forever.
+const RELAY_TIMEOUT_SECS = 20;
+const LABEL_OPERATION_TIMEOUT_MS = 45_000;
+
 function createPasskeyInstance(): Passkey {
-  const breezApiKey = import.meta.env.VITE_BREEZ_API_KEY;
-  const relayConfig: NostrRelayConfig | undefined = breezApiKey
-    ? { breezApiKey }
-    : undefined;
-  return new Passkey(passkeyPrfProvider, relayConfig ?? null);
+  const breezApiKey = getBreezApiKey();
+  const relayConfig: NostrRelayConfig = {
+    ...(breezApiKey ? { breezApiKey } : {}),
+    timeoutSecs: RELAY_TIMEOUT_SECS,
+  };
+  return new Passkey(passkeyPrfProvider, relayConfig);
+}
+
+function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`${label} timed out`));
+    }, LABEL_OPERATION_TIMEOUT_MS);
+
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
 }
 
 /**
- * Create a new passkey with PRF support.
+ * Detect whether this browser/authenticator can run the passkey flow,
+ * including WebAuthn PRF support. No WebAuthn prompt is shown.
+ */
+export async function getPasskeyCapability(): Promise<PrfCapability> {
+  return detectPrfCapability();
+}
+
+/**
+ * Check if PRF (passkey) authentication is available on this device.
+ */
+export async function isPrfAvailable(): Promise<boolean> {
+  const capability = await getPasskeyCapability();
+  return capability.supported;
+}
+
+/**
+ * Create a new passkey with PRF support (1 WebAuthn prompt).
  * Only registers the credential — no seed derivation.
- * Triggers exactly 1 WebAuthn prompt.
  */
 export async function createPasskey(): Promise<void> {
   logger.info(LogCategory.AUTH, 'Creating new passkey');
@@ -39,25 +80,19 @@ export async function createPasskey(): Promise<void> {
 }
 
 /**
- * Check if PRF (passkey) authentication is available on this device.
- */
-export async function isPrfAvailable(): Promise<boolean> {
-  // Firefox's PRF support is still unreliable — disable until stable
-  const ua = navigator.userAgent;
-  if (/Firefox\//i.test(ua) && !/Seamonkey\//i.test(ua)) {
-    return false;
-  }
-
-  const passkey = createPasskeyInstance();
-  return await passkey.isAvailable();
-}
-
-/**
  * Check if the app is in passkey mode.
- * Passkey mode is signalled by a stored label.
+ * Passkey mode is signalled by a stored label, not by credential storage.
  */
 export function isPasskeyMode(): boolean {
   return localStorage.getItem(PASSKEY_LABEL_KEY) !== null;
+}
+
+/**
+ * Label used the last time this device opened a passkey wallet.
+ * Not a secret: it is only a wallet label, never the seed.
+ */
+export function getSavedPasskeyLabel(): string | null {
+  return localStorage.getItem(PASSKEY_LABEL_KEY);
 }
 
 /**
@@ -69,38 +104,36 @@ export function setPasskeyMode(label?: string): void {
 
 /**
  * Clear passkey mode.
- * Does NOT clear the persistent "passkey registered" flag — the passkey
- * still exists on the device and should be reused on next login.
+ * Does NOT delete the passkey from the device — it should be reused on the
+ * next sign-in.
  */
 export function clearPasskeyMode(): void {
   localStorage.removeItem(PASSKEY_LABEL_KEY);
 }
 
 /**
- * List available labels from nostr relays.
+ * List available labels from Nostr relays (1 WebAuthn prompt).
  */
 export async function listLabels(): Promise<string[]> {
   logger.info(LogCategory.AUTH, 'Listing labels from nostr relays');
   const passkey = createPasskeyInstance();
-  return await passkey.listLabels();
+  return withTimeout(passkey.listLabels(), 'Fetching labels');
 }
 
 /**
- * Save a label to nostr relays so it can be discovered later.
+ * Save a label to Nostr relays so it can be discovered later (1 WebAuthn prompt).
  */
 export async function saveLabel(label: string): Promise<void> {
   logger.info(LogCategory.AUTH, 'Saving label to nostr relays');
   const passkey = createPasskeyInstance();
-  await passkey.storeLabel(label);
+  await withTimeout(passkey.storeLabel(label), 'Saving label');
 }
 
 /**
- * Derive a Wallet using passkey authentication.
+ * Derive a Wallet using passkey authentication (1 WebAuthn prompt).
  *
- * Falls back to saved label from localStorage when no label arg provided.
- *
- * @param label - Optional label. If omitted, uses saved label or SDK default.
- * @returns The derived Wallet object containing seed and label.
+ * @param label - Optional label. If omitted, uses the saved label or the
+ *                SDK default. Never derived from or stored with the mnemonic.
  */
 export async function getWallet(label?: string): Promise<Wallet> {
   const effectiveLabel = label ?? localStorage.getItem(PASSKEY_LABEL_KEY) ?? undefined;

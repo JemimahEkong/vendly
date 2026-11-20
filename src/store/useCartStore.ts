@@ -5,6 +5,7 @@ import { useProductStore } from './useProductStore';
 export interface CartItem {
   id: string;
   name: string;
+  priceNgn: number;  // unit price in kobo
   pricesats: number;
   quantity: number;
   image: string;
@@ -24,6 +25,28 @@ function recalcTotal(items: CartItem[]): number {
   return items.reduce((acc, item) => acc + item.pricesats * item.quantity, 0);
 }
 
+function availableStock(id: string): number | null {
+  const product = useProductStore.getState().products.find((p) => p.id === id);
+  return product ? product.stock : null;
+}
+
+function toCartItem(product: {
+  id: string;
+  name: string;
+  priceNgn: number;
+  pricesats: number;
+  image: string;
+}): CartItem {
+  return {
+    id: product.id,
+    name: product.name,
+    priceNgn: product.priceNgn,
+    pricesats: product.pricesats,
+    quantity: 1,
+    image: product.image,
+  };
+}
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
@@ -37,32 +60,32 @@ export const useCartStore = create<CartStore>()(
           (p) => p.id === barcode || String(p.id) === barcode
         );
 
-        if (!product) return; // barcode not recognised — silently ignore
+        if (!product) return;
 
         const existing = get().items.find((i) => i.id === product.id);
+        const nextQuantity = existing ? existing.quantity + 1 : 1;
+        if (product.stock < nextQuantity) return;
+
         const newItems = existing
           ? get().items.map((i) =>
-              i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
+              i.id === product.id ? { ...i, quantity: nextQuantity } : i
             )
-          : [
-              ...get().items,
-              {
-                id: product.id,
-                name: product.name,
-                pricesats: product.pricesats,
-                quantity: 1,
-                image: product.image,
-              },
-            ];
+          : [...get().items, toCartItem(product)];
 
         set({ items: newItems, total: recalcTotal(newItems) });
       },
 
       addProduct: (product: CartItem) => {
         const existing = get().items.find((i) => i.id === product.id);
+        const stock = availableStock(product.id);
+        const nextQuantity = existing ? existing.quantity + 1 : 1;
+
+        // Never put more units in the cart than are actually in stock.
+        if (stock != null && nextQuantity > stock) return;
+
         const newItems = existing
           ? get().items.map((i) =>
-              i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
+              i.id === product.id ? { ...i, quantity: nextQuantity } : i
             )
           : [...get().items, { ...product }];
 
@@ -70,10 +93,13 @@ export const useCartStore = create<CartStore>()(
       },
 
       updateQuantity: (id, quantity) => {
+        const stock = availableStock(id);
+        const clamped = stock != null ? Math.min(quantity, stock) : quantity;
+
         const newItems =
-          quantity <= 0
+          clamped <= 0
             ? get().items.filter((i) => i.id !== id)
-            : get().items.map((i) => (i.id === id ? { ...i, quantity } : i));
+            : get().items.map((i) => (i.id === id ? { ...i, quantity: clamped } : i));
 
         set({ items: newItems, total: recalcTotal(newItems) });
       },

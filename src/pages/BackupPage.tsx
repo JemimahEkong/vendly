@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { WarningIcon, SpinnerIcon, EyeIcon, FingerprintIcon } from '../components/Icons';
 import SlideInPage from '../components/layout/SlideInPage';
 import { isPasskeyMode, getWallet } from '@/services/passkeyService';
+import { loadMnemonic } from '@/services/walletStorage';
 import { logger, LogCategory } from '@/services/logger';
 
 interface BackupPageProps {
@@ -18,9 +19,21 @@ const BackupPage: React.FC<BackupPageProps> = ({ onBack }) => {
   const isPasskey = isPasskeyMode();
 
   useEffect(() => {
-    if (!isPasskey) {
-      setMnemonic(localStorage.getItem('walletMnemonic'));
-    }
+    if (isPasskey) return;
+    let cancelled = false;
+    loadMnemonic()
+      .then((phrase) => {
+        if (!cancelled) setMnemonic(phrase);
+      })
+      .catch((e) => {
+        logger.warn(LogCategory.AUTH, 'Failed to load recovery phrase from secure storage', {
+          error: e instanceof Error ? e.message : String(e),
+        });
+        if (!cancelled) setMnemonic(null);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [isPasskey]);
 
   const handleRevealPasskey = async () => {

@@ -8,6 +8,8 @@ import StagingGate from './components/StagingGate';
 import { ToastProvider, useToast } from './contexts/ToastContext';
 import AppShell from './components/layout/AppShell';
 import { useBreezSdk } from './hooks/useBreezSdk';
+import { satsToNgnKobo } from './utils/formatCurrency';
+import { getCurrentNgnPerBtc } from './services/exchangeRate';
 
 import HomePage from './pages/HomePage';
 import WalletPage from './pages/WalletPage';
@@ -16,6 +18,7 @@ import GeneratePage from './pages/GeneratePage';
 import GetRefundPage from './pages/GetRefundPage';
 import BackupPage from './pages/BackupPage';
 import PasskeyPage from './pages/PasskeyPage';
+import DevDashboardPage from './pages/DevDashboardPage';
 import SettingsPage from './pages/SettingsPage';
 import POSPage from './pages/POSPage';
 import SalesPage from './pages/SalesPage';
@@ -24,8 +27,14 @@ import FiatCurrenciesPage from './pages/FiatCurrenciesPage';
 import { ContactsProvider } from './contexts/ContactsContext';
 import { useIOSViewportFix } from './hooks/useIOSViewportFix';
 import type { Seed } from '@breeztech/breez-sdk-spark';
+import {
+  enterDevAccess,
+  exitDevAccess,
+  hasDevAccessSession,
+  isDevAccessEnabled,
+} from './services/devAccess';
 
-type Screen = 'home' | 'restore' | 'generate' | 'wallet' | 'getRefund' | 'settings' | 'backup' | 'fiatCurrencies' | 'passkey' | 'pos' | 'sales' | 'inventory';
+type Screen = 'home' | 'restore' | 'generate' | 'wallet' | 'getRefund' | 'settings' | 'backup' | 'fiatCurrencies' | 'passkey' | 'pos' | 'sales' | 'inventory' | 'dev';
 
 const OfflineBadge: React.FC = () => {
   const [isOnline, setIsOnline] = useState(() => navigator.onLine);
@@ -55,7 +64,10 @@ const OfflineBadge: React.FC = () => {
 };
 
 const AppContent: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('home');
+  const [currentScreen, setCurrentScreen] = useState<Screen>(() =>
+    hasDevAccessSession() ? 'dev' : 'home',
+  );
+  const [devMode, setDevMode] = useState(() => hasDevAccessSession());
   const [refundAnimationDirection, setRefundAnimationDirection] = useState<'left' | 'up'>('left');
   const [passkeySdkConnected, setPasskeySdkConnected] = useState(false);
   const { showToast } = useToast();
@@ -63,6 +75,19 @@ const AppContent: React.FC = () => {
   useIOSViewportFix();
 
   const sdk = useBreezSdk(showToast);
+  const devAccessEnabled = isDevAccessEnabled();
+
+  const enterDevelopmentMode = () => {
+    enterDevAccess();
+    setDevMode(true);
+    setCurrentScreen('dev');
+  };
+
+  const leaveDevelopmentMode = () => {
+    exitDevAccess();
+    setDevMode(false);
+    setCurrentScreen('home');
+  };
 
   // Auto-navigate to wallet when SDK reconnects from saved mnemonic
   useEffect(() => {
@@ -74,32 +99,42 @@ const AppContent: React.FC = () => {
   // Navigate to wallet after successful connect
   const handleConnect = async (mnemonic: string, restore: boolean) => {
     await sdk.connectWallet({ type: 'mnemonic', mnemonic }, restore);
+    setDevMode(false);
+    exitDevAccess();
     setCurrentScreen('wallet');
   };
 
   // Navigate to wallet after passkey connect
   const handlePasskeyConnect = async (seed: Seed, label: string) => {
-    try {
-      await sdk.connectWallet(seed, true, label);
-      setPasskeySdkConnected(true);
-    } catch {
-      // Stay on passkey screen — sdk.error will be set by useBreezSdk
-    }
+    // Errors propagate to PasskeyPage so it can show an actionable message and
+    // retry without prompting for the passkey again.
+    await sdk.connectWallet(seed, true, label);
+    setPasskeySdkConnected(true);
   };
 
   const handlePasskeyFlowComplete = useCallback(() => {
     setPasskeySdkConnected(false);
+    setDevMode(false);
+    exitDevAccess();
     setCurrentScreen('wallet');
   }, []);
 
   const handleLogout = async () => {
     setCurrentScreen('home');
+    setDevMode(false);
+    exitDevAccess();
     await sdk.handleLogout();
   };
 
   // Render screens
   const renderCurrentScreen = () => {
-    if (sdk.isLoading && currentScreen !== 'restore' && currentScreen !== 'passkey') {
+    if (
+      sdk.isLoading &&
+      currentScreen !== 'restore' &&
+      currentScreen !== 'passkey' &&
+      currentScreen !== 'generate' &&
+      currentScreen !== 'dev'
+    ) {
       return (
         <div className="absolute inset-0 bg-vendly-cream z-50 flex items-center justify-center">
           <LoadingSpinner />
@@ -115,6 +150,19 @@ const AppContent: React.FC = () => {
             onCreateNewWallet={() => setCurrentScreen('generate')}
             onUsePasskey={() => setCurrentScreen('passkey')}
             prfAvailable={sdk.prfAvailable}
+            passkeyUnavailableReason={sdk.prfCapability?.message}
+            walletConfigured={sdk.walletConfigured}
+            onExploreDevMode={devAccessEnabled ? enterDevelopmentMode : undefined}
+          />
+        );
+
+      case 'dev':
+        return (
+          <DevDashboardPage
+            onExit={leaveDevelopmentMode}
+            onOpenSales={() => setCurrentScreen('sales')}
+            onOpenInventory={() => setCurrentScreen('inventory')}
+            onConnectWallet={() => setCurrentScreen('home')}
           />
         );
 
@@ -126,8 +174,10 @@ const AppContent: React.FC = () => {
               setPasskeySdkConnected(false);
               setCurrentScreen('home');
             }}
+            onUseRecoveryPhrase={() => setCurrentScreen('restore')}
             sdkConnected={passkeySdkConnected}
             onFlowComplete={handlePasskeyFlowComplete}
+            capability={sdk.prfCapability}
           />
         );
 
@@ -165,12 +215,12 @@ const AppContent: React.FC = () => {
 
       case 'sales':
         return (
-          <SalesPage onBack={() => setCurrentScreen('wallet')} />
+          <SalesPage onBack={() => setCurrentScreen(devMode ? 'dev' : 'wallet')} />
         );
 
       case 'inventory':
         return (
-          <InventoryPage onBack={() => setCurrentScreen('wallet')} />
+          <InventoryPage onBack={() => setCurrentScreen(devMode ? 'dev' : 'wallet')} />
       );
 
       case 'restore':
@@ -201,6 +251,9 @@ const AppContent: React.FC = () => {
               onCreateNewWallet={() => setCurrentScreen('generate')}
               onUsePasskey={() => setCurrentScreen('passkey')}
               prfAvailable={sdk.prfAvailable}
+              passkeyUnavailableReason={sdk.prfCapability?.message}
+              walletConfigured={sdk.walletConfigured}
+              onExploreDevMode={devAccessEnabled ? enterDevelopmentMode : undefined}
             />
           );
         }
@@ -226,7 +279,6 @@ const AppContent: React.FC = () => {
             onOpenPOS={() => setCurrentScreen('pos')}
             onOpenSales={() => setCurrentScreen('sales')}
             onOpenInventory={() => setCurrentScreen('inventory')}
-            onOpenBuyBitcoin={sdk.handleBuyBitcoin}
             onDepositChanged={sdk.fetchUnclaimedDeposits}
           />
         );
@@ -243,12 +295,25 @@ const AppContent: React.FC = () => {
       </ContactsProvider>
       {sdk.celebrationAmount !== null && (
         <PaymentReceivedCelebration
-          amount={sdk.celebrationAmount}
+          amount={satsToNgnKobo(sdk.celebrationAmount, getCurrentNgnPerBtc() ?? 0)}
+          items={[]}
+          paymentMethod="lightning"
+          paymentStatus="confirmed"
+          btcAmount={sdk.celebrationAmount}
+          exchangeRate={getCurrentNgnPerBtc() ?? undefined}
           onClose={sdk.dismissCelebration}
         />
       )}
       <InstallPrompt />
       <OfflineBadge />
+      {devMode && (
+        <div className="pointer-events-none fixed left-3 z-[200] flex items-center gap-1.5 rounded-full border border-vendly-border bg-vendly-deep px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-vendly-cream shadow-sm"
+          style={{ bottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}
+          data-testid="dev-mode-badge"
+        >
+          Dev mode · wallet off
+        </div>
+      )}
     </WalletProvider>
   );
 };

@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { useSecretTap } from '@/hooks/useSecretTap';
+import BrandLogo from '@/components/BrandLogo';
+import IllustrationImage from '@/components/IllustrationImage';
 
 interface HomePageProps {
   onRestoreWallet: () => void;
   onCreateNewWallet: () => void;
   onUsePasskey: () => void;
   prfAvailable: boolean;
+  passkeyUnavailableReason?: string;
+  /** Present only in local development; never rendered in production builds. */
+  onExploreDevMode?: () => void;
+  /** False when VITE_BREEZ_API_KEY is not configured. */
+  walletConfigured?: boolean;
 }
 
 const HomePage: React.FC<HomePageProps> = ({
@@ -13,6 +20,9 @@ const HomePage: React.FC<HomePageProps> = ({
   onCreateNewWallet,
   onUsePasskey,
   prfAvailable,
+  passkeyUnavailableReason,
+  onExploreDevMode,
+  walletConfigured = true,
 }) => {
   const [showMnemonicFlow, setShowMnemonicFlow] = useState(false);
   const { handleTap: handleLogoTap } = useSecretTap(5, 2000, false, () => setShowMnemonicFlow(v => !v));
@@ -28,16 +38,11 @@ const HomePage: React.FC<HomePageProps> = ({
       >
         <div className="w-full max-w-md flex flex-col items-center my-auto py-4">
           <div className="mb-6">
-            <img
-              src="/assets/vendly-logo.svg"
-              alt="Vendly"
-              className="h-10 w-auto"
-              onClick={handleLogoTap}
-            />
+            <BrandLogo className="h-10 w-auto" onClick={handleLogoTap} />
           </div>
 
-          <img
-            src="/illustrations/local-merchant.svg"
+          <IllustrationImage
+            src="illustrations/local-merchant.svg"
             alt="A local merchant managing her market stall with Vendly"
             className="w-full max-w-[360px] h-auto mb-6"
           />
@@ -55,6 +60,28 @@ const HomePage: React.FC<HomePageProps> = ({
               Sell, track your stock and receive payments with one simple tool made for Nigerian merchants.
             </p>
           </div>
+
+          {!walletConfigured && (
+            <div
+              className="w-full mb-4 rounded-xl border border-vendly-border bg-vendly-light px-4 py-3 text-center"
+              data-testid="wallet-config-note"
+            >
+              <p className="text-xs text-vendly-ink leading-relaxed">
+                <span className="font-semibold">Wallet connection isn't configured.</span>{' '}
+                Breez needs <code className="font-mono">VITE_BREEZ_API_KEY</code>. You can still
+                set up passkey or recovery-phrase access, but payments stay off until it is added.
+              </p>
+              {import.meta.env.DEV && (
+                <button
+                  onClick={() => window.location.reload()}
+                  className="mt-2 text-[11px] font-semibold text-vendly-deep underline underline-offset-4"
+                  data-testid="reload-after-config-button"
+                >
+                  Added the key? Restart the dev server, then reload
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="w-full space-y-3">
             {prfAvailable && !showMnemonicFlow ? (
@@ -100,9 +127,28 @@ const HomePage: React.FC<HomePageProps> = ({
                     Continue with passkey instead
                   </button>
                 )}
+
+                {!prfAvailable && passkeyUnavailableReason && (
+                  <p
+                    className="text-[11px] text-vendly-muted text-center leading-relaxed pt-1"
+                    data-testid="passkey-unavailable-note"
+                  >
+                    {passkeyUnavailableReason}
+                  </p>
+                )}
               </>
             )}
           </div>
+
+          {onExploreDevMode && (
+            <button
+              onClick={onExploreDevMode}
+              className="mt-5 w-full text-center py-2 text-xs font-semibold text-vendly-deep underline underline-offset-4 hover:text-vendly-ink transition-colors"
+              data-testid="explore-dev-mode-button"
+            >
+              Explore Vendly without a wallet (development mode)
+            </button>
+          )}
 
           <div className="mt-8 flex items-center gap-2 text-[11px] text-vendly-muted">
             <span className="w-1.5 h-1.5 rounded-full bg-vendly-green" />

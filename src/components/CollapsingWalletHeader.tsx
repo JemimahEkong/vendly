@@ -4,6 +4,7 @@ import { getFiatSettings } from '../services/settings';
 import { formatWithThinSpaces } from '../utils/formatNumber';
 import { useAnimatedNumber } from '../hooks/useAnimatedNumber';
 import { MenuIcon, AlertTriangleIcon, CurrencyIcon } from './Icons';
+import BrandLogo from './BrandLogo';
 
 // Module-level flag: once the balance count-up has played, skip it on remount.
 // Resets on full page reload.
@@ -168,7 +169,7 @@ const CollapsingWalletHeader: React.FC<CollapsingWalletHeaderProps> = ({
             >
               <MenuIcon size="lg" />
             </button>
-            <span className="font-display text-sm font-bold tracking-tight text-vendly-deep">Vendly</span>
+            <BrandLogo className="h-6 w-auto" />
           </div>
 
           {/* Action buttons */}

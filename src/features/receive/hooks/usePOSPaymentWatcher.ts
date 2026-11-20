@@ -1,79 +1,85 @@
 import { useEffect, useRef } from 'react';
+import type { SdkEvent } from '@breeztech/breez-sdk-spark';
 import { useWallet } from '../../../contexts/WalletContext';
 import { logger, LogCategory } from '@/services/logger';
 
 /**
  * Watches for incoming Lightning payments while the POS receive dialog is open.
- * When a payment is received it:
- *   1. Fires a custom DOM event `pos-payment-settled` with the payment detail
- *   2. Calls the optional `onSettled` callback with the amount in sats
  *
- * The watcher is only active while `isActive` is true (i.e. the receive dialog is open).
- * It cleans up the SDK listener automatically on unmount or when `isActive` goes false.
+ * - `paymentSucceeded` → calls `onSettled(amountSats)` exactly for the expected
+ *   invoice amount (other invoices are ignored).
+ * - `paymentFailed` → calls `onFailed(amountSats)` so checkout can tell the
+ *   merchant to retry; no sale is recorded.
+ *
+ * The listener is only active while `isActive` is true and is removed on close.
  */
 export function usePOSPaymentWatcher({
   isActive,
   expectedAmountSats,
   onSettled,
+  onFailed,
 }: {
   isActive: boolean;
   expectedAmountSats?: number;
   onSettled?: (amountSats: number) => void;
+  onFailed?: (amountSats: number) => void;
 }) {
   const wallet = useWallet();
-  // Keep callback ref stable so the SDK listener never needs to be re-registered
   const onSettledRef = useRef(onSettled);
+  const onFailedRef = useRef(onFailed);
   onSettledRef.current = onSettled;
+  onFailedRef.current = onFailed;
 
   useEffect(() => {
-  if (!isActive) return;
+    if (!isActive) return;
 
-  let removed = false;
-  let listenerId: string | undefined;
+    let removed = false;
+    let listenerId: string | undefined;
 
-  const listener = {
-    onEvent: (event: any) => {
-      if (removed) return;
+    const listener = {
+      onEvent: (event: SdkEvent) => {
+        if (removed) return;
+        if (event.type !== 'paymentSucceeded' && event.type !== 'paymentFailed') return;
 
-      if (event?.type !== 'paymentSucceeded') return;
+        const payment = event.payment;
+        if (payment.paymentType !== 'receive') return;
 
-      const payment = event.payment ?? event.details ?? event;
+        const amountSats = Number(payment.amount) || 0;
+        if (expectedAmountSats && amountSats !== expectedAmountSats) return;
 
-      if (payment?.paymentType !== 'receive') return;
+        if (event.type === 'paymentFailed') {
+          logger.warn(LogCategory.PAYMENT, 'POS Lightning payment failed', { amountSats });
+          onFailedRef.current?.(amountSats);
+          return;
+        }
 
-      const amountSats = Number(payment?.amount ?? payment?.amountSats ?? 0);
+        logger.info(LogCategory.PAYMENT, 'POS payment settled', { amountSats });
 
-      if (expectedAmountSats && amountSats !== expectedAmountSats) return;
+        window.dispatchEvent(
+          new CustomEvent('pos-payment-settled', {
+            detail: { payment, amountSats },
+          })
+        );
 
-      logger.info(LogCategory.PAYMENT, 'POS payment settled', { amountSats });
+        onSettledRef.current?.(amountSats);
+      },
+    };
 
-      window.dispatchEvent(
-        new CustomEvent('pos-payment-settled', {
-          detail: { payment, amountSats },
-        })
-      );
+    (async () => {
+      try {
+        listenerId = await wallet.addEventListener(listener);
+        logger.debug(LogCategory.PAYMENT, 'POS payment watcher registered');
+      } catch (err) {
+        logger.error(LogCategory.PAYMENT, 'Failed to register POS payment watcher', { err });
+      }
+    })();
 
-      onSettledRef.current?.(amountSats);
-    },
-  };
-
-  (async () => {
-    try {
-      listenerId = await wallet.addEventListener(listener);
-      logger.debug(LogCategory.PAYMENT, 'POS payment watcher registered');
-    } catch (err) {
-      logger.error(LogCategory.PAYMENT, 'Failed to register POS payment watcher', { err });
-    }
-  })();
-
-  return () => {
-    removed = true;
-
-    if (listenerId) {
-      wallet.removeEventListener(listenerId);
-    }
-
-    logger.debug(LogCategory.PAYMENT, 'POS payment watcher removed');
-  };
-}, [isActive, expectedAmountSats, wallet]);
+    return () => {
+      removed = true;
+      if (listenerId) {
+        void wallet.removeEventListener(listenerId);
+      }
+      logger.debug(LogCategory.PAYMENT, 'POS payment watcher removed');
+    };
+  }, [isActive, expectedAmountSats, wallet]);
 }

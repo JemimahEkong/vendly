@@ -12,8 +12,15 @@ export interface FiatSettings {
   selectedCurrencies: string[];
 }
 
+export interface BankDetails {
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+}
+
 const SETTINGS_KEY = 'user_settings_v1';
 const FIAT_SETTINGS_KEY = 'fiat_settings_v1';
+const BANK_DETAILS_KEY = 'merchant_bank_details_v1';
 
 const defaultSettings: UserSettings = {
   depositMaxFee: { type: 'rate', satPerVbyte: 1 },
@@ -91,6 +98,34 @@ export function getFiatSettings(): FiatSettings {
 
 export function saveFiatSettings(settings: FiatSettings): void {
   setCachedItem(FIAT_SETTINGS_KEY, JSON.stringify(settings));
+}
+
+/** Merchant bank details shown on the Bank Transfer checkout. */
+export function getBankDetails(): BankDetails | null {
+  try {
+    const raw = getCachedItem(BANK_DETAILS_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<BankDetails>;
+    const bankName = typeof parsed.bankName === 'string' ? parsed.bankName.trim() : '';
+    const accountName = typeof parsed.accountName === 'string' ? parsed.accountName.trim() : '';
+    const accountNumber =
+      typeof parsed.accountNumber === 'string' ? parsed.accountNumber.trim() : '';
+    if (!bankName && !accountName && !accountNumber) return null;
+    return { bankName, accountName, accountNumber };
+  } catch {
+    return null;
+  }
+}
+
+export function saveBankDetails(details: BankDetails): void {
+  setCachedItem(
+    BANK_DETAILS_KEY,
+    JSON.stringify({
+      bankName: details.bankName.trim(),
+      accountName: details.accountName.trim(),
+      accountNumber: details.accountNumber.trim(),
+    })
+  );
 }
 
 /**

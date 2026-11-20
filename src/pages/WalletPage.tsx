@@ -14,6 +14,7 @@ import QrScannerDialog from '../components/QrScannerDialog';
 import PaymentDetailsDialog from '../components/PaymentDetailsDialog';
 import UnclaimedDepositDetailsPage from './UnclaimedDepositDetailsPage';
 import SaveContactDialog from '../features/send/components/SaveContactDialog';
+import BuyBitcoinDialog from '../components/BuyBitcoinDialog';
 
 interface WalletPageProps {
   walletInfo: GetInfoResponse | null;
@@ -33,7 +34,6 @@ interface WalletPageProps {
   onOpenPOS: () => void;
   onOpenSales: () => void;
   onOpenInventory: () => void;
-  onOpenBuyBitcoin: () => void;
   onDepositChanged?: () => void;
 }
 
@@ -53,7 +53,6 @@ const WalletPage: React.FC<WalletPageProps> = ({
   onOpenPOS,
   onOpenSales,
   onOpenInventory,
-  onOpenBuyBitcoin,
   onDepositChanged,
 }) => {
   const wallet = useWallet();
@@ -61,6 +60,7 @@ const WalletPage: React.FC<WalletPageProps> = ({
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false);
   const [isReceiveDialogOpen, setIsReceiveDialogOpen] = useState(false);
+  const [isBuyBitcoinOpen, setIsBuyBitcoinOpen] = useState(false);
   const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
   const [scannerOpenedFromSend, setScannerOpenedFromSend] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
@@ -188,7 +188,7 @@ const WalletPage: React.FC<WalletPageProps> = ({
           fiatCurrencies={fiatCurrencies}
           scrollProgress={scrollProgress}
           onOpenMenu={() => setIsMenuOpen(true)}
-          onOpenBuyBitcoin={onOpenBuyBitcoin}
+          onOpenBuyBitcoin={() => setIsBuyBitcoinOpen(true)}
           isSyncing={isSyncing}
           hasRejectedDeposits={hasRejectedDeposits}
           onOpenGetRefund={() => onOpenGetRefund('icon')}
@@ -221,6 +221,12 @@ const WalletPage: React.FC<WalletPageProps> = ({
       <ReceivePaymentDialog
         isOpen={isReceiveDialogOpen}
         onClose={handleReceiveDialogClose}
+      />
+
+      {/* Buy Bitcoin on-ramp */}
+      <BuyBitcoinDialog
+        isOpen={isBuyBitcoinOpen}
+        onClose={() => setIsBuyBitcoinOpen(false)}
       />
 
       {/* QR Scanner Dialog */}

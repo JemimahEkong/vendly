@@ -1,4 +1,5 @@
 import React from 'react';
+import { assetPath } from '@/utils/assetPath';
 
 const BreezLogo: React.FC<{ className?: string }> = ({ className = '' }) => {
   return (
@@ -6,7 +7,7 @@ const BreezLogo: React.FC<{ className?: string }> = ({ className = '' }) => {
       <img
         width="96"
         height="96"
-        src='/assets/logo-breez-header.svg'
+        src={assetPath('assets/logo-breez-header.svg')}
         className="mr-2"
       >
       </img>
@@ -15,3 +16,4 @@ const BreezLogo: React.FC<{ className?: string }> = ({ className = '' }) => {
 };
 
 export default BreezLogo;
+

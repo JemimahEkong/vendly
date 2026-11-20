@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useSalesStore } from '../store/useSalesStore';
 import type { Sale } from '../store/useSalesStore';
-import { formatCurrencyFromSats, formatSats } from '../utils/formatCurrency';
+import { formatSats, formatNgnAmount } from '../utils/formatCurrency';
 import { TrendingUp, ShoppingBag, Package, ChevronDown, ChevronUp } from 'lucide-react';
+import { assetPath } from '@/utils/assetPath';
 
 interface SalesPageProps {
   onBack: () => void;
@@ -12,7 +13,8 @@ interface DayGroup {
   label: string;       // e.g. "Today", "Yesterday", "22 May 2026"
   dateKey: string;     // YYYY-MM-DD for sorting
   sales: Sale[];
-  totalSats: number;
+  totalNgn: number;    // Naira total from confirmed sales (kobo)
+  totalSats: number;   // Sats total from confirmed sales
   itemsSold: number;
 }
 
@@ -24,43 +26,66 @@ function getDayLabel(dateKey: string): string {
   return new Date(dateKey).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+// Filter only confirmed sales for revenue calculations
+function getConfirmedSales(sales: Sale[]): Sale[] {
+  return sales.filter((sale) => sale.paymentStatus === 'confirmed');
+}
+
+function paymentMethodLabel(method: Sale['paymentMethod']): string {
+  if (method === 'cash') return 'Cash';
+  if (method === 'bank-transfer') return 'Bank transfer';
+  return 'Lightning';
+}
+
 const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
   const sales = useSalesStore((state) => state.sales);
-  const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set(['today']));
+  const confirmedSales = getConfirmedSales(sales);
+  const [expandedDays, setExpandedDays] = useState<Set<string>>(
+    new Set([new Date().toISOString().slice(0, 10)])
+  );
   const [expandedSales, setExpandedSales] = useState<Set<string>>(new Set());
 
-  // Group sales by day, most recent first
+  // Group confirmed sales by day, most recent first
   const dayGroups = useMemo<DayGroup[]>(() => {
     const map = new Map<string, DayGroup>();
 
-    for (const sale of sales) {
+    for (const sale of confirmedSales) {
       const dateKey = new Date(sale.createdAt).toISOString().slice(0, 10);
       if (!map.has(dateKey)) {
         map.set(dateKey, {
           label: getDayLabel(dateKey),
           dateKey,
           sales: [],
+          totalNgn: 0,
           totalSats: 0,
           itemsSold: 0,
         });
       }
       const group = map.get(dateKey)!;
       group.sales.push(sale);
+      group.totalNgn += sale.totalNgn;
       group.totalSats += sale.totalSats;
       group.itemsSold += sale.items.reduce((acc, i) => acc + i.quantity, 0);
     }
 
     return Array.from(map.values()).sort((a, b) => b.dateKey.localeCompare(a.dateKey));
-  }, [sales]);
+  }, [confirmedSales]);
 
-  // Overall stats
-  const allTimeSats = useMemo(() => sales.reduce((acc, s) => acc + s.totalSats, 0), [sales]);
+  // Overall stats using only confirmed sales
+  const allTimeNgn = useMemo(() => confirmedSales.reduce((acc, s) => acc + s.totalNgn, 0), [confirmedSales]);
+  const todayNgn = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    return confirmedSales
+      .filter(s => new Date(s.createdAt).toISOString().slice(0, 10) === today)
+      .reduce((acc, s) => acc + s.totalNgn, 0);
+  }, [confirmedSales]);
+
   const todaySats = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
-    return sales
+    return confirmedSales
       .filter(s => new Date(s.createdAt).toISOString().slice(0, 10) === today)
       .reduce((acc, s) => acc + s.totalSats, 0);
-  }, [sales]);
+  }, [confirmedSales]);
 
   const toggleDay = (dateKey: string) => {
     setExpandedDays(prev => {
@@ -98,7 +123,7 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
             <TrendingUp size={16} className="text-vendly-muted" />
             <p className="text-xs text-vendly-muted font-medium uppercase tracking-wide">Today</p>
           </div>
-          <p className="text-xl font-bold text-vendly-ink">{formatCurrencyFromSats(todaySats)}</p>
+          <p className="text-xl font-bold text-vendly-ink">{formatNgnAmount(todayNgn)}</p>
           <p className="text-xs text-vendly-muted mt-0.5">{formatSats(todaySats)}</p>
         </div>
 
@@ -107,17 +132,17 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
             <ShoppingBag size={16} className="text-vendly-muted" />
             <p className="text-xs text-vendly-muted font-medium uppercase tracking-wide">All time</p>
           </div>
-          <p className="text-xl font-bold text-vendly-ink">{formatCurrencyFromSats(allTimeSats)}</p>
-          <p className="text-xs text-vendly-muted mt-0.5">{sales.length} sale{sales.length !== 1 ? "s" : ""}</p>
+          <p className="text-xl font-bold text-vendly-ink">{formatNgnAmount(allTimeNgn)}</p>
+          <p className="text-xs text-vendly-muted mt-0.5">{confirmedSales.length} confirmed sale{confirmedSales.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
       {/* Sales list grouped by day */}
       <div className="flex-1 overflow-y-auto px-4 pb-8 space-y-4">
-        {sales.length === 0 ? (
+        {confirmedSales.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <img
-              src="/illustrations/business-growth.svg"
+              src={assetPath('illustrations/business-growth.svg')}
               alt=""
               className="w-full max-w-[290px] h-auto mb-4"
             />
@@ -147,7 +172,7 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
 
                   <div className="text-right flex items-center gap-3">
                     <div>
-                      <p className="font-bold text-vendly-ink">{formatCurrencyFromSats(group.totalSats)}</p>
+                      <p className="font-bold text-vendly-ink">{formatNgnAmount(group.totalNgn)}</p>
                       <p className="text-xs text-vendly-muted">{formatSats(group.totalSats)}</p>
                     </div>
                     {isDayExpanded
@@ -168,7 +193,8 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
                         Revenue ({group.sales.length} transactions)
                       </span>
                       <span className="font-semibold text-vendly-ink">
-                        {formatCurrencyFromSats(group.totalSats)} · {formatSats(group.totalSats)}
+                        {formatNgnAmount(group.totalNgn)}
+                        {group.totalSats > 0 ? ` · ${formatSats(group.totalSats)}` : ''}
                       </span>
                     </div>
 
@@ -194,15 +220,16 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
                                 </div>
                                 <div>
                                   <p className="text-sm font-medium text-vendly-ink">
-                                    {sale.items.length} item{sale.items.length !== 1 ? 's' : ''}
+                                    {sale.items.reduce((acc, i) => acc + i.quantity, 0)} item
+                                    {sale.items.reduce((acc, i) => acc + i.quantity, 0) !== 1 ? 's' : ''}
                                   </p>
-                                  <p className="text-xs text-vendly-muted">{saleTime}</p>
+                                  <p className="text-xs text-vendly-muted">{saleTime} · {paymentMethodLabel(sale.paymentMethod)}</p>
                                 </div>
                               </div>
 
                               <div className="flex items-center gap-2">
                                 <div className="text-right">
-                                  <p className="text-sm font-semibold text-vendly-ink">{formatCurrencyFromSats(sale.totalSats)}</p>
+                                  <p className="text-sm font-semibold text-vendly-ink">{formatNgnAmount(sale.totalNgn)}</p>
                                   <p className="text-xs text-vendly-muted">{formatSats(sale.totalSats)}</p>
                                 </div>
                                 {isSaleExpanded
@@ -226,8 +253,13 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
                                       <p className="text-sm font-medium text-vendly-ink truncate">{item.name}</p>
                                       <p className="text-xs text-vendly-muted">Qty: {item.quantity}</p>
                                     </div>
-                                    <p className="text-sm font-semibold text-vendly-ink shrink-0">
-                                      {formatCurrencyFromSats(item.pricesats * item.quantity)}
+                                    <p className="text-sm font-semibold text-vendly-ink shrink-0 text-right">
+                                      {formatNgnAmount((item.priceNgn ?? 0) * item.quantity)}
+                                      {item.pricesats > 0 && (
+                                        <span className="block text-xs font-normal text-vendly-muted">
+                                          {formatSats(item.pricesats * item.quantity)}
+                                        </span>
+                                      )}
                                     </p>
                                   </div>
                                 ))}
@@ -249,3 +281,4 @@ const SalesPage: React.FC<SalesPageProps> = ({ onBack }) => {
 };
 
 export default SalesPage;
+

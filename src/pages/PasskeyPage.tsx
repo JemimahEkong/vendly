@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Seed } from '@breeztech/breez-sdk-spark';
-import { PrimaryButton, SecondaryButton } from '../components/ui';
+import { Seed, Wallet } from '@breeztech/breez-sdk-spark';
+import { PrimaryButton, SecondaryButton, TextButton } from '../components/ui';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageLayout from '../components/layout/PageLayout';
 import { AlertCard } from '../components/AlertCard';
 import { NostrKeyIcon, CheckIcon, PasskeyIcon } from '../components/Icons';
 import {
   createPasskey,
+  getSavedPasskeyLabel,
   getWallet,
   listLabels,
   saveLabel,
-  setPasskeyMode,
 } from '@/services/passkeyService';
-import { passkeyPrfProvider } from '@/services/passkeyPrfProvider';
+import type { PrfCapability } from '@/services/passkeyPrfProvider';
+import { classifyAuthError, getErrorDiagnostic, type AuthErrorInfo } from '@/services/authErrors';
 import { logger, LogCategory } from '@/services/logger';
 import StepperBar from '@/components/OnboardingStepper';
 
@@ -21,52 +22,62 @@ import StepperBar from '@/components/OnboardingStepper';
 // ============================================
 
 /**
- * Phase state machine.
+ * Explicit, user-confirmed phase machine.
  *
- * On mount: "Use Passkey" was clicked → try listLabels() immediately.
- *   Success → passkey exists → returning user flow (auth-pick or connect-ready)
- *   Failure → no passkey    → new user flow (review)
+ * Every WebAuthn prompt is triggered directly by a click handler — never by a
+ * useEffect that fires after a state change. Browsers require (and vary in
+ * how strictly they require) transient user activation for
+ * navigator.credentials.create()/get(), so an indirect prompt is unreliable.
  *
- * New user flow:
- *   detecting → review → creating (prompt 1) → new-storing (prompt 2)
- *             → connecting (prompt 3) → initializing
+ * Returning merchant:
+ *   entry → (Sign in: prompt) checking → labels
+ *   labels → (Continue: prompt) deriving → connecting
+ *   labels → new label → (Continue: prompt) saving → ready
+ *   ready → (Open my wallet: prompt) deriving → connecting
  *
- * Returning user flow (existing label):
- *   detecting (prompt 1) → auth-pick → connecting (prompt 2) → initializing
- *
- * Returning user flow (new label):
- *   detecting (prompt 1) → auth-pick → new-storing (prompt 2) → connecting (prompt 3) → initializing
+ * New merchant:
+ *   entry → create-review → (Create passkey: prompt) creating → name-label
+ *   name-label → (Save label: prompt) saving → ready
+ *   ready → (Open my wallet: prompt) deriving → connecting
  */
 type Phase =
-  | 'detecting'       // On mount: listLabels() — WebAuthn prompt, doubles as detection
-  // New user flow
-  | 'review'          // Warning + I understand → triggers createPasskey()
-  | 'creating'        // createPasskey() in progress (prompt)
-  | 'new-storing'     // saveLabel() in progress (prompt)
-  // Returning user flow
-  | 'auth-pick'       // Authenticate step: label picker
-  // Shared
-  | 'connecting'      // Connect to Nostr step: getWallet() in progress (prompt)
-  | 'initializing';   // Initialize step: SDK connecting
-
-/** Step index for the new user inline stepper (3 steps). */
-function newUserStepIndex(phase: Phase): number {
-  if (phase === 'creating') return 0;
-  if (phase === 'new-storing') return 1;
-  if (phase === 'connecting' || phase === 'initializing') return 2;
-  return 3; // all complete
-}
-
-
-// ============================================
-// Props
-// ============================================
+  | 'entry'
+  | 'checking'
+  | 'labels'
+  | 'create-review'
+  | 'creating'
+  | 'name-label'
+  | 'saving'
+  | 'ready'
+  | 'deriving'
+  | 'connecting'
+  | 'initializing';
 
 interface PasskeyPageProps {
-  onWalletRestored: (seed: Seed, label: string) => void;
+  onWalletRestored: (seed: Seed, label: string) => Promise<void>;
   onBack: () => void;
+  onUseRecoveryPhrase: () => void;
   sdkConnected?: boolean;
   onFlowComplete?: () => void;
+  capability?: PrfCapability | null;
+}
+
+function newUserStepIndex(phase: Phase): number {
+  switch (phase) {
+    case 'create-review':
+    case 'creating':
+      return 0;
+    case 'name-label':
+    case 'saving':
+      return 1;
+    case 'ready':
+    case 'deriving':
+    case 'connecting':
+    case 'initializing':
+      return 2;
+    default:
+      return 0;
+  }
 }
 
 // ============================================
@@ -76,211 +87,258 @@ interface PasskeyPageProps {
 const PasskeyPage: React.FC<PasskeyPageProps> = ({
   onWalletRestored,
   onBack,
+  onUseRecoveryPhrase,
   sdkConnected,
   onFlowComplete,
+  capability,
 }) => {
-  const [phase, setPhase] = useState<Phase>('detecting');
-  const [isNewUser, setIsNewUser] = useState(false);
+  const [phase, setPhase] = useState<Phase>('entry');
+  const [isNewAccount, setIsNewAccount] = useState(false);
   const [labels, setLabels] = useState<string[]>([]);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [manualLabel, setManualLabel] = useState('');
   const [showManualInput, setShowManualInput] = useState(false);
-  const [detectingText, setDetectingText] = useState('Detecting passkey...');
+  const [error, setError] = useState<AuthErrorInfo | null>(null);
+  const [discoveryWarning, setDiscoveryWarning] = useState<string | null>(null);
+  const [labelAction, setLabelAction] = useState<'save' | 'derive'>('save');
+  const [capabilityOverride, setCapabilityOverride] = useState<PrfCapability | null>(null);
 
-  // Stable refs for callbacks (avoid stale closures in effects)
+  // Stable callbacks for async handlers
   const onWalletRestoredRef = useRef(onWalletRestored);
   onWalletRestoredRef.current = onWalletRestored;
   const onFlowCompleteRef = useRef(onFlowComplete);
   onFlowCompleteRef.current = onFlowComplete;
 
-  // Label to use when entering the connecting phase
+  // Label to use when deriving, and the wallet derived before SDK connection
   const connectLabelRef = useRef<string | undefined>(undefined);
+  const derivedWalletRef = useRef<Wallet | null>(null);
 
-  // ============================================
-  // Effects — auto-triggered phases
-  // ============================================
+  const effectiveCapability = capabilityOverride ?? capability;
+  const passkeysUnsupported = !!effectiveCapability && !effectiveCapability.supported;
 
-  // SDK finished connecting → complete flow
+  // SDK finished connecting → leave the page
   useEffect(() => {
     if (sdkConnected && phase === 'initializing') {
       onFlowCompleteRef.current?.();
     }
   }, [sdkConnected, phase]);
 
-  // On mount: detect passkey by trying listLabels() (WebAuthn get).
-  // The "Use Passkey" button click on HomePage is the user interaction.
-  // Success → passkey exists → returning user.
-  // Failure → no passkey / cancelled → new user flow.
-  useEffect(() => {
-    if (phase !== 'detecting') return;
-    let cancelled = false;
-
-    // Update spinner text once WebAuthn prompt completes
-    passkeyPrfProvider.onAuthComplete = () => {
-      if (!cancelled) setDetectingText('Discovering labels...');
-    };
-
-    const run = async () => {
-      try {
-        const found = await listLabels();
-        if (cancelled) return;
-
-        // Passkey exists → returning user
-        if (found.length === 0) {
-          // Passkey exists but no labels on relays — show picker with default pre-filled
-          setShowManualInput(true);
-          setManualLabel('Default');
-          setPhase('auth-pick');
-        } else {
-          // Display oldest → newest
-          const sorted = [...found].reverse();
-          setLabels(sorted);
-          const defaultIdx = sorted.indexOf('Default');
-          setSelectedLabel(defaultIdx !== -1 ? sorted[defaultIdx] : sorted[0]);
-          setPhase('auth-pick');
-        }
-      } catch (e) {
-        if (cancelled) return;
-        // No passkey or user cancelled → new user flow
-        logger.info(LogCategory.AUTH, 'No existing passkey, starting new user flow');
-        setPhase('review');
-      }
-    };
-
-    run();
-    return () => {
-      cancelled = true;
-      passkeyPrfProvider.onAuthComplete = undefined;
-    };
-  }, [phase]);
-
-  // New user: create passkey (prompt)
-  useEffect(() => {
-    if (phase !== 'creating' || error) return;
-    let cancelled = false;
-
-    const run = async () => {
-      try {
-        await createPasskey();
-        if (cancelled) return;
-        logger.info(LogCategory.AUTH, 'Passkey created successfully');
-        connectLabelRef.current = 'Default';
-        setPhase('new-storing');
-      } catch (e) {
-        if (cancelled) return;
-        setError('Failed to create passkey');
-        logger.error(LogCategory.AUTH, 'Passkey creation failed', {
-          error: e instanceof Error ? e.message : String(e),
-        });
-      }
-    };
-
-    run();
-    return () => { cancelled = true; };
-  }, [phase, error]);
-
-  // Save label to Nostr relays (prompt)
-  useEffect(() => {
-    if (phase !== 'new-storing' || error) return;
-    let cancelled = false;
-
-    const run = async () => {
-      try {
-        const labelToSave = connectLabelRef.current ?? 'Default';
-        await saveLabel(labelToSave);
-        if (cancelled) return;
-        logger.info(LogCategory.AUTH, 'Label saved to relays');
-        // Don't setPasskeyMode here — wait until connecting succeeds to avoid
-        // auto-reconnect on refresh before onboarding completes
-        // Add newly saved label to the list so auth-pick is up-to-date on Go Back
-        setLabels(prev => prev.includes(labelToSave) ? prev : [...prev, labelToSave]);
-        setSelectedLabel(labelToSave);
-        setShowManualInput(false);
-        setManualLabel('');
-        setPhase('connecting');
-      } catch (e) {
-        if (cancelled) return;
-        setError('Failed to save label to Nostr');
-        logger.error(LogCategory.AUTH, 'Failed to save label', {
-          error: e instanceof Error ? e.message : String(e),
-        });
-      }
-    };
-
-    run();
-    return () => { cancelled = true; };
-  }, [phase, error]);
-
-  // Connect: derive wallet (final prompt)
-  useEffect(() => {
-    if (phase !== 'connecting' || error) return;
-    let cancelled = false;
-
-    const run = async () => {
-      try {
-        const w = await getWallet(connectLabelRef.current);
-        if (cancelled) return;
-        logger.info(LogCategory.AUTH, 'Passkey wallet derived');
-
-        // Remember label locally
-        if (connectLabelRef.current) {
-          setPasskeyMode(connectLabelRef.current);
-        }
-
-        setPhase('initializing');
-        onWalletRestoredRef.current(w.seed, w.label);
-      } catch (e) {
-        if (cancelled) return;
-        setError('Failed to connect');
-        logger.error(LogCategory.AUTH, 'Passkey wallet restore failed', {
-          error: e instanceof Error ? e.message : String(e),
-        });
-      }
-    };
-
-    run();
-    return () => { cancelled = true; };
-  }, [phase, error]);
-
   // ============================================
-  // Handlers
+  // Helpers
   // ============================================
 
-  /** Clear error to re-trigger the current phase's effect. */
-  const handleRetry = () => setError(null);
+  const recordError = (e: unknown, context: 'detect' | 'create' | 'label' | 'derive' | 'sdk') => {
+    const info = classifyAuthError(e, context);
+    const diagnostic = getErrorDiagnostic(e);
+    logger.error(LogCategory.AUTH, `Passkey ${context} failed`, {
+      code: info.code,
+      errorName: diagnostic.name,
+      error: diagnostic.message,
+    });
+    setError(info);
+    return info;
+  };
 
-  /** Navigate back from an error state to the previous interactive phase. */
-  const handleErrorBack = () => {
+  const mergeLabel = (label: string) => {
+    setLabels((prev) => (prev.includes(label) ? prev : [...prev, label]));
+    setSelectedLabel(label);
+  };
+
+  // ============================================
+  // User-initiated actions (each click = at most one prompt)
+  // ============================================
+
+  const handleSignIn = async () => {
     setError(null);
-    switch (phase) {
-      case 'creating':
-        onBack();
-        break;
-      case 'new-storing':
-        if (isNewUser) {
-          onBack();              // New user: passkey created, nothing interactive to go back to
-        } else {
-          setPhase('auth-pick');  // Returning user: back to label picker
-        }
-        break;
-      case 'connecting':
-        if (isNewUser) {
-          onBack();  // New user: passkey + label saved, nothing to go back to
-        } else {
-          setPhase('auth-pick');  // Returning user: back to label picker (label list is up-to-date)
-        }
-        break;
-      default:
-        onBack();
+    setDiscoveryWarning(null);
+    setLabelAction('derive');
+    setPhase('checking');
+    try {
+      const found = await listLabels();
+      if (found.length === 0) {
+        // The passkey exists, but no labels are published yet. Let the user
+        // open the wallet with the label saved on this device (usually
+        // "Default") instead of forcing a new registration.
+        setShowManualInput(true);
+        setManualLabel(getSavedPasskeyLabel() ?? 'Default');
+        setSelectedLabel(null);
+        setPhase('labels');
+        return;
+      }
+      const sorted = [...found].reverse();
+      setLabels(sorted);
+      setShowManualInput(false);
+      setSelectedLabel(sorted.includes('Default') ? 'Default' : sorted[0]);
+      setPhase('labels');
+    } catch (e) {
+      // A cancelled prompt does NOT mean the user has no passkey. Label
+      // discovery is a Nostr operation: if the relays are unreachable, the
+      // passkey can still derive the wallet with the label this device saved.
+      const info = recordError(e, 'detect');
+      if (info.code === 'relay-unavailable') {
+        // The passkey prompt succeeded; only label discovery failed. Keep the
+        // user moving with the label this device last used.
+        setError(null);
+        setDiscoveryWarning(
+          'Vendly could not reach the label service. You can still open the wallet saved on this device with its account label.',
+        );
+        setShowManualInput(true);
+        setManualLabel(getSavedPasskeyLabel() ?? 'Default');
+        setSelectedLabel(null);
+        setPhase('labels');
+        return;
+      }
+      setPhase('entry');
     }
+  };
+
+  const goToCreateReview = () => {
+    setError(null);
+    setIsNewAccount(true);
+    setPhase('create-review');
+  };
+
+  const handleCreatePasskey = async () => {
+    setError(null);
+    setIsNewAccount(true);
+    setPhase('creating');
+    try {
+      await createPasskey();
+      connectLabelRef.current = 'Default';
+      setManualLabel('Default');
+      setShowManualInput(true);
+      setPhase('name-label');
+    } catch (e) {
+      const info = recordError(e, 'create');
+      if (info.code === 'prf-unsupported' || info.code === 'invalid-rp') {
+        setCapabilityOverride({
+          supported: false,
+          verified: true,
+          reason: info.code === 'prf-unsupported' ? 'no-prf' : 'invalid-rp',
+          message: info.message,
+        });
+      }
+      setPhase('create-review');
+    }
+  };
+
+  const saveLabelAndAdvance = async (label: string, failurePhase: Phase) => {
+    connectLabelRef.current = label;
+    setError(null);
+    setPhase('saving');
+    try {
+      await saveLabel(label);
+      mergeLabel(label);
+      setShowManualInput(false);
+      setPhase('ready');
+    } catch (e) {
+      recordError(e, 'label');
+      setPhase(failurePhase);
+    }
+  };
+
+  const handleContinueFromLabels = async () => {
+    const trimmed = manualLabel.trim();
+    if (showManualInput) {
+      if (!trimmed) return;
+      const duplicate = labels.some((l) => l.toLowerCase() === trimmed.toLowerCase());
+      if (duplicate && labelAction === 'save') return;
+
+      if (labelAction === 'save') {
+        await saveLabelAndAdvance(trimmed, 'labels');
+        return;
+      }
+
+      // Derive with an already-existing label. No label is published here:
+      // a returning user must not create a duplicate label just to sign in.
+      connectLabelRef.current = trimmed;
+      await handleOpenWallet();
+      return;
+    }
+    if (!selectedLabel) return;
+    connectLabelRef.current = selectedLabel;
+    await handleOpenWallet();
+  };
+
+  const handleOpenWallet = async () => {
+    if (!connectLabelRef.current) return;
+    setError(null);
+    setPhase('deriving');
+    try {
+      const wallet = await getWallet(connectLabelRef.current);
+      derivedWalletRef.current = wallet;
+      setPhase('connecting');
+      await onWalletRestoredRef.current(wallet.seed, wallet.label);
+      setPhase('initializing');
+    } catch (e) {
+      // If the wallet was derived, the failure came from the Breez connection.
+      recordError(e, derivedWalletRef.current ? 'sdk' : 'derive');
+      setPhase('ready');
+    }
+  };
+
+  /** Retry only the Breez connection using the already-derived wallet (no prompt). */
+  const handleReconnect = async () => {
+    const wallet = derivedWalletRef.current;
+    if (!wallet) {
+      await handleOpenWallet();
+      return;
+    }
+    setError(null);
+    setPhase('connecting');
+    try {
+      await onWalletRestoredRef.current(wallet.seed, wallet.label);
+      setPhase('initializing');
+    } catch (e) {
+      recordError(e, 'sdk');
+      setPhase('ready');
+    }
+  };
+
+  const goToEntry = () => {
+    setError(null);
+    setPhase('entry');
   };
 
   // ============================================
   // Render helpers
   // ============================================
 
-  const renderReview = () => (
+  const renderEntry = () => (
+    <>
+      <div className="flex justify-center mb-4">
+        <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
+          <PasskeyIcon size="xl" className="text-vendly-deep" />
+        </div>
+      </div>
+
+      <div className="text-center mb-4">
+        <h2 className="text-xl font-display font-bold text-vendly-ink mb-2">
+          Continue with passkey
+        </h2>
+        <p className="text-vendly-ink">
+          Sign in with the passkey saved on this device, or create a new one for this business
+          account.
+        </p>
+      </div>
+
+      {passkeysUnsupported && (
+        <AlertCard variant="warning" title="Passkeys unavailable on this device">
+          <p className="text-vendly-ink text-sm">
+            {effectiveCapability?.message ??
+              'This browser or device cannot create the type of passkey Vendly needs.'}
+          </p>
+          <p className="text-vendly-ink text-sm mt-2">
+            You can still create or restore your account with a recovery phrase.
+          </p>
+        </AlertCard>
+      )}
+
+      <div className="flex-1" />
+    </>
+  );
+
+  const renderCreateReview = () => (
     <>
       <div className="flex justify-center mb-4">
         <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
@@ -299,7 +357,8 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
 
       <AlertCard variant="warning" title="Your passkey protects your account">
         <p className="text-vendly-ink text-sm">
-          If you remove this passkey from your device, browser or password manager, you may lose access to your account.
+          If you remove this passkey from your device, browser or password manager, you may lose
+          access to your account.
         </p>
       </AlertCard>
 
@@ -307,8 +366,52 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
     </>
   );
 
+  const renderNameLabel = () => (
+    <>
+      <div className="flex justify-center mb-4">
+        <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
+          <NostrKeyIcon size="xl" className="text-vendly-deep" />
+        </div>
+      </div>
 
-  const renderAuthPick = () => {
+      <div className="text-center mb-4">
+        <h2 className="text-xl font-display font-bold text-vendly-ink mb-2">
+          Name this account
+        </h2>
+        <p className="text-vendly-ink text-sm">
+          Vendly saves this label to Nostr so you can find the account again on another device.
+        </p>
+      </div>
+
+      <div className="w-full p-4 rounded-2xl border bg-vendly-light border-vendly-deep">
+        <label className="text-sm font-medium text-vendly-ink block mb-2" htmlFor="passkey-label">
+          Account label
+        </label>
+        <input
+          id="passkey-label"
+          type="text"
+          value={manualLabel}
+          onChange={(e) => {
+            const val = e.target.value;
+            if (/^[a-zA-Z0-9 ]*$/.test(val) && val.length <= 24) {
+              setManualLabel(val);
+            }
+          }}
+          placeholder="Label name"
+          maxLength={24}
+          className="w-full bg-vendly-light border border-vendly-border rounded-xl px-3 py-2 text-vendly-ink placeholder:text-vendly-muted focus:outline-none focus:ring-2 focus:ring-vendly-deep/50 focus:border-vendly-deep text-sm"
+          data-testid="passkey-label-input"
+        />
+        <p className="text-vendly-muted text-xs mt-2">
+          You can keep the default name if this is your only account.
+        </p>
+      </div>
+
+      <div className="flex-1" />
+    </>
+  );
+
+  const renderLabelPicker = () => {
     const trimmedManual = manualLabel.trim();
     const isDuplicate = trimmedManual
       ? labels.some((l) => l.toLowerCase() === trimmedManual.toLowerCase())
@@ -331,6 +434,12 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
           </p>
         </div>
 
+        {discoveryWarning && (
+          <AlertCard variant="info" title="Labels unavailable">
+            <p className="text-vendly-ink text-sm">{discoveryWarning}</p>
+          </AlertCard>
+        )}
+
         <div className="space-y-2">
           {labels.map((label) => (
             <button
@@ -339,6 +448,7 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
                 setSelectedLabel(label);
                 setManualLabel('');
                 setShowManualInput(false);
+                setError(null);
               }}
               className={`
                 w-full p-4 rounded-2xl border text-left transition-all
@@ -349,10 +459,12 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
               `}
             >
               <div className="flex items-center justify-between">
-                <span className="font-display font-medium text-vendly-ink">
-                  {label}
-                </span>
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${selectedLabel === label && !showManualInput ? 'bg-vendly-deep' : 'bg-transparent'}`}>
+                <span className="font-display font-medium text-vendly-ink">{label}</span>
+                <div
+                  className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                    selectedLabel === label && !showManualInput ? 'bg-vendly-deep' : 'bg-transparent'
+                  }`}
+                >
                   {selectedLabel === label && !showManualInput && (
                     <CheckIcon size="sm" className="text-vendly-light" />
                   )}
@@ -361,24 +473,30 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
             </button>
           ))}
 
-          {/* Create new label */}
           {!showManualInput ? (
             <button
               type="button"
-              onClick={() => setShowManualInput(true)}
+              onClick={() => {
+                setShowManualInput(true);
+                setManualLabel('');
+                setLabelAction('save');
+                setError(null);
+              }}
               className="w-full p-4 rounded-2xl border bg-vendly-light border-vendly-border hover:border-vendly-green text-left transition-all"
             >
-              <span className="text-sm font-medium text-vendly-ink">
-                Create a new label...
-              </span>
+              <span className="text-sm font-medium text-vendly-ink">Create a new label...</span>
             </button>
           ) : (
             <div className="w-full p-4 rounded-2xl border transition-all bg-vendly-light border-vendly-deep">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-vendly-ink">
-                  Create a new label
+                  {labelAction === 'derive' ? 'Account label' : 'Create a new label'}
                 </span>
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${trimmedManual && !isDuplicate ? 'bg-vendly-deep' : 'bg-transparent'}`}>
+                <div
+                  className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                    trimmedManual && !isDuplicate ? 'bg-vendly-deep' : 'bg-transparent'
+                  }`}
+                >
                   {trimmedManual && !isDuplicate && (
                     <CheckIcon size="sm" className="text-vendly-light" />
                   )}
@@ -396,11 +514,16 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
                 placeholder="Label name"
                 maxLength={24}
                 className="w-full bg-vendly-light border border-vendly-border rounded-xl px-3 py-2 text-vendly-ink placeholder:text-vendly-muted focus:outline-none focus:ring-2 focus:ring-vendly-deep/50 focus:border-vendly-deep text-sm"
-                autoFocus
+                data-testid="new-passkey-label-input"
               />
-              {isDuplicate && (
+              {isDuplicate && labelAction === 'save' && (
                 <p className="text-vendly-ink text-xs mt-1">
                   A label with this name already exists
+                </p>
+              )}
+              {labelAction === 'derive' && (
+                <p className="text-vendly-muted text-xs mt-1">
+                  Use the label this passkey used when its wallet was created.
                 </p>
               )}
             </div>
@@ -410,58 +533,79 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
     );
   };
 
-  const renderSpinner = (text?: string) => (
+  const renderReady = () => (
+    <>
+      <div className="flex justify-center mb-4">
+        <div className="w-16 h-16 rounded-2xl bg-vendly-tint flex items-center justify-center">
+          <PasskeyIcon size="xl" className="text-vendly-deep" />
+        </div>
+      </div>
+
+      <div className="text-center mb-2">
+        <h2 className="text-xl font-display font-bold text-vendly-ink mb-2">
+          Passkey ready
+        </h2>
+        <p className="text-vendly-ink text-sm">
+          Open your wallet to finish setting up this business account. Your device may ask you to
+          confirm your passkey once more.
+        </p>
+      </div>
+
+      <div className="flex-1" />
+    </>
+  );
+
+  const renderSpinner = (text: string) => (
     <div className="flex flex-col items-center justify-center py-16 text-vendly-ink">
       <LoadingSpinner text={text} />
     </div>
   );
 
-
-  // ============================================
-  // Content & footer routing
-  // ============================================
-
   const content = (() => {
     switch (phase) {
-      case 'detecting': return renderSpinner(detectingText);
-      case 'review': return renderReview();
-      case 'creating': return error ? renderReview() : renderSpinner('Initializing passkey...');
-      case 'new-storing':
-        if (error) return null;
-        return renderSpinner('Saving label...');
-      case 'auth-pick': return renderAuthPick();
+      case 'entry':
+        return renderEntry();
+      case 'checking':
+        return renderSpinner('Waiting for your passkey...');
+      case 'labels':
+        return renderLabelPicker();
+      case 'create-review':
+        return renderCreateReview();
+      case 'creating':
+        return renderSpinner('Creating your passkey...');
+      case 'name-label':
+        return renderNameLabel();
+      case 'saving':
+        return renderSpinner('Saving account label...');
+      case 'ready':
+        return renderReady();
+      case 'deriving':
+        return renderSpinner('Unlocking your wallet...');
       case 'connecting':
-        if (error) return null;
-        return renderSpinner('Starting Vendly...');
+        return renderSpinner('Connecting to the wallet service...');
       case 'initializing':
         return renderSpinner('Starting Vendly...');
     }
   })();
 
-  const footer = (() => {
-    // Error state on any auto-triggered phase: Retry + Back
-    if (error && ['creating', 'new-storing', 'connecting'].includes(phase)) {
-      return (
-        <div className="max-w-xl mx-auto space-y-3">
-          <PrimaryButton className="w-full" onClick={handleRetry}>
-            Retry
-          </PrimaryButton>
-          <SecondaryButton className="w-full" onClick={handleErrorBack}>
-            Go Back
-          </SecondaryButton>
-        </div>
-      );
-    }
+  // ============================================
+  // Footer
+  // ============================================
 
-    if (phase === 'review') {
+  const trimmedManual = manualLabel.trim();
+  const isDuplicate = trimmedManual
+    ? labels.some((l) => l.toLowerCase() === trimmedManual.toLowerCase())
+    : false;
+  const canContinueFromLabels = showManualInput
+    ? !!trimmedManual && !(isDuplicate && labelAction === 'save')
+    : !!selectedLabel;
+
+  const footer = (() => {
+    if (passkeysUnsupported && phase === 'entry') {
       return (
         <div className="max-w-xl mx-auto space-y-3">
-          <PrimaryButton className="w-full" onClick={() => {
-            setIsNewUser(true);
-            setError(null);
-            setPhase('creating');
-          }}>
-            I understand
+          <PrimaryButton className="w-full" onClick={onUseRecoveryPhrase}>
+            Use a recovery phrase
           </PrimaryButton>
           <SecondaryButton className="w-full" onClick={onBack}>
             Go Back
@@ -470,39 +614,120 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
       );
     }
 
-
-    if (phase === 'auth-pick') {
-      const trimmedManual = manualLabel.trim();
-      const isDuplicate = trimmedManual
-        ? labels.some((l) => l.toLowerCase() === trimmedManual.toLowerCase())
-        : false;
-      const canConnect = showManualInput
-        ? !!(trimmedManual && !isDuplicate)
-        : !!selectedLabel;
+    if (phase === 'entry') {
       return (
         <div className="max-w-xl mx-auto space-y-3">
           <PrimaryButton
             className="w-full"
-            disabled={!canConnect}
+            onClick={handleSignIn}
+            data-testid="passkey-signin-button"
+          >
+            Sign in with passkey
+          </PrimaryButton>
+          <SecondaryButton
+            className="w-full"
+            onClick={goToCreateReview}
+            data-testid="passkey-create-button"
+          >
+            Create a new passkey
+          </SecondaryButton>
+          <div className="text-center pt-1">
+            <TextButton onClick={onUseRecoveryPhrase} data-testid="passkey-recovery-button">
+              Use a recovery phrase instead
+            </TextButton>
+          </div>
+        </div>
+      );
+    }
+
+    if (phase === 'create-review') {
+      if (passkeysUnsupported) {
+        return (
+          <div className="max-w-xl mx-auto space-y-3">
+            <PrimaryButton className="w-full" onClick={onUseRecoveryPhrase}>
+              Use a recovery phrase
+            </PrimaryButton>
+            <SecondaryButton className="w-full" onClick={goToEntry}>
+              Go Back
+            </SecondaryButton>
+          </div>
+        );
+      }
+      return (
+        <div className="max-w-xl mx-auto space-y-3">
+          <PrimaryButton
+            className="w-full"
+            onClick={handleCreatePasskey}
+            data-testid="passkey-create-confirm-button"
+          >
+            Create passkey
+          </PrimaryButton>
+          <SecondaryButton className="w-full" onClick={goToEntry}>
+            Go Back
+          </SecondaryButton>
+        </div>
+      );
+    }
+
+    if (phase === 'name-label') {
+      return (
+        <div className="max-w-xl mx-auto space-y-3">
+          <PrimaryButton
+            className="w-full"
+            disabled={!trimmedManual}
+            onClick={() => saveLabelAndAdvance(trimmedManual, 'name-label')}
+            data-testid="passkey-save-label-button"
+          >
+            Save account label
+          </PrimaryButton>
+          <SecondaryButton
+            className="w-full"
             onClick={() => {
-              if (showManualInput) {
-                // New label → save to relays first, then connect
-                connectLabelRef.current = trimmedManual;
-                setError(null);
-                setPhase('new-storing');
-              } else {
-                // Existing label → connect directly
-                connectLabelRef.current = selectedLabel || undefined;
-                setError(null);
-                setPhase('connecting');
-              }
+              connectLabelRef.current = 'Default';
+              setError(null);
+              setPhase('ready');
             }}
+          >
+            Skip for now
+          </SecondaryButton>
+        </div>
+      );
+    }
+
+    if (phase === 'labels') {
+      return (
+        <div className="max-w-xl mx-auto space-y-3">
+          <PrimaryButton
+            className="w-full"
+            disabled={!canContinueFromLabels}
+            onClick={handleContinueFromLabels}
+            data-testid="passkey-continue-button"
           >
             Continue
           </PrimaryButton>
-          <SecondaryButton className="w-full" onClick={onBack}>
+          <SecondaryButton className="w-full" onClick={goToEntry}>
             Go Back
           </SecondaryButton>
+        </div>
+      );
+    }
+
+    if (phase === 'ready') {
+      const retryingConnection = !!error && !!derivedWalletRef.current;
+      return (
+        <div className="max-w-xl mx-auto space-y-3">
+          <PrimaryButton
+            className="w-full"
+            onClick={retryingConnection ? handleReconnect : handleOpenWallet}
+            data-testid="passkey-open-wallet-button"
+          >
+            {retryingConnection ? 'Try again' : 'Open my wallet'}
+          </PrimaryButton>
+          <div className="text-center pt-1">
+            <TextButton onClick={onUseRecoveryPhrase}>
+              Use a recovery phrase instead
+            </TextButton>
+          </div>
         </div>
       );
     }
@@ -515,20 +740,23 @@ const PasskeyPage: React.FC<PasskeyPageProps> = ({
   // ============================================
 
   return (
-    <PageLayout onBack={onBack} footer={footer} title="Create account">
+    <PageLayout onBack={onBack} footer={footer} title={isNewAccount ? 'Create account' : 'Sign in'}>
       <div className="max-w-xl mx-auto w-full flex flex-col min-h-full">
-        {isNewUser && (
+        {isNewAccount && (
           <StepperBar stepCount={3} activeIndex={newUserStepIndex(phase)} />
         )}
         <div className="mt-6 space-y-4 flex flex-col flex-1">
           {content}
           {error && (
-            <AlertCard variant="error" title={error}>
-              <p className="text-vendly-ink text-sm">
-                {phase === 'new-storing' || phase === 'connecting'
-                  ? 'Please check your internet connection and try again.'
-                  : 'Please ensure your device supports passkeys and is the correct device.'}
-              </p>
+            <AlertCard variant={error.code === 'cancelled' ? 'info' : 'error'} title={error.title}>
+              <p className="text-vendly-ink text-sm">{error.message}</p>
+              {error.useRecoveryPhrase && (
+                <div className="mt-3">
+                  <TextButton onClick={onUseRecoveryPhrase}>
+                    Create or restore with a recovery phrase
+                  </TextButton>
+                </div>
+              )}
             </AlertCard>
           )}
         </div>

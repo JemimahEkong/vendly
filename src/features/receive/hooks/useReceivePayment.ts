@@ -55,7 +55,7 @@ export interface UseReceivePaymentReturn {
   setAmount: (amt: string) => void;
   setShowAmountPanel: (show: boolean) => void;
   handleTabChange: (tab: PaymentMethod, loadLightningAddress: () => void) => void;
-  generateBolt11Invoice: () => Promise<void>;
+  generateBolt11Invoice: (amountOverride?: string, descriptionOverride?: string) => Promise<void>;
   reset: () => void;
 }
 
@@ -145,14 +145,16 @@ export function useReceivePayment(): UseReceivePaymentReturn {
     }
   }, [wallet, bitcoinAddress, bitcoinLoading, isOnline]);
 
-  const generateBolt11Invoice = useCallback(async () => {
+  const generateBolt11Invoice = useCallback(async (amountOverride?: string, descriptionOverride?: string) => {
+    const effectiveAmount = amountOverride ?? amount;
+    const effectiveDescription = descriptionOverride ?? description;
     if (!isOnline) {
       setError('You\'re offline. A live connection is required to generate a Lightning invoice.');
       setShowAmountPanel(true);
       return;
     }
 
-    logger.info(LogCategory.PAYMENT, 'Starting invoice generation', { amount });
+    logger.info(LogCategory.PAYMENT, 'Starting invoice generation', { amount: effectiveAmount });
     setError(null);
     setIsLoading(true);
     setCurrentStep('loading');
@@ -162,14 +164,14 @@ export function useReceivePayment(): UseReceivePaymentReturn {
     }
 
     try {
-      const amountSats = parseInt(amount);
-      if (isNaN(amountSats)) throw new Error('Invalid amount');
+      const amountSats = parseInt(effectiveAmount, 10);
+      if (isNaN(amountSats) || amountSats <= 0) throw new Error('Invalid amount');
 
       logger.debug(LogCategory.PAYMENT, 'Calling wallet.receivePayment for bolt11 invoice', { amountSats });
       const receiveResponse = await wallet.receivePayment({
         paymentMethod: {
           type: 'bolt11Invoice',
-          description,
+          description: effectiveDescription,
           amountSats,
         },
       });

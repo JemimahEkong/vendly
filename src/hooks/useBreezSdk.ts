@@ -19,12 +19,14 @@ import { formatError } from '../utils/formatError';
 import { isDepositRejected } from '../services/depositState';
 import { hideSplash } from '../main';
 import {
-  isPrfAvailable,
-  isPasskeyMode,
+  getPasskeyCapability,
   setPasskeyMode,
   clearPasskeyMode,
-  getWallet,
 } from '../services/passkeyService';
+import type { PrfCapability } from '../services/passkeyPrfProvider';
+import { clearMnemonic, loadMnemonic, saveMnemonic } from '../services/walletStorage';
+import { classifyAuthError, getErrorDiagnostic } from '../services/authErrors';
+import { hasBreezApiKey, getBreezConfigDiagnostic } from '../services/breezConfig';
 
 
 // ============================================
@@ -38,15 +40,6 @@ function initSdkLogging() {
   sdkLoggerInitialized = true;
   initLogging({ log: (entry: LogEntry) => logSdkMessage(entry.level, entry.line) });
 }
-
-// ============================================
-// Mnemonic storage (localStorage)
-// ============================================
-
-const MNEMONIC_KEY = 'walletMnemonic';
-const saveMnemonic = (m: string) => localStorage.setItem(MNEMONIC_KEY, m);
-const getSavedMnemonic = () => localStorage.getItem(MNEMONIC_KEY);
-const clearMnemonic = () => localStorage.removeItem(MNEMONIC_KEY);
 
 // ============================================
 // Types
@@ -68,6 +61,9 @@ export interface BreezSdkState {
   hasRejectedDeposits: boolean;
   celebrationAmount: number | null;
   prfAvailable: boolean;
+  prfCapability: PrfCapability | null;
+  /** True when VITE_BREEZ_API_KEY is present in this build. */
+  walletConfigured: boolean;
 }
 
 export interface BreezSdkActions {
@@ -75,7 +71,6 @@ export interface BreezSdkActions {
   refreshWalletData: (showLoading?: boolean) => Promise<void>;
   fetchUnclaimedDeposits: () => Promise<void>;
   handleLogout: () => Promise<void>;
-  handleBuyBitcoin: () => Promise<void>;
   clearError: () => void;
   dismissCelebration: () => void;
 }
@@ -102,9 +97,12 @@ export function useBreezSdk(
   const [hasRejectedDeposits, setHasRejectedDeposits] = useState(false);
   const [celebrationAmount, setCelebrationAmount] = useState<number | null>(null);
   const [prfAvailable, setPrfAvailable] = useState(false);
+  const [prfCapability, setPrfCapability] = useState<PrfCapability | null>(null);
+  const walletConfigured = hasBreezApiKey();
 
   // Refs
   const isInitialLoadRef = useRef(true);
+  const connectingRef = useRef(false);
   const eventListenerIdRef = useRef<string | null>(null);
   const shownPaymentIdsRef = useRef<Set<string>>(new Set());
   const sdkRef = useLatest(sdk);
@@ -236,16 +234,18 @@ export function useBreezSdk(
         logger.debug(LogCategory.SDK, 'Wallet already connected; skipping');
         return;
       }
+      if (connectingRef.current) {
+        logger.warn(LogCategory.SDK, 'Wallet connection already in progress; skipping duplicate');
+        return;
+      }
 
+      // The config builder trims the key and throws a distinct missing-key
+      // error before any SDK instance is created.
+      logger.info(LogCategory.SDK, 'Breez configuration checked', getBreezConfigDiagnostic());
+      connectingRef.current = true;
       setIsLoading(true);
       setIsSyncing(restore);
       setError(null);
-
-      if (!import.meta.env.VITE_BREEZ_API_KEY) {
-        showToast('error', 'Missing API Key', 'Please add VITE_BREEZ_API_KEY to your .env file');
-        setIsLoading(false);
-        return;
-      }
 
       initSdkLogging();
 
@@ -266,7 +266,8 @@ export function useBreezSdk(
       if (passkeyLabel != null) {
         setPasskeyMode(passkeyLabel);
       } else if (seed.type === 'mnemonic') {
-        saveMnemonic(seed.mnemonic);
+        // Encrypted at rest with a non-extractable key; never plaintext.
+        await saveMnemonic(seed.mnemonic);
       }
 
       const [info, txns] = await Promise.all([
@@ -299,13 +300,15 @@ export function useBreezSdk(
         setSdk(null);
       }
 
-      setError('Failed to connect wallet. Please try again.');
+      setError(classifyAuthError(e, 'sdk').message);
       setIsSyncing(false);
       setIsLoading(false);
       setConfig(null);
       throw e;
+    } finally {
+      connectingRef.current = false;
     }
-  }, [sdk, showToast]);
+  }, [sdk]);
 
   const handleLogout = useCallback(async () => {
     setIsLoading(true);
@@ -324,7 +327,7 @@ export function useBreezSdk(
 
     // Always reset all state — even if disconnect threw
     setSdk(null);
-    clearMnemonic();
+    await clearMnemonic();
     clearPasskeyMode();
     shownPaymentIdsRef.current.clear();
     setIsConnected(false);
@@ -342,19 +345,6 @@ export function useBreezSdk(
     showToast('success', 'Successfully logged out');
   }, [sdk, showToast]);
 
-  const handleBuyBitcoin = useCallback(async () => {
-    if (!sdk) return;
-    try {
-      const response = await sdk.buyBitcoin({
-  type: 'moonpay'
-})
-      window.open(response.url, '_blank', 'noopener,noreferrer');
-    } catch (e) {
-      logger.error(LogCategory.SDK, 'Failed to open Buy Bitcoin', { error: formatError(e) });
-      showToast('error', 'Buy Bitcoin', 'Failed to open MoonPay. Please try again.');
-    }
-  }, [sdk, showToast]);
-
   // ----------------------------------------
   // Effects
   // ----------------------------------------
@@ -366,9 +356,19 @@ export function useBreezSdk(
     return () => { document.body.setAttribute('data-lnurl-enabled', 'false'); };
   }, [config?.lnurlDomain]);
 
-  // Check PRF availability on mount
+  // Check passkey/PRF capability on mount (no WebAuthn prompt)
   useEffect(() => {
-    isPrfAvailable().then(setPrfAvailable).catch(() => setPrfAvailable(false));
+    getPasskeyCapability()
+      .then((capability) => {
+        setPrfCapability(capability);
+        setPrfAvailable(capability.supported);
+      })
+      .catch((e) => {
+        logger.warn(LogCategory.AUTH, 'Passkey capability detection failed', {
+          error: formatError(e),
+        });
+        setPrfAvailable(false);
+      });
   }, []);
 
   // Auto-reconnect on mount
@@ -378,40 +378,27 @@ export function useBreezSdk(
     });
 
     const checkForExistingWallet = async () => {
-      const savedMnemonic = getSavedMnemonic();
+      const savedMnemonic = await loadMnemonic();
       if (savedMnemonic) {
         try {
           setIsLoading(true);
           await connectWallet({ type: 'mnemonic', mnemonic: savedMnemonic }, false);
         } catch (e) {
-          logger.error(LogCategory.SDK, 'Failed to connect with saved mnemonic', { error: formatError(e) });
-          setError('Failed to connect with saved mnemonic. Please try again.');
-          clearMnemonic();
-          setIsLoading(false);
-        }
-      } else if (isPasskeyMode()) {
-        setIsLoading(true);
-        let wallet;
-        try {
-          wallet = await getWallet();
-        } catch (e) {
-          logger.error(LogCategory.AUTH, 'Passkey authentication failed', { error: formatError(e) });
-          if (e instanceof DOMException && e.name === 'NotAllowedError') {
-            clearPasskeyMode();
+          logger.error(LogCategory.SDK, 'Failed to connect with stored wallet', { error: formatError(e) });
+          setError(classifyAuthError(e, 'sdk').message);
+
+          // A missing key, offline network or relay error must not destroy the
+          // encrypted backup. Only a genuinely invalid phrase is discarded.
+          const message = getErrorDiagnostic(e).message;
+          if (/invalid (mnemonic|seed|phrase)|checksum|unknown word|entropy/i.test(message)) {
+            await clearMnemonic();
           }
-          setError('Failed to authenticate with passkey. Please try again.');
           setIsLoading(false);
-        }
-        if (wallet) {
-          try {
-            await connectWallet(wallet.seed, false, wallet.label);
-          } catch (e) {
-            logger.error(LogCategory.SDK, 'Failed to connect after passkey auth', { error: formatError(e) });
-            setError('Failed to connect wallet. Please try again.');
-            setIsLoading(false);
-          }
         }
       } else {
+        // Passkey sessions are intentionally NOT auto-authenticated on load:
+        // WebAuthn prompts must follow an explicit user action, and a failed
+        // prompt must never be mistaken for a missing passkey.
         setIsLoading(false);
       }
 
@@ -474,12 +461,13 @@ export function useBreezSdk(
     hasRejectedDeposits,
     celebrationAmount,
     prfAvailable,
+    prfCapability,
+    walletConfigured,
     // Actions
     connectWallet,
     refreshWalletData,
     fetchUnclaimedDeposits,
     handleLogout,
-    handleBuyBitcoin,
     clearError: () => setError(null),
     dismissCelebration: () => setCelebrationAmount(null),
   };

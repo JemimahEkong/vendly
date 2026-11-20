@@ -28,6 +28,10 @@ import { WifiOff } from 'lucide-react';
 interface ReceivePaymentDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  /** POS: invoice amount in sats, generated automatically for the cart total. */
+  presetAmountSats?: number;
+  presetDescription?: string;
+  autoGenerate?: boolean;
 }
 
 interface QRCodeDisplayProps {
@@ -78,7 +82,13 @@ const OfflineBanner: React.FC = () => (
   </div>
 );
 
-const ReceivePaymentDialog: React.FC<ReceivePaymentDialogProps> = ({ isOpen, onClose }): JSX.Element => {
+const ReceivePaymentDialog: React.FC<ReceivePaymentDialogProps> = ({
+  isOpen,
+  onClose,
+  presetAmountSats,
+  presetDescription,
+  autoGenerate = false,
+}): JSX.Element => {
   const receive = useReceivePayment();
   const [showChangeConfirm, setShowChangeConfirm] = useState<boolean>(false);
 
@@ -106,6 +116,21 @@ const ReceivePaymentDialog: React.FC<ReceivePaymentDialogProps> = ({ isOpen, onC
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
+
+  // POS checkout: pre-fill the cart total and generate the invoice immediately
+  // so the customer sees a scannable QR without entering an amount.
+  useEffect(() => {
+    if (!isOpen || presetAmountSats == null || presetAmountSats <= 0) return;
+    const amountValue = String(presetAmountSats);
+    const descriptionValue = presetDescription || 'Vendly sale';
+    receive.setAmount(amountValue);
+    receive.setDescription(descriptionValue);
+    if (autoGenerate) {
+      void receive.generateBolt11Invoice(amountValue, descriptionValue);
+    }
+    // Only react to opening / a new preset; `receive` helpers are re-created each render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, presetAmountSats, presetDescription, autoGenerate]);
 
   const handleTabChange = (tab: PaymentMethod) => {
     receive.handleTabChange(tab, loadLightningAddress);

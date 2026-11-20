@@ -1,6 +1,7 @@
 import React from 'react';
 import { PrimaryButton, ErrorMessageBox } from '../../../components/ui';
 import { CloseIcon } from '../../../components/Icons';
+import { assetPath } from '@/utils/assetPath';
 
 export interface ResultStepProps {
   result: 'success' | 'failure';
@@ -89,7 +90,7 @@ const ResultStep: React.FC<ResultStepProps> = ({ result, error, onClose, operati
       {/* Logo with sparkles */}
       <div className="relative w-20 h-20 flex items-center justify-center">
         <img
-          src="/assets/vendly-mark.svg"
+          src={assetPath('assets/vendly-mark.svg')}
           alt="Vendly"
           className="w-16 h-16 object-contain drop-shadow-[0_0_20px_rgba(0,0,0,0.15)]"
         />
@@ -115,3 +116,4 @@ const ResultStep: React.FC<ResultStepProps> = ({ result, error, onClose, operati
 };
 
 export default ResultStep;
+

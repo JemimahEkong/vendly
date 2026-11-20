@@ -6,9 +6,10 @@ import PageLayout from '../components/layout/PageLayout';
 import { AlertCard } from '../components/AlertCard';
 import { CheckIcon, CopyIcon, KeyIcon } from '../components/Icons';
 import { logger, LogCategory } from '@/services/logger';
+import { classifyAuthError } from '@/services/authErrors';
 
 interface GeneratePageProps {
-  onMnemonicConfirmed: (mnemonic: string) => void;
+  onMnemonicConfirmed: (mnemonic: string) => void | Promise<void>;
   onBack: () => void;
   error: string | null;
   onClearError: () => void;
@@ -22,6 +23,10 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
   const [mnemonic, setMnemonic] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [confirming, setConfirming] = useState<boolean>(false);
+  const [confirmError, setConfirmError] = useState<{ title: string; message: string } | null>(
+    null,
+  );
 
   useEffect(() => {
     const generateMnemonic = async () => {
@@ -53,8 +58,18 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
       });
   };
 
-  const handleConfirmMnemonic = () => {
-    onMnemonicConfirmed(mnemonic);
+  const handleConfirmMnemonic = async () => {
+    if (confirming) return;
+    setConfirmError(null);
+    setConfirming(true);
+    try {
+      await onMnemonicConfirmed(mnemonic);
+    } catch (err) {
+      const info = classifyAuthError(err, 'sdk');
+      setConfirmError({ title: info.title, message: info.message });
+    } finally {
+      setConfirming(false);
+    }
   };
 
   if (isLoading) {
@@ -69,8 +84,8 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
 
   const footer = (
     <div className="max-w-xl mx-auto">
-      <PrimaryButton className="w-full" onClick={handleConfirmMnemonic}>
-        I've saved my phrase
+      <PrimaryButton className="w-full" onClick={handleConfirmMnemonic} disabled={confirming}>
+        {confirming ? 'Starting Vendly...' : "I've saved my phrase"}
       </PrimaryButton>
     </div>
   );
@@ -138,6 +153,12 @@ const GeneratePage: React.FC<GeneratePageProps> = ({
       </div>
 
       {/* Warning */}
+      {confirmError && (
+        <AlertCard variant="error" title={confirmError.title}>
+          <p className="text-vendly-ink text-sm">{confirmError.message}</p>
+        </AlertCard>
+      )}
+
       <AlertCard variant="warning" title="Keep it Secret">
         <p className="text-vendly-ink text-sm">
           Never share your recovery phrase. Anyone with these words can access your business account.
